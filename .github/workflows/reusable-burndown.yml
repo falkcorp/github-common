@@ -14,7 +14,7 @@
 # Exits early if none found. Otherwise: triage → dispatch (matrix) → aggregate.
 #
 # The burndown binary is pre-baked into
-# ghcr.io/falkcorp/burndown-runner-image:ob-41d8d62 at /usr/local/bin/burndown.
+# ghcr.io/falkcorp/burndown-runner-image:ob-20cdfe3 at /usr/local/bin/burndown.
 # Config is driven entirely by environment variables — no config.yaml needed.
 
 name: Burndown (reusable)
@@ -254,7 +254,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     container:
-      image: ghcr.io/falkcorp/burndown-runner-image:ob-41d8d62
+      image: ghcr.io/falkcorp/burndown-runner-image:ob-20cdfe3
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.JF_CI_GH_PAT || secrets.GITHUB_TOKEN }}
@@ -338,7 +338,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     container:
-      image: ghcr.io/falkcorp/burndown-runner-image:ob-41d8d62
+      image: ghcr.io/falkcorp/burndown-runner-image:ob-20cdfe3
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.JF_CI_GH_PAT || secrets.GITHUB_TOKEN }}
@@ -415,7 +415,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     container:
-      image: ghcr.io/falkcorp/burndown-runner-image:ob-41d8d62
+      image: ghcr.io/falkcorp/burndown-runner-image:ob-20cdfe3
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.JF_CI_GH_PAT || secrets.GITHUB_TOKEN }}
@@ -484,7 +484,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     container:
-      image: ghcr.io/falkcorp/burndown-runner-image:ob-41d8d62
+      image: ghcr.io/falkcorp/burndown-runner-image:ob-20cdfe3
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.JF_CI_GH_PAT || secrets.GITHUB_TOKEN }}
