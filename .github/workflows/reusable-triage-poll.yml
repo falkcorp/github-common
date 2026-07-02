@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-triage-poll.yml
-# version: 1.0.0
+# version: 1.0.1
 # Reusable triage-poll workflow — runs every 30 minutes (or on demand).
 #
 # Usage:
@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     container:
-      image: ghcr.io/falkcorp/burndown-runner-image:d558a3367025991ebe86e43e46b4d9f73da39b88
+      image: ghcr.io/falkcorp/burndown-runner-image:ob-20cdfe3
     steps:
       - name: Materialize App key
         env:
