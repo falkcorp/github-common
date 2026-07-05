@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-release.yml
-# version: 2.13.4
+# version: 2.14.0
 # guid: 7b8c9d0e-1f2a-3b4c-5d6e-7f8a9b0c1d2e
 
 name: Reusable Release Coordinator
@@ -77,6 +77,11 @@ on:
         required: false
         type: string
         default: ''
+      go-run-linters:
+        description: 'Whether to run go vet/golangci-lint before the Go release build (redundant with CI on most repos)'
+        required: false
+        type: boolean
+        default: true
       stable:
         description: 'Create a stable (non-RC) release directly, bypassing the pre-release flow'
         required: false
@@ -357,6 +362,7 @@ jobs:
           system-packages: ${{ inputs.system-packages }}
           pre-build-script: ${{ inputs.pre-build-script }}
           go-experiment: ${{ inputs.go-experiment }}
+          run-linters: ${{ inputs.go-run-linters }}
           github-token: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
 
   # Python Build
