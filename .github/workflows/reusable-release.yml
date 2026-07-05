@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-release.yml
-# version: 2.14.1
+# version: 2.14.2
 # guid: 7b8c9d0e-1f2a-3b4c-5d6e-7f8a9b0c1d2e
 
 name: Reusable Release Coordinator
@@ -474,11 +474,11 @@ jobs:
       - name: Determine ghcommon workflow ref
         id: ghcommon-ref
         run: |
-          ref="${GITHUB_WORKFLOW_REF##*@}"
-          if [[ -z "$ref" || "$ref" == "$GITHUB_WORKFLOW_REF" ]]; then
-            ref="e04c222a0366d5801d3b02bb76519f19ba1fa440"
+          if [ -f .github/ghcommon-ref.txt ]; then
+            echo "ref=$(cat .github/ghcommon-ref.txt)" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=e04c222a0366d5801d3b02bb76519f19ba1fa440" >> "$GITHUB_OUTPUT"
           fi
-          echo "ref=$ref" >> "$GITHUB_OUTPUT"
 
       - name: Checkout ghcommon workflow scripts
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -774,11 +774,11 @@ jobs:
       - name: Determine ghcommon workflow ref
         id: ghcommon-ref
         run: |
-          ref="${GITHUB_WORKFLOW_REF##*@}"
-          if [[ -z "$ref" || "$ref" == "$GITHUB_WORKFLOW_REF" ]]; then
-            ref="e04c222a0366d5801d3b02bb76519f19ba1fa440"
+          if [ -f .github/ghcommon-ref.txt ]; then
+            echo "ref=$(cat .github/ghcommon-ref.txt)" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=e04c222a0366d5801d3b02bb76519f19ba1fa440" >> "$GITHUB_OUTPUT"
           fi
-          echo "ref=$ref" >> "$GITHUB_OUTPUT"
 
       - name: Checkout ghcommon workflow scripts
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
