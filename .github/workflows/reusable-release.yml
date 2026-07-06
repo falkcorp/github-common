@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-release.yml
-# version: 2.14.2
+# version: 2.14.3
 # guid: 7b8c9d0e-1f2a-3b4c-5d6e-7f8a9b0c1d2e
 
 name: Reusable Release Coordinator
@@ -355,7 +355,7 @@ jobs:
           private-key: ${{ secrets.CI_APP_PRIVATE_KEY }}
 
       - name: Build Go
-        uses: falkcorp/gha-release-go@17e3c8358687a19006d96caade7178c5c9b41874 # v2.0.0
+        uses: falkcorp/gha-release-go@e6b2fa793ea1f43d6baee44c77c6047b5abe7f15 # v2.0.1 (GORELEASER_CURRENT_TAG pin)
         with:
           protobuf-artifacts: ${{ needs.detect-languages.outputs.protobuf-needed }}
           release-version: ${{ needs.detect-languages.outputs.release-tag }}
