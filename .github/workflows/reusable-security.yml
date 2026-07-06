@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-security.yml
-# version: 1.3.3
+# version: 1.3.4
 # guid: reusable-security-2025-09-24-core-workflow
 
 name: Reusable Security Workflow
@@ -277,7 +277,7 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           submodules: recursive
-          repository: jdfalk/ghcommon
+          repository: falkcorp/github-common
           ref: e04c222a0366d5801d3b02bb76519f19ba1fa440 # v1.10.3+
           path: .ghcommon
           sparse-checkout: |

@@ -1,9 +1,9 @@
 # file: .github/workflows/commit-override-handler.yml
-# version: 1.3.3
+# version: 1.3.4
 # guid: 7a8b9c0d-1e2f-3456-789a-bcdef0123456
 
 # ⚠️  DO NOT EDIT DIRECTLY - This file is managed in ghcommon repository
-# All changes should be made in jdfalk/ghcommon and will be synced to other repositories
+# All changes should be made in falkcorp/github-common and will be synced to other repositories
 # Edit this file at: https://github.com/falkcorp/github-common/edit/main/.github/workflows/commit-override-handler.yml
 
 name: Commit Override Handler
@@ -79,7 +79,7 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           submodules: recursive
-          repository: jdfalk/ghcommon
+          repository: falkcorp/github-common
           ref: ${{ steps.ghcommon-ref.outputs.ref }}
           path: .ghcommon
           sparse-checkout: |
