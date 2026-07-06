@@ -1,11 +1,11 @@
 # file: .github/workflows/pr-automation.yml
-# version: 4.5.5
+# version: 4.5.6
 # guid: a7b8c9d0-e1f2-3456-a789-0123456789bc
 # NOTE: This file should be updated in ghcommon repository first, then copied to other repositories.
 # To update: Edit in https://github.com/falkcorp/github-common/.github/workflows/pr-automation.yml then copy to other repos
 
 # ⚠️  DO NOT EDIT DIRECTLY - This file is managed in ghcommon repository
-# All changes should be made in jdfalk/ghcommon and will be synced to other repositories
+# All changes should be made in falkcorp/github-common and will be synced to other repositories
 # Edit this file at: https://github.com/falkcorp/github-common/edit/main/.github/workflows/pr-automation.yml
 
 name: PR Automation

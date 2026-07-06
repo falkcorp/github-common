@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-ci.yml
-# version: 1.12.3
+# version: 1.12.4
 # guid: reusable-ci-2025-09-24-core-workflow
 
 name: Reusable CI Workflow
@@ -424,8 +424,9 @@ jobs:
       - name: Get ghcommon workflow ref
         id: ghcommon-ref
         run: |
-          ref="${GITHUB_WORKFLOW_REF##*@}"
-          if [[ -z "$ref" || "$ref" == "$GITHUB_WORKFLOW_REF" || "$ref" == refs/pull/* ]]; then
+          if [ -f .github/ghcommon-ref.txt ]; then
+            ref="$(cat .github/ghcommon-ref.txt)"
+          else
             ref="e04c222a0366d5801d3b02bb76519f19ba1fa440"
           fi
           echo "ref=$ref" >> "$GITHUB_OUTPUT"
@@ -434,7 +435,7 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           submodules: recursive
-          repository: jdfalk/ghcommon
+          repository: falkcorp/github-common
           ref: ${{ steps.ghcommon-ref.outputs.ref }}
           path: ghcommon-workflow-scripts
           sparse-checkout: |
@@ -514,8 +515,9 @@ jobs:
       - name: Get ghcommon workflow ref
         id: ghcommon-ref
         run: |
-          ref="${GITHUB_WORKFLOW_REF##*@}"
-          if [[ -z "$ref" || "$ref" == "$GITHUB_WORKFLOW_REF" || "$ref" == refs/pull/* ]]; then
+          if [ -f .github/ghcommon-ref.txt ]; then
+            ref="$(cat .github/ghcommon-ref.txt)"
+          else
             ref="e04c222a0366d5801d3b02bb76519f19ba1fa440"
           fi
           echo "ref=$ref" >> "$GITHUB_OUTPUT"
@@ -524,7 +526,7 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           submodules: recursive
-          repository: jdfalk/ghcommon
+          repository: falkcorp/github-common
           ref: ${{ steps.ghcommon-ref.outputs.ref }}
           path: ghcommon-workflow-scripts
           sparse-checkout: |
@@ -579,8 +581,9 @@ jobs:
       - name: Get ghcommon workflow ref
         id: ghcommon-ref
         run: |
-          ref="${GITHUB_WORKFLOW_REF##*@}"
-          if [[ -z "$ref" || "$ref" == "$GITHUB_WORKFLOW_REF" || "$ref" == refs/pull/* ]]; then
+          if [ -f .github/ghcommon-ref.txt ]; then
+            ref="$(cat .github/ghcommon-ref.txt)"
+          else
             ref="e04c222a0366d5801d3b02bb76519f19ba1fa440"
           fi
           echo "ref=$ref" >> "$GITHUB_OUTPUT"
@@ -589,7 +592,7 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           submodules: recursive
-          repository: jdfalk/ghcommon
+          repository: falkcorp/github-common
           ref: ${{ steps.ghcommon-ref.outputs.ref }}
           path: ghcommon-workflow-scripts
           sparse-checkout: |
@@ -673,8 +676,9 @@ jobs:
       - name: Get ghcommon workflow ref
         id: ghcommon-ref
         run: |
-          ref="${GITHUB_WORKFLOW_REF##*@}"
-          if [[ -z "$ref" || "$ref" == "$GITHUB_WORKFLOW_REF" || "$ref" == refs/pull/* ]]; then
+          if [ -f .github/ghcommon-ref.txt ]; then
+            ref="$(cat .github/ghcommon-ref.txt)"
+          else
             ref="e04c222a0366d5801d3b02bb76519f19ba1fa440"
           fi
           echo "ref=$ref" >> "$GITHUB_OUTPUT"
@@ -683,7 +687,7 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           submodules: recursive
-          repository: jdfalk/ghcommon
+          repository: falkcorp/github-common
           ref: ${{ steps.ghcommon-ref.outputs.ref }}
           path: ghcommon-workflow-scripts
           sparse-checkout: |
@@ -809,8 +813,9 @@ jobs:
       - name: Get ghcommon workflow ref
         id: ghcommon-ref
         run: |
-          ref="${GITHUB_WORKFLOW_REF##*@}"
-          if [[ -z "$ref" || "$ref" == "$GITHUB_WORKFLOW_REF" || "$ref" == refs/pull/* ]]; then
+          if [ -f .github/ghcommon-ref.txt ]; then
+            ref="$(cat .github/ghcommon-ref.txt)"
+          else
             ref="e04c222a0366d5801d3b02bb76519f19ba1fa440"
           fi
           echo "ref=$ref" >> "$GITHUB_OUTPUT"
@@ -819,7 +824,7 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           submodules: recursive
-          repository: jdfalk/ghcommon
+          repository: falkcorp/github-common
           ref: ${{ steps.ghcommon-ref.outputs.ref }}
           path: ghcommon-workflow-scripts
           sparse-checkout: |
