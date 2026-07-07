@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-advanced-cache.yml
-# version: 1.1.4
+# version: 1.1.5
 # guid: e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b
 
 name: Reusable Advanced Caching
@@ -64,7 +64,7 @@ jobs:
       - name: Checkout ghcommon workflow scripts
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
-          submodules: recursive
+          # do not add submodules: recursive here — sparse-checkout can't lazy-fetch .gitmodules, causing a promisor-fetch 400
           repository: falkcorp/github-common
           ref: ${{ steps.ghcommon-ref.outputs.ref }}
           sparse-checkout: |
