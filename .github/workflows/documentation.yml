@@ -1,5 +1,5 @@
 # file: .github/workflows/documentation.yml
-# version: 1.1.1
+# version: 1.1.2
 # guid: docs-automation-workflow-2025
 
 name: Documentation
@@ -33,7 +33,7 @@ jobs:
         with:
           submodules: recursive
       - name: Generate helper documentation
-        uses: falkcorp/gha-docs-generator@8207d873d6300212e4d22b97aa22e9b1114f64a7 # v1.1.3
+        uses: falkcorp/gha-docs-generator@ecaefb4b0110d11683bc7ad0b6b968209aeca4af # v1.1.6-rc.4
         with:
           source-dir: .github/workflows/scripts
           workflows-dir: .github/workflows
