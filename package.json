@@ -33,5 +33,10 @@
   },
   "dependencies": {
     "npmx": "^0.0.0"
+  },
+  "overrides": {
+    "lodash": "^4.18.0",
+    "js-yaml": "^4.2.0",
+    "fast-uri": "^3.1.2"
   }
 }

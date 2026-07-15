@@ -2955,7 +2955,7 @@
     "path": "requirements.txt",
     "guid": "f7e6d5c4-b3a2-1098-7654-321fedcba987",
     "title": "requirements",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "header_path": "requirements.txt",
     "path_mismatch": false
   },
@@ -3107,7 +3107,7 @@
     "path": "scripts/copilot-firewall/requirements.txt",
     "guid": "c2d3e4f5-7g8h-9i0j-1k2l-3m4n5o6p7q8r",
     "title": "requirements",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "header_path": "scripts/copilot-firewall/requirements.txt",
     "path_mismatch": false
   },

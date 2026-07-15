@@ -1,6 +1,7 @@
 # file: requirements.txt
-# version: 1.1.1
+# version: 1.2.0
 # guid: f7e6d5c4-b3a2-1098-7654-321fedcba987
+# last-edited: 2026-07-14
 
 # Python dependencies for gcommon automation scripts
 
@@ -9,3 +10,7 @@ PyYAML>=6.0.3
 PyJWT[crypto]>=2.13.0
 cryptography>=41.0.7
 requests>=2.34.2
+
+# Transitive deps pinned to patched versions (Dependabot alerts #5, #3, #4, #29, #30)
+urllib3>=2.7.0
+idna>=3.15
