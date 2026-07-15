@@ -2,6 +2,14 @@
   "version": 1,
   "repos": [
     {
+      "owner": "falkcorp",
+      "name": "gha-guid-index",
+      "flavor": "action",
+      "mode": "create",
+      "first_bootstrapped": "2026-07-15T00:50:25Z",
+      "last_bootstrapped": "2026-07-15T00:50:25Z"
+    },
+    {
       "owner": "jdfalk",
       "name": "auto-module-tagging-action",
       "flavor": "action",

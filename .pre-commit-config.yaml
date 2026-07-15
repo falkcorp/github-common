@@ -1,6 +1,7 @@
 # file: .pre-commit-config.yaml
-# version: 2.6.0
+# version: 2.7.0
 # guid: f8e7d6c5-b4a3-9281-7069-5a4b3c2d1e0f
+# last-edited: 2026-07-14
 
 # Pre-commit hooks configuration for comprehensive code quality checks
 # This configuration uses official pre-commit.com hooks and integrates with
@@ -222,6 +223,7 @@ repos:
       - id: prettier
         types_or: [javascript, jsx, ts, tsx, json, css, scss, yaml, markdown]
         exclude_types: [python]
+        exclude: '^docs/guid-index\.md$'
         args: [--config=.github/linters/.prettierrc.json]
 
   # Rust formatting and linting - DISABLED: no root Cargo.toml in this repo
@@ -261,7 +263,7 @@ repos:
     hooks:
       - id: markdownlint
         args: [--config=.markdownlint.json, --fix]
-        exclude: '^(\.github/instructions/.*\.instructions\.md|docs/cross-registry-todos/.*\.md|docs/refactors/.*)$'
+        exclude: '^(\.github/instructions/.*\.instructions\.md|docs/cross-registry-todos/.*\.md|docs/refactors/.*|docs/guid-index\.md)$'
 
   # Docker linting - DISABLED: requires Docker daemon running
   # - repo: https://github.com/hadolint/hadolint
@@ -276,6 +278,13 @@ repos:
   #     - id: buf-lint
   #     - id: buf-format
   #       args: [--write]
+
+  # Keeps docs/guid-index.md and .github/guid-index.json in sync with the
+  # guid: header on every tracked file
+  - repo: https://github.com/falkcorp/gha-guid-index
+    rev: v1.0.1
+    hooks:
+      - id: guid-index
 
   # Additional checks for common file types
   - repo: https://github.com/pre-commit/pygrep-hooks

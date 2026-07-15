@@ -1,0 +1,3666 @@
+[
+  {
+    "path": ".commitlintrc.js",
+    "guid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": ".commitlintrc",
+    "version": "1.0.0",
+    "header_path": ".commitlintrc.js",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/PULL_REQUEST_TEMPLATE.md",
+    "guid": "6b7c8d9e-0f12-3456-789a-bcdef0123456",
+    "title": "PULL REQUEST TEMPLATE",
+    "version": "1.0.0",
+    "header_path": ".github/PULL_REQUEST_TEMPLATE.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/WORKFLOW_CONFIG_GUIDE.md",
+    "guid": "8b9c0d1e-2f34-5678-9abc-def012345678",
+    "title": "Workflow Configuration System Guide",
+    "version": "1.0.0",
+    "header_path": ".github/WORKFLOW_CONFIG_GUIDE.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/actions/security-summary/action.yml",
+    "guid": "a1b2c3d4-e5f6-47a8-9b10-c1d2e3f4a5b6",
+    "title": "Security Summary",
+    "version": "1.0.0",
+    "header_path": ".github/actions/security-summary/action.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/agents/merge-conflict-resolution.agent.md",
+    "guid": "7f1f1d5b-2f7a-4b9f-9c26-5a2d2f9c3c1a",
+    "title": "Merge Conflict Resolution Agent",
+    "version": "1.0.0",
+    "header_path": ".github/prompts/merge-conflict-resolution.agent.md",
+    "path_mismatch": true
+  },
+  {
+    "path": ".github/benchmark-data/README.md",
+    "guid": "benchmark-data-readme-2025-10-automation",
+    "title": "file: .github/benchmark-data/README.md",
+    "version": "1.0.0",
+    "header_path": ".github/benchmark-data/README.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/codeql.yml",
+    "guid": "2f3a4b5c-6d7e-8f9a-0b1c-2d3e4f5a6b7c",
+    "title": "CodeQL Configuration",
+    "version": "1.0.0",
+    "header_path": ".github/codeql.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/copilot-instructions.md",
+    "guid": "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
+    "title": "github-common \u2014 Additional Context",
+    "version": "2.4.0",
+    "header_path": ".github/copilot-instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/dependabot.yml",
+    "guid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "dependabot",
+    "version": "1.0.0",
+    "header_path": "",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/dependency-review-config.yml",
+    "guid": "d1e2f3a4-b5c6-47d8-9e10-f1a2b3c4d5e6",
+    "title": "dependency review config",
+    "version": "1.0.0",
+    "header_path": ".github/dependency-review-config.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/instructions/commit-messages.instructions.md",
+    "guid": "msg12345-e89b-12d3-a456-426614174000",
+    "title": "Conventional Commit Message Instructions",
+    "version": "2.0.1",
+    "header_path": ".github/instructions/commit-messages.instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/instructions/copilot-instructions.md",
+    "guid": "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
+    "title": "github-common \u2014 Additional Context",
+    "version": "2.4.0",
+    "header_path": ".github/copilot-instructions.md",
+    "path_mismatch": true
+  },
+  {
+    "path": ".github/instructions/general-coding.instructions.md",
+    "guid": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+    "title": "General Coding Instructions",
+    "version": "2.2.0",
+    "header_path": ".github/instructions/general-coding.instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/instructions/github-actions.instructions.md",
+    "guid": "9f8e7d6c-5b4a-3c2d-1e0f-9a8b7c6d5e4f",
+    "title": "GitHub Actions Workflow Coding Instructions",
+    "version": "1.2.1",
+    "header_path": ".github/instructions/github-actions.instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/instructions/go.instructions.md",
+    "guid": "4a5b6c7d-8e9f-1a2b-3c4d-5e6f7a8b9c0d",
+    "title": "Go Coding Instructions",
+    "version": "1.11.0",
+    "header_path": ".github/instructions/go.instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/instructions/html-css.instructions.md",
+    "guid": "2d1e0f9a-8b7c-6d5e-4f3a-2b1c0d9e8f7a",
+    "title": "HTML/CSS Coding Instructions",
+    "version": "1.2.1",
+    "header_path": ".github/instructions/html-css.instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/instructions/javascript.instructions.md",
+    "guid": "8e7d6c5b-4a3c-2d1e-0f9a-8b7c6d5e4f3a",
+    "title": "JavaScript Coding Instructions",
+    "version": "1.2.1",
+    "header_path": ".github/instructions/javascript.instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/instructions/json.instructions.md",
+    "guid": "3c2d1e0f-9a8b-7c6d-5e4f-3a2b1c0d9e8f",
+    "title": "JSON Coding Instructions",
+    "version": "1.2.1",
+    "header_path": ".github/instructions/json.instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/instructions/jsonc.instructions.md",
+    "guid": "a7b8c9d0-e1f2-3456-7890-1a2b3c4d5e6f",
+    "title": "JSON Coding Instructions",
+    "version": "1.2.1",
+    "header_path": ".github/instructions/json.instructions.md",
+    "path_mismatch": true
+  },
+  {
+    "path": ".github/instructions/markdown.instructions.md",
+    "guid": "e2f8a5b1-9c4d-4e2f-8a5b-4d9c8a5b1e2f",
+    "title": "Markdown Coding Instructions",
+    "version": "1.2.1",
+    "header_path": ".github/instructions/markdown.instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/instructions/protobuf.instructions.md",
+    "guid": "7d6c5b4a-3c2d-1e0f-9a8b-7c6d5e4f3a2b",
+    "title": "Protobuf Coding Instructions",
+    "version": "3.0.1",
+    "header_path": ".github/instructions/protobuf.instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/instructions/pull-request-descriptions.instructions.md",
+    "guid": "pr2d3567-e89b-12d3-a456-426614174000",
+    "title": "Pull Request Description Instructions",
+    "version": "1.3.1",
+    "header_path": ".github/instructions/pull-request-descriptions.instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/instructions/python.instructions.md",
+    "guid": "2a5b7c8d-9e1f-4a2b-8c3d-6e9f1a5b7c8d",
+    "title": "Python Coding Instructions",
+    "version": "1.6.0",
+    "header_path": ".github/instructions/python.instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/instructions/rust.instructions.md",
+    "guid": "b2c3d4e5-f6a7-8901-2345-678901bcdef0",
+    "title": "Rust Code Style Guide",
+    "version": "1.0.1",
+    "header_path": ".github/instructions/rust.instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/instructions/safe-ai-util.instructions.md",
+    "guid": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+    "title": "Safe AI Utility (Rust) - Installation and Command Reference",
+    "version": "2.0.0",
+    "header_path": ".github/instructions/safe-ai-util.instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/instructions/security.instructions.md",
+    "guid": "sec12345-e89b-12d3-a456-426614174000",
+    "title": "Security Instructions",
+    "version": "1.2.1",
+    "header_path": ".github/instructions/security.instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/instructions/shell.instructions.md",
+    "guid": "5b4a3c2d-1e0f-9a8b-7c6d-5e4f3a2b1c0d",
+    "title": "Shell Script Coding Instructions",
+    "version": "1.4.0",
+    "header_path": ".github/instructions/shell.instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/instructions/test-generation.instructions.md",
+    "guid": "test1234-e89b-12d3-a456-426614174000",
+    "title": "Test Generation Instructions",
+    "version": "1.2.1",
+    "header_path": ".github/instructions/test-generation.instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/instructions/typescript.instructions.md",
+    "guid": "ts123456-e89b-12d3-a456-426614174000",
+    "title": "TypeScript Coding Instructions",
+    "version": "1.2.1",
+    "header_path": ".github/instructions/typescript.instructions.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/intelligent-labeling.yml",
+    "guid": "9d0e1f2a-3b4c-5d6e-7f8a-9b0c1d2e3f4a",
+    "title": "intelligent labeling",
+    "version": "1.0.0",
+    "header_path": ".github/intelligent-labeling.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/labeler.yml",
+    "guid": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+    "title": "labeler",
+    "version": "2.0.0",
+    "header_path": ".github/labeler.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/linters/.python-black",
+    "guid": "3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b",
+    "title": ".python black",
+    "version": "1.0.0",
+    "header_path": ".github/linters/.python-black",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/linters/ruff.toml",
+    "guid": "4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
+    "title": "ruff",
+    "version": "1.2.0",
+    "header_path": ".github/linters/ruff.toml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/ai-architecture.prompt.md",
+    "guid": "142399ee-fc87-4888-9f2e-5da584e93a50",
+    "title": "AI Architecture Review Prompt",
+    "version": "1.0.0",
+    "header_path": ".github/prompts/ai-architecture.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/ai-changelog.prompt.md",
+    "guid": "253c622c-7e27-41ad-99f9-d81791d6b251",
+    "title": "AI Changelog Generation Prompt",
+    "version": "1.0.0",
+    "header_path": ".github/prompts/ai-changelog.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/ai-contribution.prompt.md",
+    "guid": "17ad5a38-1879-4321-b25f-7029625f470d",
+    "title": "AI Contribution Guidelines Prompt",
+    "version": "1.0.0",
+    "header_path": ".github/prompts/ai-contribution.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/ai-issue-triage.prompt.md",
+    "guid": "95d3bd04-d3aa-4da7-b3a6-ea74abadc21a",
+    "title": "AI Issue Triage Prompt",
+    "version": "1.0.0",
+    "header_path": ".github/prompts/ai-issue-triage.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/ai-migration.prompt.md",
+    "guid": "bd8f93f7-c275-4966-8953-899b50f6d1cb",
+    "title": "AI Migration Prompt",
+    "version": "1.0.0",
+    "header_path": ".github/prompts/ai-migration.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/ai-rebase-context.md",
+    "guid": "5f8e7d6c-9b8a-7c6d-5e4f-3a2b1c0d9e8f",
+    "title": "Repository Context for AI Rebase",
+    "version": "1.0.1",
+    "header_path": ".github/prompts/ai-rebase-context.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/ai-rebase-context.template.md",
+    "guid": "9c8d7e6f-5a4b-3c2d-1e0f-9a8b7c6d5e4f",
+    "title": "Repository Context for AI Rebase",
+    "version": "1.1.0",
+    "header_path": ".github/prompts/ai-rebase-context.template.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/ai-rebase-system.prompt.md",
+    "guid": "2b99c940-4a0d-4f2a-9e09-cbba1ac5727d",
+    "title": "ai rebase system.prompt",
+    "version": "1.2.0",
+    "header_path": ".github/prompts/ai-rebase-system.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/ai-refactor.prompt.md",
+    "guid": "033f8e46-04db-4c72-895c-3cfa8b89a35d",
+    "title": "AI Refactor Prompt",
+    "version": "1.0.0",
+    "header_path": ".github/prompts/ai-refactor.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/ai-release-notes.prompt.md",
+    "guid": "dab2fd75-1afd-497d-b53f-9e598fe6bbed",
+    "title": "AI Release Notes Prompt",
+    "version": "1.0.0",
+    "header_path": ".github/prompts/ai-release-notes.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/ai-roadmap.prompt.md",
+    "guid": "e6a1c73e-5f47-4458-a8b1-d08f11a55fa8",
+    "title": "AI Roadmap Generation Prompt",
+    "version": "1.0.0",
+    "header_path": ".github/prompts/ai-roadmap.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/bug-report.prompt.md",
+    "guid": "a8938e5c-bd77-4a17-8cdc-275bcb010af3",
+    "title": "Bug Report Prompt",
+    "version": "1.0.0",
+    "header_path": ".github/prompts/bug-report.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/code-review.prompt.md",
+    "guid": "7a1cf164-c2cd-4801-9621-d8fd7fe4afd0",
+    "title": "Code Review Prompt",
+    "version": "1.0.0",
+    "header_path": ".github/prompts/code-review.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/commit-message.prompt.md",
+    "guid": "3453d792-9817-4406-8261-f53fc7fb8bea",
+    "title": "Commit Message Generation Prompt",
+    "version": "1.1.0",
+    "header_path": ".github/prompts/commit-message.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/documentation.prompt.md",
+    "guid": "eb95dfc9-0121-4363-b46d-bfe799adabc0",
+    "title": "Documentation Generation Prompt",
+    "version": "1.0.0",
+    "header_path": ".github/prompts/documentation.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/feature-request.prompt.md",
+    "guid": "73923d3f-5e4f-46b3-9694-796532639b22",
+    "title": "Feature Request Prompt",
+    "version": "1.0.0",
+    "header_path": ".github/prompts/feature-request.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/merge-conflict-resolution.agent.md",
+    "guid": "7f1f1d5b-2f7a-4b9f-9c26-5a2d2f9c3c1a",
+    "title": "Merge Conflict Resolution Agent",
+    "version": "1.0.0",
+    "header_path": ".github/prompts/merge-conflict-resolution.agent.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/onboarding.prompt.md",
+    "guid": "201ab032-5551-4658-b532-2a43fe65a77b",
+    "title": "Onboarding Prompt",
+    "version": "1.0.0",
+    "header_path": ".github/prompts/onboarding.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/pull-request.prompt.md",
+    "guid": "031b01c4-5985-4caa-89a6-0a91c211703a",
+    "title": "Pull Request Description Generation Prompt",
+    "version": "1.1.0",
+    "header_path": ".github/prompts/pull-request.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/security-review.prompt.md",
+    "guid": "74b067af-466e-48b9-ab34-c34ea5f26b85",
+    "title": "Security Review Prompt",
+    "version": "1.0.0",
+    "header_path": ".github/prompts/security-review.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/prompts/test-generation.prompt.md",
+    "guid": "19ae3536-4f87-44cf-bccd-86e47732e005",
+    "title": "Test Generation Prompt",
+    "version": "1.0.0",
+    "header_path": ".github/prompts/test-generation.prompt.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/repositories.txt",
+    "guid": "d6e5f4a3-b2c1-0d9e-8f7a-6b5c4d3e2f10",
+    "title": "repositories",
+    "version": "1.0.1",
+    "header_path": ".github/repositories.txt",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/repository-config.yml",
+    "guid": "unified-repo-config-2025-09-24-comprehensive",
+    "title": "repository config",
+    "version": "1.1.0",
+    "header_path": ".github/repository-config.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/README.md",
+    "guid": "2e6f66ca-86aa-46dc-b806-e5ad95dee9fb",
+    "title": "GitHub Scripts",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/README.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/ai-rebase.sh",
+    "guid": "a1b2c3d4-e5f6-7890-abcd-123456789012",
+    "title": "ai rebase",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/ai-rebase.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/ci-status.sh",
+    "guid": "9e1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
+    "title": "ci status",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/ci-status.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/detect-build-matrix.py",
+    "guid": "a1b2c3d4-e5f6-7890-1234-56789abcdef0",
+    "title": "detect build matrix",
+    "version": "1.1.0",
+    "header_path": ".github/scripts/detect-build-matrix.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/detect_languages.py",
+    "guid": "4f6c9d88-2d4b-4a1e-9c61-3e0b2b9a7f11",
+    "title": "detect languages",
+    "version": "1.2.0",
+    "header_path": ".github/scripts/detect_languages.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/determine-security-languages.py",
+    "guid": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    "title": "determine security languages",
+    "version": "1.1.0",
+    "header_path": ".github/scripts/determine-security-languages.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/docker-detect.py",
+    "guid": "d1e2f3g4-h5i6-j7k8-l9m0-n1o2p3q4r5s6",
+    "title": "docker detect",
+    "version": "1.0.1",
+    "header_path": ".github/scripts/docker-detect.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/docker-security.py",
+    "guid": "e2f3g4h5-i6j7-k8l9-m0n1-o2p3q4r5s6t7",
+    "title": "docker security",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/docker-security.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/find-conflicted-prs.js",
+    "guid": "12345678-abcd-efgh-ijkl-123456789abc",
+    "title": "find conflicted prs",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/find-conflicted-prs.js",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/generate-security-summary.py",
+    "guid": "sec-sum-gen-2025-12-07",
+    "title": "generate security summary",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/generate-security-summary.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/monitor-rollout.py",
+    "guid": "7f1a3b2c-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
+    "title": "monitor rollout",
+    "version": "1.1.1",
+    "header_path": ".github/scripts/monitor-rollout.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/parse_config_json.py",
+    "guid": "2a1b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+    "title": "parse config json",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/parse_config_json.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/pr-linter-comment.js",
+    "guid": "abcd1234-efgh-5678-ijkl-abcd12345678",
+    "title": "pr linter comment",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/pr-linter-comment.js",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/process-conflicted-prs.js",
+    "guid": "87654321-dcba-hgfe-lkji-987654321abc",
+    "title": "process conflicted prs",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/process-conflicted-prs.js",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/run_buf_generate.py",
+    "guid": "8c5b2d4e-3f7a-45d1-9e2f-1b6c7d8e9f01",
+    "title": "run buf generate",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/run_buf_generate.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/super-linter-pr-comment.js",
+    "guid": "7e2a1b4c-8d3f-4a6b-9c2e-1f2b3c4d5e6f",
+    "title": "super linter pr comment",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/super-linter-pr-comment.js",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-auto-commit.py",
+    "guid": "f7a8b9c0-d1e2-3f4a-5b6c-7d8e9f0a1b2c",
+    "title": "sync auto commit",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/sync-auto-commit.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-complete-workflow-modernizer.py",
+    "guid": "a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6",
+    "title": "sync complete workflow modernizer",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/sync-complete-workflow-modernizer.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-determine-target-repos.py",
+    "guid": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    "title": "sync determine target repos",
+    "version": "1.0.1",
+    "header_path": ".github/scripts/sync-determine-target-repos.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-dispatch-events.py",
+    "guid": "b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e",
+    "title": "sync dispatch events",
+    "version": "1.1.1",
+    "header_path": ".github/scripts/sync-dispatch-events.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-generate-summary.py",
+    "guid": "c3d4e5f6-a7b8-9c0d-1e2f-3a4b5c6d7e8f",
+    "title": "sync generate summary",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/sync-generate-summary.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-make-scripts-executable.sh",
+    "guid": "c9d0e1f2-a3b4-5c6d-7e8f-9a0b1c2d3e4f",
+    "title": "sync make scripts executable",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/sync-make-scripts-executable.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-receiver-check-changes.py",
+    "guid": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    "title": "sync receiver check changes",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/sync-receiver-check-changes.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-receiver-commit-push.py",
+    "guid": "e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b",
+    "title": "sync receiver commit push",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/sync-receiver-commit-push.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-receiver-generate-summary.py",
+    "guid": "f6a7b8c9-d0e1-2f3a-4b5c-6d7e8f9a0b1c",
+    "title": "sync receiver generate summary",
+    "version": "1.0.1",
+    "header_path": ".github/scripts/sync-receiver-generate-summary.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-receiver-sync-files.py",
+    "guid": "8d9e1f2a-3b4c-5d6e-7f8a-9b0c1d2e3f4a",
+    "title": "sync receiver sync files",
+    "version": "3.0.0",
+    "header_path": ".github/scripts/sync-receiver-sync-files.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-release-build-artifacts.py",
+    "guid": "f2a3b4c5-d6e7-8f9a-0b1c-2d3e4f5a6b7c",
+    "title": "sync release build artifacts",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/sync-release-build-artifacts.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-release-create-package-json.py",
+    "guid": "f6a7b8c9-d0e1-2f3a-4b5c-6d7e8f9a0b1c",
+    "title": "sync release create package json",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/sync-release-create-package-json.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-release-create-semantic-config.py",
+    "guid": "e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b",
+    "title": "sync release create semantic config",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/sync-release-create-semantic-config.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-release-detect-language.py",
+    "guid": "a7b8c9d0-e1f2-3a4b-5c6d-7e8f9a0b1c2d",
+    "title": "sync release detect language",
+    "version": "1.2.0",
+    "header_path": ".github/scripts/sync-release-detect-language.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-release-determine-version.py",
+    "guid": "f6a7b8c9-d0e1-2f3a-4b5c-6d7e8f9a0b1c",
+    "title": "sync release determine version",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/sync-release-determine-version.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-release-handle-manual-release.py",
+    "guid": "b8c9d0e1-f2a3-4b5c-6d7e-8f9a0b1c2d3e",
+    "title": "sync release handle manual release",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/sync-release-handle-manual-release.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-release-run-semantic-release.py",
+    "guid": "b3c4d5e6-f7a8-b9c0-d1e2-f3a4b5c6d7e8",
+    "title": "sync release run semantic release",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/sync-release-run-semantic-release.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-release-upload-artifacts.py",
+    "guid": "c4d5e6f7-a8b9-c0d1-e2f3-a4b5c6d7e8f9",
+    "title": "sync release upload artifacts",
+    "version": "1.0.0",
+    "header_path": ".github/scripts/sync-release-upload-artifacts.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/scripts/sync-workflow-modernizer.py",
+    "guid": "e1f2a3b4-c5d6-7e8f-9a0b-1c2d3e4f5a6b",
+    "title": "sync workflow modernizer",
+    "version": "1.0.1",
+    "header_path": ".github/scripts/sync-workflow-modernizer.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/security-guidelines.md",
+    "guid": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+    "title": "Security Guidelines for Reusable Workflows",
+    "version": "1.0.0",
+    "header_path": ".github/security-guidelines.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/templates/dependabot.template.yml",
+    "guid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "dependabot.template",
+    "version": "1.0.0",
+    "header_path": "",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/test-configs/test-autofix.env",
+    "guid": "7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d",
+    "title": "test autofix",
+    "version": "1.2.0",
+    "header_path": ".github/test-configs/test-autofix.env",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/test-configs/test-full.env",
+    "guid": "c2d3e4f5-a6b7-8c9d-0e1f-2a3b4c5d6e7f",
+    "title": "test full",
+    "version": "1.2.0",
+    "header_path": ".github/test-configs/test-full.env",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/test-configs/test-minimal.env",
+    "guid": "b1c2d3e4-f5a6-7b8c-9d0e-1f2a3b4c5d6e",
+    "title": "test minimal",
+    "version": "1.2.0",
+    "header_path": ".github/test-configs/test-minimal.env",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/test-files/README.md",
+    "guid": "b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e",
+    "title": "Super Linter Test Files",
+    "version": "1.0.0",
+    "header_path": ".github/test-files/README.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/test-files/test.dockerfile",
+    "guid": "f1a2b3c4-d5e6-7f8a-9b0c-1d2e3f4a5b6c",
+    "title": "test",
+    "version": "1.0.0",
+    "header_path": ".github/test-files/test.dockerfile",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/test-files/test.go",
+    "guid": "c8d9e0f1-a2b3-4c5d-6e7f-8a9b0c1d2e3f",
+    "title": "test",
+    "version": "1.0.0",
+    "header_path": ".github/test-files/test.go",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/test-files/test.js",
+    "guid": "d9e0f1a2-b3c4-5d6e-7f8a-9b0c1d2e3f4a",
+    "title": "test",
+    "version": "1.0.0",
+    "header_path": ".github/test-files/test.js",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/test-files/test.md",
+    "guid": "e4f5a6b7-c8d9-0e1f-2a3b-4c5d6e7f8a9b",
+    "title": "Test Markdown File",
+    "version": "1.0.0",
+    "header_path": ".github/test-files/test.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/test-files/test.py",
+    "guid": "b7c8d9e0-f1a2-3b4c-5d6e-7f8a9b0c1d2e",
+    "title": "test",
+    "version": "1.0.0",
+    "header_path": ".github/test-files/test.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/test-files/test.rs",
+    "guid": "e0f1a2b3-c4d5-6e7f-8a9b-0c1d2e3f4a5b",
+    "title": "test",
+    "version": "1.0.0",
+    "header_path": ".github/test-files/test.rs",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/test-files/test.sh",
+    "guid": "a6b7c8d9-e0f1-2a3b-4c5d-6e7f8a9b0c1d",
+    "title": "test",
+    "version": "1.0.1",
+    "header_path": ".github/test-files/test.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/test-files/test.yaml",
+    "guid": "f5a6b7c8-d9e0-1f2a-3b4c-5d6e7f8a9b0c",
+    "title": "test-workflow",
+    "version": "1.0.0",
+    "header_path": ".github/test-files/test.yaml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/update-copilot-instructions.sh",
+    "guid": "3f9e8a2c-5d0e-6f3f-9a2c-8f5d3f9e8a2c",
+    "title": "update copilot instructions",
+    "version": "1.0.0",
+    "header_path": "copilot/update-copilot-instructions.sh",
+    "path_mismatch": true
+  },
+  {
+    "path": ".github/validate-setup.sh",
+    "guid": "9e2f5a8b-3c6d-4e9f-5a2b-8e3f5a9e2f5a",
+    "title": "validate setup",
+    "version": "1.0.1",
+    "header_path": "copilot/validate-setup.sh",
+    "path_mismatch": true
+  },
+  {
+    "path": ".github/workflow-status.md",
+    "guid": "ff2b726b-295f-4713-b4f2-eab82e3c035f",
+    "title": "Last updated: Thu Aug 21 14:13:52 EDT 2025",
+    "version": "1.0.0",
+    "header_path": ".github/workflow-status.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/auto-module-tagging.yml",
+    "guid": "8a7b6c5d-4e3f-2a1b-0c9d-8e7f6a5b4c3d",
+    "title": "Automatic Module Tagging",
+    "version": "1.1.2",
+    "header_path": ".github/workflows/auto-module-tagging.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/ci-tests.yml",
+    "guid": "ci-tests-workflow-2025-automation",
+    "title": "CI Self Tests",
+    "version": "1.2.0",
+    "header_path": ".github/workflows/ci-tests.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/ci.yml",
+    "guid": "f1a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6",
+    "title": "Continuous Integration",
+    "version": "2.0.0",
+    "header_path": ".github/workflows/ci.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/commit-override-handler.yml",
+    "guid": "7a8b9c0d-1e2f-3456-789a-bcdef0123456",
+    "title": "Commit Override Handler",
+    "version": "1.3.5",
+    "header_path": ".github/workflows/commit-override-handler.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/documentation.yml",
+    "guid": "docs-automation-workflow-2025",
+    "title": "Documentation",
+    "version": "1.1.2",
+    "header_path": ".github/workflows/documentation.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/issue-automation.yml",
+    "guid": "f6g7h8i9-j0k1-l2m3-n4o5-p6q7r8s9t0u1",
+    "title": "Issue Automation",
+    "version": "2.0.1",
+    "header_path": ".github/workflows/issue-automation.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/maintenance.yml",
+    "guid": "m4i5n6t7-e8n9-a0b1-c2d3-e4f5a6b7c8d9",
+    "title": "Maintenance",
+    "version": "2.0.1",
+    "header_path": ".github/workflows/maintenance.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/manager-sync-dispatcher.yml",
+    "guid": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+    "title": "Manager Sync Dispatcher (DISABLED)",
+    "version": "1.1.4",
+    "header_path": ".github/workflows/manager-sync-dispatcher.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/on-release-published.yml",
+    "guid": "on-release-pub-2026-03-27",
+    "title": "On Release Published",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/on-release-published.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/performance-monitoring.yml",
+    "guid": "performance-monitoring-workflow-2025",
+    "title": "Performance Monitoring",
+    "version": "1.1.4",
+    "header_path": ".github/workflows/performance-monitoring.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/pr-automation.yml",
+    "guid": "a7b8c9d0-e1f2-3456-a789-0123456789bc",
+    "title": "PR Automation",
+    "version": "4.5.6",
+    "header_path": ".github/workflows/pr-automation.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/release.yml",
+    "guid": "8b4d6c2a-1f5e-4a8b-9c3d-7e2f5a8b1c4d",
+    "title": "Release",
+    "version": "2.0.1",
+    "header_path": ".github/workflows/release.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/reusable-advanced-cache.yml",
+    "guid": "e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b",
+    "title": "Reusable Advanced Caching",
+    "version": "1.1.5",
+    "header_path": ".github/workflows/reusable-advanced-cache.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/reusable-ci-minimal.yml",
+    "guid": "c9d8e7f6-a5b4-3c2d-1e0f-9a8b7c6d5e4f",
+    "title": "Reusable CI (Minimal / Fast)",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/reusable-ci-minimal.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/reusable-ci.yml",
+    "guid": "reusable-ci-2025-09-24-core-workflow",
+    "title": "Reusable CI Workflow",
+    "version": "1.12.5",
+    "header_path": ".github/workflows/reusable-ci.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/reusable-issue-automation.yml",
+    "guid": "reusable-issue-automation-2025-09-24-core-workflow",
+    "title": "Reusable Issue Automation Workflow",
+    "version": "1.0.3",
+    "header_path": ".github/workflows/reusable-issue-automation.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/reusable-maintenance.yml",
+    "guid": "reusable-maintenance-2025-09-24-core-workflow",
+    "title": "Reusable Maintenance Workflow",
+    "version": "1.0.6",
+    "header_path": ".github/workflows/reusable-maintenance.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/reusable-release.yml",
+    "guid": "7b8c9d0e-1f2a-3b4c-5d6e-7f8a9b0c1d2e",
+    "title": "Reusable Release Coordinator",
+    "version": "2.14.5",
+    "header_path": ".github/workflows/reusable-release.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/reusable-security.yml",
+    "guid": "reusable-security-2025-09-24-core-workflow",
+    "title": "Reusable Security Workflow",
+    "version": "1.3.4",
+    "header_path": ".github/workflows/reusable-security.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/README.md",
+    "guid": "3f4a5b6c-7d8e-9f0a-1b2c-3d4e5f6a7b8c",
+    "title": "Workflow Scripts",
+    "version": "1.1.0",
+    "header_path": ".github/workflows/scripts/README.md",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/automation_workflow.py",
+    "guid": "b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e",
+    "title": "automation workflow",
+    "version": "1.2.1",
+    "header_path": ".github/workflows/scripts/automation_workflow.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/capture_benchmark_metrics.py",
+    "guid": "0c1d2e3f-4a5b-6789-0abc-def123456789",
+    "title": "capture benchmark metrics",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/scripts/capture_benchmark_metrics.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/check_protobuf_artifacts.py",
+    "guid": "5e4d3c2b-1a09-48f7-8e6d-5c4b3a2d1f0e",
+    "title": "check protobuf artifacts",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/scripts/check_protobuf_artifacts.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/ci_workflow.py",
+    "guid": "d9c2b3a4-5e6f-47a8-9b0c-1d2e3f4a5b6c",
+    "title": "ci workflow",
+    "version": "1.2.0",
+    "header_path": ".github/workflows/scripts/ci_workflow.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/detect-languages.sh",
+    "guid": "8a9b0c1d-2e3f-4a5b-6c7d-8e9f0a1b2c3d",
+    "title": "detect languages",
+    "version": "1.2.1",
+    "header_path": ".github/workflows/scripts/detect-languages.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/detect_languages.py",
+    "guid": "7d6f5c4b-3a2f-4b1c-8d9e-0f1a2b3c4d5e",
+    "title": "detect languages",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/scripts/detect_languages.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/docs_workflow.py",
+    "guid": "e4f5a6b7-c8d9-0e1f-2a3b-4c5d6e7f8a9b",
+    "title": "docs workflow",
+    "version": "1.0.1",
+    "header_path": ".github/workflows/scripts/docs_workflow.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/generate-changelog.sh",
+    "guid": "1d2e3f4a-5b6c-7d8e-9f0a-1b2c3d4e5f6a",
+    "title": "generate changelog",
+    "version": "1.0.1",
+    "header_path": ".github/workflows/scripts/generate-changelog.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/generate-version.sh",
+    "guid": "0c1d2e3f-4a5b-6c7d-8e9f-0a1b2c3d4e5f",
+    "title": "generate version",
+    "version": "1.3.1",
+    "header_path": ".github/workflows/scripts/generate-version.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/generate_release_summary.py",
+    "guid": "9346b0d8-53f0-4a7e-95ff-bae25b782f6d",
+    "title": "generate release summary",
+    "version": "1.1.0",
+    "header_path": ".github/workflows/scripts/generate_release_summary.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/generate_security_summary.py",
+    "guid": "e1f2a3b4-c5d6-47e8-9f10-1a2b3c4d5e6f",
+    "title": "generate security summary",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/scripts/generate_security_summary.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/generate_workflow_analytics_summary.py",
+    "guid": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+    "title": "generate workflow analytics summary",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/scripts/generate_workflow_analytics_summary.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/get_frontend_working_dir.py",
+    "guid": "1234abcd-56ef-78ab-90cd-ef1234567890",
+    "title": "get frontend working dir",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/scripts/get_frontend_working_dir.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/intelligent_labeling.py",
+    "guid": "4c9b0d7e-2f14-4c62-8f1d-6b1b3a5e7c9d",
+    "title": "intelligent labeling",
+    "version": "1.1.0",
+    "header_path": ".github/workflows/scripts/intelligent_labeling.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/maintenance_workflow.py",
+    "guid": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    "title": "maintenance workflow",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/scripts/maintenance_workflow.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/parse_protobuf_config.py",
+    "guid": "2f1d0c3b-4a5e-6f7a-8b9c-0d1e2f3a4b5c",
+    "title": "parse protobuf config",
+    "version": "1.0.1",
+    "header_path": ".github/workflows/scripts/parse_protobuf_config.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/publish_to_github_packages.py",
+    "guid": "56c78875-9e49-4f08-bfab-3a6d6a327f65",
+    "title": "publish to github packages",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/scripts/publish_to_github_packages.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/release-strategy.sh",
+    "guid": "9b0c1d2e-3f4a-5b6c-7d8e-9f0a1b2c3d4e",
+    "title": "release strategy",
+    "version": "1.1.1",
+    "header_path": ".github/workflows/scripts/release-strategy.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/test-scripts.sh",
+    "guid": "2e3f4a5b-6c7d-8e9f-0a1b-2c3d4e5f6a7b",
+    "title": "test scripts",
+    "version": "1.1.0",
+    "header_path": ".github/workflows/scripts/test-scripts.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/scripts/workflow_common.py",
+    "guid": "6310ec6e-4513-4e0e-9f9b-5a100a305266",
+    "title": "workflow common",
+    "version": "1.0.1",
+    "header_path": ".github/workflows/scripts/workflow_common.py",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/security.yml",
+    "guid": "s3c4r5t6-y7a8-b9c0-d1e2-f3a4b5c6d7e8",
+    "title": "Security",
+    "version": "3.2.1",
+    "header_path": ".github/workflows/security.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/sync-receiver.yml",
+    "guid": "f7g8h9i0-j1k2-l3m4-n5o6-p7q8r9s0t1u2",
+    "title": "Sync Receiver (DISABLED)",
+    "version": "1.9.3",
+    "header_path": ".github/workflows/sync-receiver.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/test-super-linter.yml",
+    "guid": "test-super-linter-workflow-2025-05-24-initial",
+    "title": "Test Super Linter Configuration",
+    "version": "1.1.2",
+    "header_path": ".github/workflows/test-super-linter.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/unified-automation.yml",
+    "guid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "Unified Automation",
+    "version": "1.1.3",
+    "header_path": ".github/workflows/unified-automation.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".github/workflows/workflow-analytics.yml",
+    "guid": "f6a7b8c9-d0e1-2f3a-4b5c-6d7e8f9a0b1c",
+    "title": "Workflow Analytics",
+    "version": "1.0.3",
+    "header_path": ".github/workflows/workflow-analytics.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".golangci-v1.bck.yml",
+    "guid": "4d5e6f7a-8b9c-0123-def4-56789abcdef0",
+    "title": ".golangci v1.bck",
+    "version": "1.3.0",
+    "header_path": ".golangci-v1.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": ".golangci-v1.yml",
+    "guid": "4d5e6f7a-8b9c-0123-def4-56789abcdef0",
+    "title": ".golangci v1",
+    "version": "1.3.1",
+    "header_path": ".golangci-v1.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".golangci.yml",
+    "guid": "4d5e6f7a-8b9c-0123-def4-56789abcdef0",
+    "title": ".golangci",
+    "version": "1.3.1",
+    "header_path": ".golangci.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".isort.cfg",
+    "guid": "9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d",
+    "title": ".isort",
+    "version": "1.0.0",
+    "header_path": ".isort.cfg",
+    "path_mismatch": false
+  },
+  {
+    "path": ".pre-commit-config.yaml",
+    "guid": "f8e7d6c5-b4a3-9281-7069-5a4b3c2d1e0f",
+    "title": ".pre commit config",
+    "version": "2.7.0",
+    "header_path": ".pre-commit-config.yaml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".pylintrc",
+    "guid": "e1f2a3b4-c5d6-789e-f012-3456789abcde",
+    "title": ".pylintrc",
+    "version": "1.0.0",
+    "header_path": ".pylintrc",
+    "path_mismatch": false
+  },
+  {
+    "path": ".python-black",
+    "guid": "d1e2f3a4-b5c6-789d-ef01-23456789abcd",
+    "title": ".python black",
+    "version": "1.0.0",
+    "header_path": ".github/linters/.python-black",
+    "path_mismatch": true
+  },
+  {
+    "path": ".testcoverage.yml",
+    "guid": "7b3f2f94-2a1e-4f8b-b0f1-6c1f3b5e7d42",
+    "title": ".testcoverage",
+    "version": "1.0.0",
+    "header_path": ".testcoverage.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": ".yaml-lint.yml",
+    "guid": "a2b3c4d5-e6f7-89ab-cdef-0123456789ab",
+    "title": ".yaml lint",
+    "version": "1.2.0",
+    "header_path": ".yaml-lint.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": "ACTIONS_IMPLEMENTATION_SUMMARY.md",
+    "guid": "5d6e7f8a-9b0c-1d2e-3f4a-5b6c7d8e9f0a",
+    "title": "Implementation Complete: GitHub Actions Migration",
+    "version": "1.0.0",
+    "header_path": "ACTIONS_IMPLEMENTATION_SUMMARY.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "ACTIONS_INTEGRATION_GUIDE.md",
+    "guid": "6e7f8a9b-0c1d-2e3f-4a5b-6c7d8e9f0a1b",
+    "title": "Integration Guide: Using New Actions in Workflows",
+    "version": "1.0.0",
+    "header_path": "ACTIONS_INTEGRATION_GUIDE.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "ACTIONS_VERIFICATION_REPORT.md",
+    "guid": "7f8a9b0c-1d2e-3f4a-5b6c-7d8e9f0a1b2c",
+    "title": "\u2705 Implementation Verification Report",
+    "version": "1.0.0",
+    "header_path": "ACTIONS_VERIFICATION_REPORT.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "ACTION_ARCHITECTURE_DESIGN.md",
+    "guid": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+    "title": "GitHub Actions Architecture Design",
+    "version": "1.0.0",
+    "header_path": "ACTION_ARCHITECTURE_DESIGN.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "ACTION_DEPLOYMENT_CHECKLIST.md",
+    "guid": "f8a9b0c1-d2e3-4567-f123-678901234567",
+    "title": "Action Deployment Checklist",
+    "version": "1.0.0",
+    "header_path": "ACTION_DEPLOYMENT_CHECKLIST.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "ACTION_FIX_AND_TAG_SUMMARY.md",
+    "guid": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+    "title": "GitHub Actions Fix and Tagging Summary",
+    "version": "1.0.0",
+    "header_path": "ACTION_FIX_AND_TAG_SUMMARY.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "ACTION_PINNING_PLAN.md",
+    "guid": "d4e5f6a7-b8c9-0123-defg-234567890123",
+    "title": "Action Version Pinning and Release Plan",
+    "version": "1.0.1",
+    "header_path": "ACTION_PINNING_PLAN.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "ACTION_REPO_STANDARDS.md",
+    "guid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "Action Repository File Standards",
+    "version": "1.1.0",
+    "header_path": "ACTION_REPO_STANDARDS.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "ACTION_VERSIONS.md",
+    "guid": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+    "title": "GitHub Actions Version Reference",
+    "version": "1.0.2",
+    "header_path": "ACTION_VERSIONS.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "AGENTS.md",
+    "guid": "2e7c1a4b-5d3f-4b8c-9e1f-7a6b2c3d4e5f",
+    "title": "AGENTS.md",
+    "version": "4.0.0",
+    "header_path": "AGENTS.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "AI-files/instructions/r.instructions.md",
+    "guid": "6c5b4a3c-2d1e-0f9a-8b7c-6d5e4f3a2b1c",
+    "title": "R Coding Instructions",
+    "version": "1.3.0",
+    "header_path": ".github/instructions/r.instructions.md",
+    "path_mismatch": true
+  },
+  {
+    "path": "AI-files/instructions/rust-utility.instructions.md",
+    "guid": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+    "title": "Copilot Agent Utility (Rust) - Installation and Command Reference",
+    "version": "1.2.1",
+    "header_path": ".github/instructions/rust-utility.instructions.md",
+    "path_mismatch": true
+  },
+  {
+    "path": "CACHE_STRATEGY_IMPLEMENTATION.md",
+    "guid": "cache-impl-2025-12-26",
+    "title": "Robust Manual Caching Strategy Implementation",
+    "version": "1.0.0",
+    "header_path": "CACHE_STRATEGY_IMPLEMENTATION.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "CACHE_TESTING_GUIDE.md",
+    "guid": "cache-testing-2025-12-26",
+    "title": "Robust Manual Caching Strategy - Testing Guide",
+    "version": "1.0.0",
+    "header_path": "CACHE_TESTING_GUIDE.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "CACHE_YAML_DIFFS.md",
+    "guid": "e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b",
+    "title": "Robust Manual Caching Strategy - YAML Diffs",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/reusable-advanced-cache.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "CI_CD_WORKFLOWS_SUMMARY.md",
+    "guid": "e7f8a9b0-c1d2-3456-e012-567890123456",
+    "title": "CI/CD Workflows Summary",
+    "version": "1.0.0",
+    "header_path": "CI_CD_WORKFLOWS_SUMMARY.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "CLAUDE.md",
+    "guid": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+    "title": "CLAUDE.md",
+    "version": "3.1.0",
+    "header_path": "CLAUDE.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "COMMITLINT_SETUP.md",
+    "guid": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+    "title": "Commitlint Setup",
+    "version": "1.0.0",
+    "header_path": "COMMITLINT_SETUP.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "CONTRIBUTING.md",
+    "guid": "6e181790-9ce9-4f83-ab5a-059d0831cd78",
+    "title": "file: CONTRIBUTING.md",
+    "version": "1.0.2",
+    "header_path": "CONTRIBUTING.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "COSIGN_VERIFICATION.md",
+    "guid": "c0519n-v3r1f1c4t10n-1a2b3c4d5e6f",
+    "title": "Cosign Signature Verification",
+    "version": "1.0.0",
+    "header_path": "COSIGN_VERIFICATION.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "GITHUB_PROJECTS_SETUP.md",
+    "guid": "b8c9d0e1-f2a3-4567-b123-890123456789",
+    "title": "GitHub Projects Automation Setup Summary",
+    "version": "1.0.0",
+    "header_path": "GITHUB_PROJECTS_SETUP.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "OVERNIGHT_PROGRESS_SUMMARY.md",
+    "guid": "e5f6a7b8-c9d0-1234-efgh-345678901234",
+    "title": "Overnight Progress Summary",
+    "version": "1.0.0",
+    "header_path": "OVERNIGHT_PROGRESS_SUMMARY.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "PHASE_2_PROGRESS.md",
+    "guid": "72e969a0-43d9-47eb-9480-2c8ff0ee351b",
+    "title": "Phase 2 Progress Summary",
+    "version": "1.0.0",
+    "header_path": "PHASE_2_PROGRESS.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "PR_SUMMARY.md",
+    "guid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "Pull Request Summary - GitHub Actions Consolidation",
+    "version": "1.0.0",
+    "header_path": "PR_SUMMARY.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "README.md",
+    "guid": "1eaf4c01-aed3-438a-8df9-6904adba092c",
+    "title": "GitHub Common Workflows",
+    "version": "2.0.0",
+    "header_path": "README.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "TODO.md",
+    "guid": "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
+    "title": "TODO",
+    "version": "2.3.4",
+    "header_path": "TODO.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "WORKFLOW_CONSOLIDATION_PLAN.md",
+    "guid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "GitHub Workflows Consolidation Plan",
+    "version": "1.0.0",
+    "header_path": "WORKFLOW_CONSOLIDATION_PLAN.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "WORKFLOW_SCRIPT_AUDIT.md",
+    "guid": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+    "title": "Workflow Scripts to Actions Conversion Audit",
+    "version": "1.0.0",
+    "header_path": "WORKFLOW_SCRIPT_AUDIT.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "WORKFLOW_SCRIPT_USAGE_MAP.md",
+    "guid": "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
+    "title": "Workflow Script Usage Mapping",
+    "version": "1.0.0",
+    "header_path": "WORKFLOW_SCRIPT_USAGE_MAP.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "analyze-dependencies.py",
+    "guid": "9b7e2c3d-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
+    "title": "analyze dependencies",
+    "version": "1.1.0",
+    "header_path": "analyze-dependencies.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "check-secrets.sh",
+    "guid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "check secrets",
+    "version": "1.0.0",
+    "header_path": "check-secrets.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "clippy.toml",
+    "guid": "6f7a8b9c-0d1e-2345-f678-9abcdef01234",
+    "title": "clippy",
+    "version": "1.0.0",
+    "header_path": "clippy.toml",
+    "path_mismatch": false
+  },
+  {
+    "path": "commit-workflow-github-token-fix.py",
+    "guid": "f7e8d9c0-b1a2-3c4d-5e6f-7a8b9c0d1e2f",
+    "title": "commit workflow github token fix",
+    "version": "1.0.0",
+    "header_path": "commit-workflow-github-token-fix.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "commit-workflow-updates.sh",
+    "guid": "123e4567-e89b-12d3-a456-426614174001",
+    "title": "commit workflow updates",
+    "version": "2.0.2",
+    "header_path": "commit-workflow-updates.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "create-version-tags.sh",
+    "guid": "a1b2c3d4-e5f6-7g8h-9i0j-1k2l3m4n5o6p",
+    "title": "create version tags",
+    "version": "1.0.0",
+    "header_path": "create-version-tags.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "dependency-analysis.md",
+    "guid": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+    "title": "Dependency Analysis for ghcommon Repository",
+    "version": "2.1.0",
+    "header_path": "dependency-analysis.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/DOCKER_CACHING_STRATEGY.md",
+    "guid": "docker-caching-strategy-2025-10-12",
+    "title": "Docker Container Caching Strategy for Super Linter",
+    "version": "1.0.0",
+    "header_path": "docs/DOCKER_CACHING_STRATEGY.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/ENHANCED_SCRIPTS_UPDATE.md",
+    "guid": "0b2eae8e-30cf-4f6b-a483-854807120e62",
+    "title": "Enhanced Scripts Update Summary",
+    "version": "1.0.0",
+    "header_path": "docs/ENHANCED_SCRIPTS_UPDATE.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/ENHANCED_WORKFLOW_MIGRATION.md",
+    "guid": "87e859a1-b605-4a0b-b111-37a31a623bfe",
+    "title": "Migration Guide: Enhanced Workflows with Timestamp Lifecycle Tracking",
+    "version": "1.0.0",
+    "header_path": "docs/ENHANCED_WORKFLOW_MIGRATION.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/ENHANCED_WORKFLOW_SUMMARY.md",
+    "guid": "e2410ea4-b2d5-4415-ab87-8e8310948c1c",
+    "title": "Enhanced Workflow Implementation Summary",
+    "version": "1.0.0",
+    "header_path": "docs/ENHANCED_WORKFLOW_SUMMARY.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/JSCPD_CONFIGURATION.md",
+    "guid": "jscpd-configuration-2025-10-12",
+    "title": "JSCPD (Copy/Paste Detector) Configuration",
+    "version": "1.0.0",
+    "header_path": "docs/JSCPD_CONFIGURATION.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/LINTER_CONFIG_LOCATIONS.md",
+    "guid": "8a9b0c1d-2e3f-4a5b-6c7d-8e9f0a1b2c3d",
+    "title": "Linter Configuration File Locations in ghcommon",
+    "version": "1.0.0",
+    "header_path": "docs/LINTER_CONFIG_LOCATIONS.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/LINTER_VALIDATION.md",
+    "guid": "b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e",
+    "title": "Linter Configuration Validation",
+    "version": "1.0.0",
+    "header_path": "docs/LINTER_VALIDATION.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/PRETTIER_MARKDOWNLINT_STRATEGY.md",
+    "guid": "c3d4e5f6-a7b8-9c0d-1e2f-3a4b5c6d7e8f",
+    "title": "Prettier vs Markdownlint Conflict Resolution Strategy",
+    "version": "1.0.0",
+    "header_path": "docs/PRETTIER_MARKDOWNLINT_STRATEGY.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/PROMPT_CATEGORIZATION.md",
+    "guid": "3f4a5b6c-7d8e-9f0a-1b2c-3d4e5f6a7b8c",
+    "title": "Prompt Categorization Report",
+    "version": "1.0.0",
+    "header_path": "docs/PROMPT_CATEGORIZATION.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/README.md",
+    "guid": "ed5f7a3f-12c8-41a8-9ac4-01e4f6993c4c",
+    "title": "Documentation Index",
+    "version": "1.0.0",
+    "header_path": "docs/README.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/SUPER_LINTER_CONFIG_COMPARISON.md",
+    "guid": "9b0c1d2e-3f4a-5b6c-7d8e-9f0a1b2c3d4e",
+    "title": "Super Linter Configuration Comparison",
+    "version": "1.0.0",
+    "header_path": "docs/SUPER_LINTER_CONFIG_COMPARISON.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/SUPER_LINTER_STRATEGY.md",
+    "guid": "f7a8b9c0-d1e2-3f4a-5b6c-7d8e9f0a1b2c",
+    "title": "Super Linter Configuration Strategy",
+    "version": "1.0.0",
+    "header_path": "docs/SUPER_LINTER_STRATEGY.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/SUPER_LINTER_TEST_FAILURE_ANALYSIS.md",
+    "guid": "e4f5a6b7-c8d9-0e1f-2a3b-4c5d6e7f8a9b",
+    "title": "Super Linter Test Workflow Failure Analysis & Resolution",
+    "version": "1.0.0",
+    "header_path": "docs/SUPER_LINTER_TEST_FAILURE_ANALYSIS.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/agent-plan.md",
+    "guid": "7f3c1b2a-5d6e-4c8f-9a1b-2c3d4e5f6a7b",
+    "title": "Custom Agent Ecosystem and Instruction Consolidation",
+    "version": "1.0.0",
+    "header_path": "docs/agent-plan.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/README.md",
+    "guid": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    "title": "Cross-Registry Workflow Improvement Tasks",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/README.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/TASK_GENERATION_STATUS.md",
+    "guid": "task-gen-status-a1b2c3d4-e5f6",
+    "title": "Task Generation Status",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/TASK_GENERATION_STATUS.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-01-fix-yaml-syntax.md",
+    "guid": "t01-yaml-fix-a1b2c3d4-e5f6-7a8b-9c0d",
+    "title": "Task 01: Fix YAML Syntax in release-rust.yml",
+    "version": "1.1.0",
+    "header_path": "docs/cross-registry-todos/task-01-fix-yaml-syntax.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-01/t01-part1.md",
+    "guid": "t01-yaml-fix-part1-a1b2c3d4-e5f6",
+    "title": "Task 01 Part 1: YAML Syntax Fixes - Overview & Analysis",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-01/t01-part1.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-01/t01-part2.md",
+    "guid": "t01-yaml-fix-part2-b2c3d4e5-f6a7",
+    "title": "Task 01 Part 2: Step-by-Step Fix Procedure",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-01/t01-part2.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-01/t01-part3.md",
+    "guid": "test-cache-baseline",
+    "title": "Task 01 Part 3: Testing and Validation",
+    "version": "1.0.0",
+    "header_path": "scripts/test-cache-baseline.sh",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-01/t01-part4.md",
+    "guid": "create-fix-branch",
+    "title": "Task 01 Part 4: Git Workflow and Commit Procedures",
+    "version": "1.0.0",
+    "header_path": "scripts/create-fix-branch.sh",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-01/t01-part5.md",
+    "guid": "verify-merge",
+    "title": "Task 01 Part 5: Post-Merge Verification and Monitoring",
+    "version": "1.0.0",
+    "header_path": "scripts/verify-merge.sh",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-01/t01-part6.md",
+    "guid": "t01-yaml-fix-part6-f6g7h8i9-j0k1",
+    "title": "Task 01 Part 6: Troubleshooting and Lessons Learned",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-01/t01-part6.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-02-docker-packages.md",
+    "guid": "t02-docker-verify-b2c3d4e5-f6a7-8b9c-0d1e",
+    "title": "Task 02: Verify Docker Package Publishing to GitHub Packages",
+    "version": "1.1.0",
+    "header_path": "docs/cross-registry-todos/task-02-docker-packages.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-02/t02-part1.md",
+    "guid": "t02-docker-part1-a1b2c3d4-e5f6",
+    "title": "Task 02 Part 1: Docker Package Publishing - Overview and Analysis",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-02/t02-part1.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-02/t02-part2.md",
+    "guid": "extract-docker-workflow",
+    "title": "Task 02 Part 2: Workflow Configuration Detection and Analysis",
+    "version": "1.0.0",
+    "header_path": "scripts/extract-docker-workflow.sh",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-02/t02-part3.md",
+    "guid": "test-single-platform-build",
+    "title": "Task 02 Part 3: Local Testing and Multi-Platform Validation",
+    "version": "1.0.0",
+    "header_path": "scripts/test-single-platform-build.sh",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-02/t02-part4.md",
+    "guid": "trigger-docker-release",
+    "title": "Task 02 Part 4: CI Integration and ghcr.io Publishing",
+    "version": "1.0.0",
+    "header_path": "scripts/trigger-docker-release.sh",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-02/t02-part5.md",
+    "guid": "dockerfile-optimized",
+    "title": "Task 02 Part 5: Optimization and Advanced Configuration",
+    "version": "1.0.0",
+    "header_path": "Dockerfile.optimized",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-02/t02-part6.md",
+    "guid": "t02-docker-part6-f6g7h8i9-j0k1",
+    "title": "Task 02 Part 6: Troubleshooting and Task Completion",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-02/t02-part6.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-03-rust-packages.md",
+    "guid": "t03-rust-packages-c3d4e5f6-a7b8-9c0d-1e2f",
+    "title": "Task 03: Add Rust Crate Publishing to GitHub Packages",
+    "version": "1.1.0",
+    "header_path": "docs/cross-registry-todos/task-03-rust-packages.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-03/t03-part1.md",
+    "guid": "t03-rust-part1-a1b2c3d4-e5f6",
+    "title": "Task 03 Part 1: Rust Crate Publishing Overview and Analysis",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-03/t03-part1.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-03/t03-part2.md",
+    "guid": "t03-rust-part2-b2c3d4e5-f6g7",
+    "title": "Task 03 Part 2: Workflow Configuration and Implementation",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-03/t03-part2.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-03/t03-part3.md",
+    "guid": "t03-rust-part3-c3d4e5f6-g7h8",
+    "title": "Task 03 Part 3: Publishing, Verification, and Testing",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-03/t03-part3.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-03/t03-part4.md",
+    "guid": "t03-rust-part4-d4e5f6g7-h8i9",
+    "title": "Task 03 Part 4: Post-Merge Verification and Production Testing",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-03/t03-part4.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-03/t03-part5.md",
+    "guid": "t03-rust-part5-e5f6g7h8-i9j0",
+    "title": "Task 03 Part 5: Optimization and Advanced Configuration",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-03/t03-part5.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-03/t03-part6.md",
+    "guid": "t03-rust-part6-f6g7h8i9-j0k1",
+    "title": "Task 03 Part 6: Troubleshooting and Task Completion",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-03/t03-part6.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-04/t04-part1.md",
+    "guid": "t04-go-packages-part1-d4e5f6a7-b8c9",
+    "title": "Task 04: Add Go Module Publishing to GitHub Packages",
+    "version": "1.1.0",
+    "header_path": "docs/cross-registry-todos/task-04/t04-part1.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-04/t04-part2.md",
+    "guid": "t04-go-packages-part2-e5f6a7b8-c9d0",
+    "title": "Task 04 Part 2: Workflow Header and Environment Updates",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-04/t04-part2.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-04/t04-part3.md",
+    "guid": "t04-go-packages-part3-f6a7b8c9-d0e1",
+    "title": "Task 04 Part 3: Module Validation Job Implementation",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-04/t04-part3.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-04/t04-part4.md",
+    "guid": "t04-go-packages-part4-a7b8c9d0-e1f2",
+    "title": "Task 04 Part 4: Publishing Job Implementation",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-04/t04-part4.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-04/t04-part5.md",
+    "guid": "t04-go-packages-part5-b8c9d0e1-f2a3",
+    "title": "Task 04 Part 5: Testing and Validation",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-04/t04-part5.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-04/t04-part6.md",
+    "guid": "t04-go-packages-part6-c9d0e1f2-a3b4",
+    "title": "Task 04 Part 6: Documentation and Final Steps",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-04/t04-part6.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-05/t05-part1.md",
+    "guid": "t05-python-packages-part1-d5e6f7a8-b9c0",
+    "title": "Task 05: Add Python Package Publishing to GitHub Packages",
+    "version": "1.1.0",
+    "header_path": "docs/cross-registry-todos/task-05/t05-part1.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-05/t05-part2.md",
+    "guid": "t05-python-packages-part2-e6f7a8b9-c0d1",
+    "title": "Task 05 Part 2: Workflow Header and Package Detection",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/release-python.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-05/t05-part3.md",
+    "guid": "t05-python-packages-part3-f7g8h9i0-j1k2",
+    "title": "Task 05 Part 3: Package Building Job",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-05/t05-part3.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-05/t05-part4.md",
+    "guid": "t05-python-packages-part4-g8h9i0j1-k2l3",
+    "title": "Task 05 Part 4: Package Validation and Testing",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-05/t05-part4.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-05/t05-part5.md",
+    "guid": "t05-python-packages-part5-h9i0j1k2-l3m4",
+    "title": "Task 05 Part 5: Publishing to Registries",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-05/t05-part5.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-05/t05-part6.md",
+    "guid": "t05-python-packages-part6-i0j1k2l3-m4n5",
+    "title": "Task 05 Part 6: Documentation and Final Steps",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-05/t05-part6.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-06/t06-part1.md",
+    "guid": "t06-frontend-packages-part1-j1k2l3m4-n5o6",
+    "title": "Task 06 Part 1: Frontend Package Publishing Overview",
+    "version": "1.1.0",
+    "header_path": "docs/cross-registry-todos/task-06/t06-part1.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-06/t06-part2.md",
+    "guid": "t06-frontend-packages-part2-k2l3m4n5-o6p7",
+    "title": "Task 06 Part 2: Workflow Header and Package Detection",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-06/t06-part2.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-06/t06-part3.md",
+    "guid": "t06-frontend-packages-part3-m4n5o6p7-q8r9",
+    "title": "Task 06 Part 3: Dependency Installation and Package Building",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-06/t06-part3.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-06/t06-part4.md",
+    "guid": "t06-frontend-packages-part4-n5o6p7q8-r9s0",
+    "title": "Task 06 Part 4: Package Validation and Publishing",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-06/t06-part4.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-06/t06-part5.md",
+    "guid": "t06-frontend-packages-part5-t7u8v9w0-x1y2",
+    "title": "Task 06 Part 5: GitHub Release and Final Deployment",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-06/t06-part5.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-06/t06-part6.md",
+    "guid": "release-frontend-workflow-f9g0h1i2-j3k4",
+    "title": "Task 06 Part 6: Documentation, Troubleshooting, and Completion",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/release-frontend.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-07/t07-part1.md",
+    "guid": "t07-protobuf-packages-part1-l5m6n7o8-p9q0",
+    "title": "Task 07 Part 1: Protobuf Package Publishing - Overview",
+    "version": "1.1.0",
+    "header_path": "docs/cross-registry-todos/task-07/t07-part1.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-07/t07-part2.md",
+    "guid": "protobuf-release-workflow-x7y8z9a0-b1c2",
+    "title": "Task 07 Part 2: Workflow Setup and Protobuf Detection",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/protobuf-release.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-07/t07-part3.md",
+    "guid": "t07-protobuf-packages-part3-d3e4f5g6-h7i8",
+    "title": "Task 07 Part 3: Buf BSR Publishing and Code Generation",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-07/t07-part3.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-07/t07-part4.md",
+    "guid": "t07-protobuf-packages-part4-j9k0l1m2-n3o4",
+    "title": "Task 07 Part 4: Publishing SDKs to Language Registries",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-07/t07-part4.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-07/t07-part5.md",
+    "guid": "t07-protobuf-packages-part5-p5q6r7s8-t9u0",
+    "title": "Task 07 Part 5: GitHub Release and Documentation Generation",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-07/t07-part5.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-07/t07-part6.md",
+    "guid": "t07-protobuf-packages-part6-v1w2x3y4-z5a6",
+    "title": "Task 07 Part 6: Troubleshooting and Completion",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-07/t07-part6.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-08/t08-part1.md",
+    "guid": "t08-ci-consolidation-part1-b7c8d9e0-f1g2",
+    "title": "Task 08 Part 1: CI Workflow Consolidation - Overview",
+    "version": "1.1.0",
+    "header_path": "docs/cross-registry-todos/task-08/t08-part1.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-08/t08-part2.md",
+    "guid": "t08-ci-consolidation-part2-c8d9e0f1-g2h3",
+    "title": "Task 08 Part 2: Detailed Workflow Feature Extraction",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-08/t08-part2.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-08/t08-part3.md",
+    "guid": "consolidated-ci-workflow-a1b2c3d4-e5f6",
+    "title": "Task 08 Part 3: Consolidated Workflow Design & Implementation",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/reusable-ci-consolidated.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-08/t08-part4.md",
+    "guid": "t08-ci-consolidation-part4-e0f1g2h3-i4j5",
+    "title": "Task 08 Part 4: Remaining Language Jobs & Docker",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-08/t08-part4.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-08/t08-part5.md",
+    "guid": "t08-ci-consolidation-part5-f1g2h3i4-j5k6",
+    "title": "Task 08 Part 5: Result Aggregation & Migration Guide",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-08/t08-part5.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-08/t08-part6.md",
+    "guid": "t08-ci-consolidation-part6-g2h3i4j5-k6l7",
+    "title": "Task 08 Part 6: Troubleshooting & Best Practices",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-08/t08-part6.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-09/t09-part1.md",
+    "guid": "t09-ci-migration-testing-part1-h3i4j5k6-l7m8",
+    "title": "Task 09 Part 1: CI Workflow Migration & Testing - Overview",
+    "version": "1.1.0",
+    "header_path": "docs/cross-registry-todos/task-09/t09-part1.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-09/t09-part2.md",
+    "guid": "t09-ci-migration-testing-part2-i4j5k6l7-m8n9",
+    "title": "Task 09 Part 2: Phase 1 - ghcommon Repository Migration",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-09/t09-part2.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-09/t09-part3.md",
+    "guid": "t09-ci-migration-part3-c3d4e5f6-g7h8",
+    "title": "Task 09 Part 3: Phase 2 Repository Migration",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-09/t09-part3.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-09/t09-part4.md",
+    "guid": "t09-ci-migration-part4-d4e5f6g7-h8i9",
+    "title": "Task 09 Part 4: Batch Migration and Automation Tools",
+    "version": "1.0.0",
+    "header_path": "scripts/create-migration-inventory.sh",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-09/t09-part5.md",
+    "guid": "migration-dashboard",
+    "title": "Task 09 Part 5: Monitoring and Performance Analysis",
+    "version": "1.0.0",
+    "header_path": "scripts/migration-dashboard.py",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-09/t09-part6.md",
+    "guid": "t09-ci-migration-part6-i9j0k1l2-m3n4",
+    "title": "Task 09 Part 6: Lessons Learned and Completion",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-09/t09-part6.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-10/t10-part1.md",
+    "guid": "t10-security-scanning-part1-a1b2c3d4-e5f6",
+    "title": "Task 10 Part 1: Security Scanning Integration Overview",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-10/t10-part1.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-10/t10-part2.md",
+    "guid": "reusable-trivy-scan",
+    "title": "Task 10 Part 2: Container Security Scanning",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/reusable-trivy-scan.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-10/t10-part3.md",
+    "guid": "rust-security-workflow",
+    "title": "Task 10 Part 3: Language-Specific Dependency Scanning",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/rust-security.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-10/t10-part4.md",
+    "guid": "pre-commit-config",
+    "title": "Task 10 Part 4: Secret Scanning and SAST",
+    "version": "1.0.0",
+    "header_path": ".pre-commit-config.yaml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-10/t10-part5.md",
+    "guid": "checkov-workflow",
+    "title": "Task 10 Part 5: Infrastructure-as-Code Security Scanning",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/checkov.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-10/t10-part6.md",
+    "guid": "setup-branch-protection",
+    "title": "Task 10 Part 6: Policy Enforcement and Completion",
+    "version": "1.0.0",
+    "header_path": "scripts/setup-branch-protection.sh",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-11/t11-part1.md",
+    "guid": "t11-artifact-management-part1-k7l8m9n0-o1p2",
+    "title": "Task 11 Part 1: Artifact Management and Release Automation Overview",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-11/t11-part1.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-11/t11-part2.md",
+    "guid": "reusable-release-workflow",
+    "title": "Task 11 Part 2: Comprehensive Release Workflow Implementation",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/reusable-release.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-11/t11-part3.md",
+    "guid": "release-docker-workflow",
+    "title": "Task 11 Part 3: Container Image Release Automation",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/release-docker.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-11/t11-part4.md",
+    "guid": "release-deb-workflow",
+    "title": "Task 11 Part 4: System Package Generation and Distribution",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/release-deb.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-11/t11-part5.md",
+    "guid": "verify-release-workflow",
+    "title": "Task 11 Part 5: Release Verification and Testing",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/verify-release.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-11/t11-part6.md",
+    "guid": "release-metrics-script",
+    "title": "Task 11 Part 6: Release Automation Best Practices and Completion",
+    "version": "1.0.0",
+    "header_path": "scripts/release-metrics.py",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-12/t12-part1.md",
+    "guid": "t12-dependency-management-part1-f8g9h0i1-j2k3",
+    "title": "Task 12: Dependency Management Automation",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-12/t12-part1.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-12/t12-part2.md",
+    "guid": "python-project-config",
+    "title": "Task 12 Part 2: Python and JavaScript Dependency Management",
+    "version": "1.0.0",
+    "header_path": "pyproject.toml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-12/t12-part3.md",
+    "guid": "go-module-config",
+    "title": "Task 12 Part 3: Go Dependencies and Docker Base Image Management",
+    "version": "1.0.0",
+    "header_path": "go.mod",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-12/t12-part4.md",
+    "guid": "dependabot-config-comprehensive",
+    "title": "Task 12 Part 4: Dependabot Configuration and Automated Updates",
+    "version": "2.0.0",
+    "header_path": ".github/dependabot.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-12/t12-part5.md",
+    "guid": "dependency-health-score-calculator",
+    "title": "Task 12 Part 5: Dependency Health Monitoring and Vulnerability Alerting",
+    "version": "1.0.0",
+    "header_path": "scripts/dependency-health-score.py",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-12/t12-part6.md",
+    "guid": "dependency-management-docs",
+    "title": "Task 12 Part 6: Dependency Management Best Practices and Completion",
+    "version": "1.0.0",
+    "header_path": "docs/DEPENDENCY_MANAGEMENT.md",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-13/t13-part1.md",
+    "guid": "t13-testing-automation-part1-l4m5n6o7-p8q9",
+    "title": "Task 13: Testing and Quality Assurance Automation",
+    "version": "1.1.0",
+    "header_path": "docs/cross-registry-todos/task-13/t13-part1.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-13/t13-part2.md",
+    "guid": "python-test-configuration",
+    "title": "Task 13 Part 2: Python and JavaScript Testing Automation",
+    "version": "2.1.0",
+    "header_path": "pyproject.toml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-13/t13-part3.md",
+    "guid": "test-coverage-workflow",
+    "title": "Task 13 Part 3: Test Coverage and CI Automation",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/test-coverage.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-13/t13-part4.md",
+    "guid": "rust-database-integration-test",
+    "title": "Task 13 Part 4: Integration, E2E, and Performance Testing",
+    "version": "1.0.0",
+    "header_path": "tests/database_integration.rs",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-13/t13-part5.md",
+    "guid": "automated-testing-workflow",
+    "title": "Task 13 Part 5: Test Automation Workflows and CI/CD Integration",
+    "version": "2.0.0",
+    "header_path": ".github/workflows/automated-testing.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-13/t13-part6.md",
+    "guid": "testing-documentation",
+    "title": "Task 13 Part 6: Testing Best Practices and Completion",
+    "version": "1.0.0",
+    "header_path": "TESTING.md",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-14/t14-part1.md",
+    "guid": "t14-documentation-automation-part1-r4s5t6u7-v8w9",
+    "title": "Task 14: Documentation Generation and Publishing Automation",
+    "version": "1.1.0",
+    "header_path": "docs/cross-registry-todos/task-14/t14-part1.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-14/t14-part2.md",
+    "guid": "sphinx-configuration",
+    "title": "Task 14 Part 2: Python and JavaScript Documentation",
+    "version": "1.0.0",
+    "header_path": "docs/conf.py",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-14/t14-part3.md",
+    "guid": "mdbook-configuration",
+    "title": "Task 14 Part 3: Documentation Sites and Changelog Automation",
+    "version": "1.0.0",
+    "header_path": "book.toml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-14/t14-part4.md",
+    "guid": "deploy-docs-workflow",
+    "title": "Task 14 Part 4: Documentation Publishing and Versioning",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/deploy-docs.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-14/t14-part5.md",
+    "guid": "docs-ci-workflow",
+    "title": "Task 14 Part 5: Documentation CI/CD Integration",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/docs-ci.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-14/t14-part6.md",
+    "guid": "documentation-guide",
+    "title": "Task 14 Part 6: Documentation Best Practices and Completion",
+    "version": "1.0.0",
+    "header_path": "DOCUMENTATION.md",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-15/t15-part1.md",
+    "guid": "t15-performance-monitoring-part1-q4r5s6t7-u8v9",
+    "title": "Task 15 Part 1: Performance Monitoring and Profiling Strategy",
+    "version": "1.1.0",
+    "header_path": "docs/cross-registry-todos/task-15/t15-part1.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-15/t15-part2.md",
+    "guid": "typescript-metrics-implementation",
+    "title": "Task 15 Part 2: JavaScript Instrumentation and System Metrics",
+    "version": "1.0.0",
+    "header_path": "src/metrics.ts",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-15/t15-part3.md",
+    "guid": "prometheus-configuration",
+    "title": "Task 15 Part 3: Prometheus Configuration and Alerting",
+    "version": "1.0.0",
+    "header_path": "configs/prometheus.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-15/t15-part4.md",
+    "guid": "grafana-datasource-prometheus",
+    "title": "Task 15 Part 4: Grafana Dashboards and Visualization",
+    "version": "1.0.0",
+    "header_path": "configs/grafana/provisioning/datasources/prometheus.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-15/t15-part5.md",
+    "guid": "k6-basic-load-test",
+    "title": "Task 15 Part 5: Performance Testing and Benchmarking Automation",
+    "version": "1.0.0",
+    "header_path": "tests/performance/load/basic-load.js",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-15/t15-part6.md",
+    "guid": "t15-performance-monitoring-part6-s0t1u2v3-w4x5",
+    "title": "Task 15 Part 6: Monitoring Best Practices and Completion Checklist",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-15/t15-part6.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-16/t16-part1.md",
+    "guid": "k8s-namespace",
+    "title": "Task 16 Part 1: Kubernetes Deployment Manifests and Configuration",
+    "version": "1.0.0",
+    "header_path": "k8s/base/namespace.yaml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-16/t16-part2.md",
+    "guid": "t16-deployment-automation-part2-e2f3g4h5-i6j7",
+    "title": "Task 16 Part 2: Helm Chart Configuration and Templating",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-16/t16-part2.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-16/t16-part3.md",
+    "guid": "t16-deployment-automation-part3-k8l9m0n1-o2p3",
+    "title": "Task 16 Part 3: Kustomize Overlays and GitOps with ArgoCD",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-16/t16-part3.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-16/t16-part4.md",
+    "guid": "flagger-canary",
+    "title": "Task 16 Part 4: Progressive Delivery with Canary and Blue-Green Deployments",
+    "version": "1.0.0",
+    "header_path": "k8s/progressive-delivery/canary.yaml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-16/t16-part5.md",
+    "guid": "terraform-providers",
+    "title": "Task 16 Part 5: Infrastructure as Code with Terraform and Pulumi",
+    "version": "1.0.0",
+    "header_path": "terraform/providers.tf",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-16/t16-part6.md",
+    "guid": "t16-deployment-automation-part6-c6d7e8f9-g0h1",
+    "title": "Task 16 Part 6: Deployment Best Practices and Completion Checklist",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-16/t16-part6.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-17/t17-part1.md",
+    "guid": "t17-observability-logging-part1-i2j3k4l5-m6n7",
+    "title": "Task 17 Part 1: Structured Logging Standards Across All Languages",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-17/t17-part1.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-17/t17-part2.md",
+    "guid": "typescript-winston-config",
+    "title": "Task 17 Part 2: JavaScript/TypeScript Structured Logging",
+    "version": "1.0.0",
+    "header_path": "src/logging/winston-config.ts",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-17/t17-part3.md",
+    "guid": "rust-trace-correlation",
+    "title": "Task 17 Part 3: Log Correlation with Traces and Context Propagation",
+    "version": "1.0.0",
+    "header_path": "src/tracing/correlation.rs",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-17/t17-part4.md",
+    "guid": "loki-configuration",
+    "title": "Task 17 Part 4: Log Aggregation Infrastructure",
+    "version": "1.0.0",
+    "header_path": "config/loki/loki-config.yaml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-17/t17-part5.md",
+    "guid": "loki-alerting-rules",
+    "title": "Task 17 Part 5: Log-Based Alerting and Anomaly Detection",
+    "version": "1.0.0",
+    "header_path": "config/loki/rules.yaml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/cross-registry-todos/task-17/t17-part6.md",
+    "guid": "t17-observability-logging-part6-k1l2m3n4-o5p6",
+    "title": "Task 17 Part 6: Logging Best Practices and Retention Policies",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-17/t17-part6.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-18/t18-part1.md",
+    "guid": "t18-final-integration-part1-q7r8s9t0-u1v2",
+    "title": "Task 18 Part 1: Final Integration Overview",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-18/t18-part1.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-18/t18-part2.md",
+    "guid": "t18-final-integration-part2-w3x4y5z6-a7b8",
+    "title": "Task 18 Part 2: Unified Monitoring and Observability Dashboard",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-18/t18-part2.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-18/t18-part3.md",
+    "guid": "t18-final-integration-part3-c9d0e1f2-g3h4",
+    "title": "Task 18 Part 3: Comprehensive Troubleshooting Guide",
+    "version": "1.0.0",
+    "header_path": "docs/cross-registry-todos/task-18/t18-part3.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/cross-registry-todos/task-18/t18-part4.md",
+    "guid": "oncall-rotation-config",
+    "title": "Task 18 Part 4: On-Call Playbooks and Incident Response",
+    "version": "1.0.0",
+    "header_path": "config/oncall/rotation.yaml",
+    "path_mismatch": true
+  },
+  {
+    "path": "docs/dependency-submission-and-labeling.md",
+    "guid": "d4e5f6a7-b8c9-4a0d-1e2f-3a4b5c6d7e8f",
+    "title": "Dependency Submission and Pull Request Labeling",
+    "version": "1.0.0",
+    "header_path": "docs/dependency-submission-and-labeling.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/documentation-updates.md",
+    "guid": "4e5f6789-0123-4567-8901-2345678901ab",
+    "title": "\u26a0\ufe0f DEPRECATED: Documentation Update System",
+    "version": "3.0.0",
+    "header_path": "docs/documentation-updates.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/github-projects-automation.md",
+    "guid": "f6a7b8c9-d0e1-2345-f012-678901234567",
+    "title": "GitHub Projects Automation",
+    "version": "1.0.0",
+    "header_path": "docs/github-projects-automation.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/go-module-tagging.md",
+    "guid": "7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d",
+    "title": "Go Module Tagging System",
+    "version": "1.0.0",
+    "header_path": "docs/go-module-tagging.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/intelligent-issue-labeling.md",
+    "guid": "1b2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e",
+    "title": "Intelligent Issue Labeling",
+    "version": "1.0.1",
+    "header_path": "docs/intelligent-issue-labeling.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/label-synchronization.md",
+    "guid": "4a2a4a66-7b30-4256-b4ff-9a9551884ebe",
+    "title": "Label Synchronization Workflow",
+    "version": "1.0.0",
+    "header_path": "docs/label-synchronization.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/README.md",
+    "guid": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    "title": "Workflow Refactoring V2 - Documentation Hub",
+    "version": "1.0.0",
+    "header_path": "docs/refactors/workflows/v2/README.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/architecture.md",
+    "guid": "3c4d5e6f-7081-92a3-b4c5-d6e7f8091a2b",
+    "title": "Workflow v2 Architecture",
+    "version": "1.0.0",
+    "header_path": "docs/refactors/workflows/v2/architecture.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/github-apps-setup.md",
+    "guid": "d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a",
+    "title": "GitHub Apps Setup Guide",
+    "version": "1.0.0",
+    "header_path": "docs/refactors/workflows/v2/github-apps-setup.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/github-packages-setup.md",
+    "guid": "c2d3e4f5-a6b7-8c9d-0e1f-2a3b4c5d6e7f",
+    "title": "GitHub Packages Setup",
+    "version": "1.0.0",
+    "header_path": "docs/refactors/workflows/v2/github-packages-setup.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/implementation/ci-workflows.md",
+    "guid": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    "title": "CI Workflows Implementation Guide",
+    "version": "1.0.0",
+    "header_path": "docs/refactors/workflows/v2/implementation/ci-workflows.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/implementation/release-workflows.md",
+    "guid": "b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e",
+    "title": "Release Workflows Implementation Guide",
+    "version": "1.0.0",
+    "header_path": "docs/refactors/workflows/v2/implementation/release-workflows.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/implementation/testing-strategy.md",
+    "guid": "c3d4e5f6-a7b8-9c0d-1e2f-3a4b5c6d7e8f",
+    "title": "Testing Strategy Implementation Guide",
+    "version": "1.0.0",
+    "header_path": "docs/refactors/workflows/v2/implementation/testing-strategy.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/maintenance-config.md",
+    "guid": "e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b",
+    "title": "Maintenance Configuration Guide",
+    "version": "1.0.0",
+    "header_path": "docs/refactors/workflows/v2/maintenance-config.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/operations/migration-guide.md",
+    "guid": "e6f7a8b9-c0d1-2e3f-4a5b-6c7d8e9f0a1b",
+    "title": "Migration Guide: v1 to v2 Workflow System",
+    "version": "1.1.0",
+    "header_path": "docs/refactors/workflows/v2/operations/migration-guide.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/operations/rollback-procedures.md",
+    "guid": "c45f8e91-2c3d-4e5a-b7d6-9f1a2c3d4e5f",
+    "title": "Rollback Procedures",
+    "version": "1.0.0",
+    "header_path": "docs/refactors/workflows/v2/operations/rollback-procedures.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/operations/troubleshooting.md",
+    "guid": "c4d5e6f7-a8b9-0c1d-2e3f-4a5b6c7d8e9f",
+    "title": "Troubleshooting Guide: v2 Workflow System",
+    "version": "1.0.0",
+    "header_path": "docs/refactors/workflows/v2/operations/troubleshooting.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/phases/phase-0-foundation.md",
+    "guid": "d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a",
+    "title": "Phase 0: Foundation",
+    "version": "1.0.0",
+    "header_path": "docs/refactors/workflows/v2/phases/phase-0-foundation.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/phases/phase-1-ci-modernization.md",
+    "guid": "e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b",
+    "title": "Phase 1: CI Modernization",
+    "version": "1.1.0",
+    "header_path": "docs/refactors/workflows/v2/phases/phase-1-ci-modernization.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/phases/phase-2-release-consolidation.md",
+    "guid": "d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a",
+    "title": "Phase 2: Release Consolidation",
+    "version": "1.0.0",
+    "header_path": "docs/refactors/workflows/v2/phases/phase-2-release-consolidation.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/phases/phase-3-documentation-automation.md",
+    "guid": "d3e4f5a6-b7c8-9d0e-1f2a-3b4c5d6e7f8a",
+    "title": "Phase 3: Documentation Automation",
+    "version": "1.0.0",
+    "header_path": "docs/refactors/workflows/v2/phases/phase-3-documentation-automation.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/phases/phase-4-maintenance-automation.md",
+    "guid": "f1a2b3c4-d5e6-7f8a-9b0c-1d2e3f4a5b6c",
+    "title": "Phase 4: Maintenance Automation",
+    "version": "1.1.0",
+    "header_path": "docs/refactors/workflows/v2/phases/phase-4-maintenance-automation.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/phases/phase-5-advanced-features.md",
+    "guid": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    "title": "Phase 5: Advanced Features",
+    "version": "1.2.0",
+    "header_path": "docs/refactors/workflows/v2/phases/phase-5-advanced-features.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/reference/config-schema.md",
+    "guid": "d56e7f82-3d4e-5f6a-c8e9-0a1b2c3d4e5f",
+    "title": "Configuration Schema Reference",
+    "version": "1.0.0",
+    "header_path": "docs/refactors/workflows/v2/reference/config-schema.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/reference/workflow-reference.md",
+    "guid": "4d5e6f70-8192-a3b4-c5d6-e7f8091a2b3c",
+    "title": "Workflow v2 Reference",
+    "version": "1.1.0",
+    "header_path": "docs/refactors/workflows/v2/reference/workflow-reference.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/rollout-checklist.md",
+    "guid": "5e6f7081-92a3-b4c5-d6e7-f8091a2b3c4d",
+    "title": "Workflow v2 Rollout Checklist",
+    "version": "1.0.0",
+    "header_path": "docs/refactors/workflows/v2/rollout-checklist.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/refactors/workflows/v2/version-policy.md",
+    "guid": "c3d4e5f6-a7b8-9c0d-1e2f-3a4b5c6d7e8f",
+    "title": "Language Version Support Policy",
+    "version": "1.0.0",
+    "header_path": "docs/refactors/workflows/v2/version-policy.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/super-linter-improvements.md",
+    "guid": "c466e071-d55a-4278-af25-96a2b1571341",
+    "title": "Super Linter Improvements Summary",
+    "version": "1.0.0",
+    "header_path": "docs/super-linter-improvements.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/unified-automation.md",
+    "guid": "3153c13c-f92e-4828-aef7-f1e175f22e32",
+    "title": "Unified Automation Workflow",
+    "version": "1.0.0",
+    "header_path": "docs/unified-automation.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/unified-issue-management.md",
+    "guid": "cbe30577-0304-43b3-bdb4-a003e3c278bb",
+    "title": "Unified Issue Management Workflow",
+    "version": "1.0.0",
+    "header_path": "docs/unified-issue-management.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/workflows/consolidation-map.md",
+    "guid": "7f5db8a1-4c9c-4f2a-9b36-5f46dfdb73e2",
+    "title": "Workflow Consolidation Map",
+    "version": "1.0.1",
+    "header_path": "docs/workflows/consolidation-map.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "docs/workflows/performance-monitoring-todo.md",
+    "guid": "performance-monitoring-todo-2025-10-automation",
+    "title": "Performance Monitoring TODO",
+    "version": "1.0.0",
+    "header_path": "docs/workflows/performance-monitoring-todo.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "examples/migration-guides/subtitle-manager-migration.md",
+    "guid": "53f1c794-3dad-4f3d-88af-614dc62facf5",
+    "title": "Migration Guide: subtitle-manager to Centralized Issue Management",
+    "version": "1.0.0",
+    "header_path": "examples/migration-guides/subtitle-manager-migration.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "examples/pr-labler.yml",
+    "guid": "c3d4e5f6-a7b8-49c0-d1e2-f3a4b5c6d7e8",
+    "title": "Pull Request Labeler",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/pr-labeler.yml",
+    "path_mismatch": true
+  },
+  {
+    "path": "examples/workflows/ai-rebase-example.yml",
+    "guid": "d84dfc6e-6035-4b05-8638-3d03e2a5c7a0",
+    "title": "AI Rebase Example",
+    "version": "1.0.0",
+    "header_path": "examples/workflows/ai-rebase-example.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": "examples/workflows/pr-labeler-example.yml",
+    "guid": "f6a7b8c9-d0e1-42f3-a4b5-c6d7e8f9a0b1",
+    "title": "Pull Request Labeler",
+    "version": "1.0.0",
+    "header_path": "examples/workflows/pr-labeler-example.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": "examples/workflows/super-linter-example.yml",
+    "guid": "d3e4f5a6-b7c8-90de-f012-3456789defab",
+    "title": "Super Linter Example",
+    "version": "1.0.0",
+    "header_path": "examples/workflows/super-linter-example.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": "examples/workflows/super-linter-improved-example.yml",
+    "guid": "123e4567-e89b-12d3-a456-426614174000",
+    "title": "Super Linter - Improved Example",
+    "version": "1.0.0",
+    "header_path": "examples/workflows/super-linter-improved-example.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": "examples/workflows/unified-automation-complete.yml",
+    "guid": "complete-unified-automation-workflow-template",
+    "title": "Complete Unified Automation",
+    "version": "2.1.0",
+    "header_path": "examples/workflows/unified-automation-complete.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": "examples/workflows/unified-automation-with-intelligent-labeling.yml",
+    "guid": "0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "title": "Enhanced Unified Automation with Intelligent Labeling",
+    "version": "1.0.0",
+    "header_path": "examples/workflows/unified-automation-with-intelligent-labeling.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": "examples/workflows/unified-automation.yml",
+    "guid": "17be3eca-f785-4b0f-ae16-6dda1cf9051b",
+    "title": "Unified Automation",
+    "version": "1.0.0",
+    "header_path": "examples/workflows/unified-automation.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": "fix_instruction_frontmatter.py",
+    "guid": "f1e2d3c4-b5a6-9e8f-7d6c-5b4a3e2f1d0e",
+    "title": "fix instruction frontmatter",
+    "version": "1.0.1",
+    "header_path": "fix_instruction_frontmatter.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "fix_instruction_frontmatter.sh",
+    "guid": "f1e2d3c4-b5a6-9e8f-7d6c-5b4a3e2f1d0e",
+    "title": "fix instruction frontmatter",
+    "version": "1.0.0",
+    "header_path": "fix_instruction_frontmatter.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "labels.md",
+    "guid": "ghcommon-labels-69304",
+    "title": "ghcommon Repository Labels",
+    "version": "1.0.0",
+    "header_path": "labels.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "repo-comparison-chart.md",
+    "guid": "6f263283-29c4-475e-b162-09dfdcd9ab9d",
+    "title": "repo comparison chart",
+    "version": "1.0.0",
+    "header_path": "repo-comparison-chart.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "repositories.txt",
+    "guid": "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
+    "title": "repositories",
+    "version": "1.2.0",
+    "header_path": "repositories.txt",
+    "path_mismatch": false
+  },
+  {
+    "path": "requirements.txt",
+    "guid": "f7e6d5c4-b3a2-1098-7654-321fedcba987",
+    "title": "requirements",
+    "version": "1.1.1",
+    "header_path": "requirements.txt",
+    "path_mismatch": false
+  },
+  {
+    "path": "ruff.toml",
+    "guid": "f1a2b3c4-d5e6-789f-a012-456789abcdef",
+    "title": "ruff",
+    "version": "1.1.0",
+    "header_path": "ruff.toml",
+    "path_mismatch": false
+  },
+  {
+    "path": "rustfmt.toml",
+    "guid": "5e6f7a8b-9c0d-1234-ef56-789abcdef012",
+    "title": "rustfmt",
+    "version": "1.0.0",
+    "header_path": ".github/linters/rustfmt.toml",
+    "path_mismatch": true
+  },
+  {
+    "path": "scripts/CODEX-REBASE-GUIDE.md",
+    "guid": "1b7de21e-7315-4e37-a2af-dd62d2af7b76",
+    "title": "Codex Rebase Quick Reference",
+    "version": "1.0.0",
+    "header_path": "scripts/CODEX-REBASE-GUIDE.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/README-cleanup-tool.md",
+    "guid": "f733d6cf-d356-4bb2-a633-25e8a7ffda65",
+    "title": "Repository Cleanup Tool",
+    "version": "1.0.0",
+    "header_path": "scripts/README-cleanup-tool.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/README-notifications.md",
+    "guid": "d4e5f6a7-b8c9-0123-def0-456789012345",
+    "title": "GitHub Notifications Cleanup Scripts",
+    "version": "1.1.0",
+    "header_path": "scripts/README-notifications.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/README-rebase.md",
+    "guid": "0e0555d1-09e2-4759-94cc-0b41e909a410",
+    "title": "Smart Rebase Automation Documentation",
+    "version": "1.0.0",
+    "header_path": "scripts/README-rebase.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/README-unified-project-manager.md",
+    "guid": "5c6d7e8f-9a0b-1234-5678-9abcdef01234",
+    "title": "Unified GitHub Project Manager",
+    "version": "1.0.0",
+    "header_path": "scripts/README-unified-project-manager.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/README.md",
+    "guid": "a6ce4820-bcf8-482e-b2ca-234024d5d77f",
+    "title": "Scripts Directory",
+    "version": "2.0.1",
+    "header_path": "scripts/README.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/cleanup-archived-repos.py",
+    "guid": "f1a2b3c4-d5e6-7890-abcd-ef1234567890",
+    "title": "cleanup archived repos",
+    "version": "1.0.1",
+    "header_path": "scripts/cleanup-archived-repos.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/cleanup-notifications.sh",
+    "guid": "c3d4e5f6-a7b8-9012-cdef-345678901234",
+    "title": "cleanup notifications",
+    "version": "1.0.0",
+    "header_path": "scripts/cleanup-notifications.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/cleanup-repos.sh",
+    "guid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "cleanup repos",
+    "version": "1.0.0",
+    "header_path": "scripts/cleanup-repos.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/cleanup-summary.py",
+    "guid": "1a2b3c4d-5e6f-7890-abcd-ef1234567890",
+    "title": "cleanup summary",
+    "version": "1.0.0",
+    "header_path": "scripts/cleanup-summary.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/copilot-firewall/.gitignore",
+    "guid": "d3e4f5g6-8h9i-0j1k-2l3m-4n5o6p7q8r9s",
+    "title": ".gitignore",
+    "version": "1.0.0",
+    "header_path": "scripts/copilot-firewall/.gitignore",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/copilot-firewall/README.md",
+    "guid": "a1b2c3d4-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+    "title": "GitHub Copilot Firewall Allowlist Manager",
+    "version": "1.0.0",
+    "header_path": "scripts/copilot-firewall/README.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/copilot-firewall/copilot_firewall/__init__.py",
+    "guid": "8g9h0i1j-3b4c-5d6e-7f8g-9h0i1j2k3l4m",
+    "title": "  init  ",
+    "version": "1.0.0",
+    "header_path": "scripts/copilot-firewall/copilot_firewall/__init__.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/copilot-firewall/copilot_firewall/__main__.py",
+    "guid": "8g9h0i1j-2k3l-4m5n-6o7p-8q9r0s1t2u3v",
+    "title": "  main  ",
+    "version": "1.0.0",
+    "header_path": "scripts/copilot-firewall/copilot_firewall/__main__.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/copilot-firewall/copilot_firewall/main.py",
+    "guid": "9h0i1j2k-4c5d-6e7f-8g9h-0i1j2k3l4m5n",
+    "title": "main",
+    "version": "1.0.0",
+    "header_path": "scripts/copilot-firewall/copilot_firewall/main.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/copilot-firewall/pyproject.toml",
+    "guid": "7f8e9d1c-2a3b-4c5d-6e7f-8a9b0c1d2e3f",
+    "title": "pyproject",
+    "version": "1.1.0",
+    "header_path": "scripts/copilot-firewall/pyproject.toml",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/copilot-firewall/requirements.txt",
+    "guid": "c2d3e4f5-7g8h-9i0j-1k2l-3m4n5o6p7q8r",
+    "title": "requirements",
+    "version": "1.0.0",
+    "header_path": "scripts/copilot-firewall/requirements.txt",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/create-module-tags.py",
+    "guid": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    "title": "create module tags",
+    "version": "1.0.0",
+    "header_path": "scripts/create-module-tags.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/duplicate_cleanup.py",
+    "guid": "a7b8c9d0-e1f2-3456-7890-abcdef123456",
+    "title": "duplicate cleanup",
+    "version": "1.0.0",
+    "header_path": "scripts/duplicate_cleanup.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/fix-all-actions.sh",
+    "guid": "c5d1e2f3-4a5b-6c7d-8e9f-0a1b2c3d4e5f",
+    "title": "fix all actions",
+    "version": "1.0.0",
+    "header_path": "scripts/fix-all-actions.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/fix-markdown-headers.py",
+    "guid": "4b8e9f2a-3c5d-4e7f-8a9b-1c2d3e4f5a6b",
+    "title": "fix markdown headers",
+    "version": "1.4.1",
+    "header_path": "scripts/fix-markdown-headers-clean.py",
+    "path_mismatch": true
+  },
+  {
+    "path": "scripts/fix_markdown_headers.py",
+    "guid": "2f6a7b8c-1d2e-4f3a-9b5c-6d7e8f9a0b1c",
+    "title": "fix markdown headers",
+    "version": "1.0.4",
+    "header_path": "scripts/fix_markdown_headers.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/intelligent_sync_to_repos.py",
+    "guid": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+    "title": "intelligent sync to repos",
+    "version": "1.3.0",
+    "header_path": "scripts/intelligent_sync_to_repos.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/label_manager.py",
+    "guid": "a8b9c0d1-e2f3-4567-8901-234567890abc",
+    "title": "label manager",
+    "version": "1.0.0",
+    "header_path": "",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/mark_old_notifications_done.py",
+    "guid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "mark old notifications done",
+    "version": "1.1.0",
+    "header_path": "scripts/mark_old_notifications_done.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/migrate-instruction-files.sh",
+    "guid": "mig12345-e89b-12d3-a456-426614174000",
+    "title": "migrate instruction files",
+    "version": "1.0.1",
+    "header_path": "scripts/migrate-instruction-files.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/monitor-action-ci.sh",
+    "guid": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+    "title": "monitor action ci",
+    "version": "1.0.0",
+    "header_path": "scripts/monitor-action-ci.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/multi-repo-rebase.sh",
+    "guid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "multi repo rebase",
+    "version": "1.1.0",
+    "header_path": "scripts/multi-repo-rebase.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/pin-actions-to-hashes.py",
+    "guid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "pin actions to hashes",
+    "version": "1.0.0",
+    "header_path": "scripts/pin-actions-to-hashes.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/post-tag-hook.py",
+    "guid": "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
+    "title": "post tag hook",
+    "version": "1.0.0",
+    "header_path": "scripts/post-tag-hook.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/propagate_ci_fixes.py",
+    "guid": "8a7b6c5d-4e3f-2a1b-9c8d-7e6f5a4b3c2d",
+    "title": "propagate ci fixes",
+    "version": "1.0.0",
+    "header_path": "scripts/propagat    # Source linter configs are now in root directory\\n    source_linters = GHCOMMON_PATH_ci_fixes.py",
+    "path_mismatch": true
+  },
+  {
+    "path": "scripts/propagate_instructions_updates.py",
+    "guid": "9b8a7c6d-5e4f-3a2b-1c9d-8e7f6a5b4c3d",
+    "title": "propagate instructions updates",
+    "version": "1.0.0",
+    "header_path": "scripts/propagate_instructions_updates.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/quick-start-guide.sh",
+    "guid": "f6a7b8c9-d0e1-2345-fghi-456789012345",
+    "title": "quick start guide",
+    "version": "1.0.0",
+    "header_path": "scripts/quick-start-guide.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/rebase",
+    "guid": "e542f3f2-f992-4f03-a755-a2f8b9fc2790",
+    "title": "rebase",
+    "version": "1.3.1",
+    "header_path": "scripts/rebase",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/repo-audit.py",
+    "guid": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    "title": "repo audit",
+    "version": "1.1.1",
+    "header_path": "scripts/repo-audit.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/repo-sync.py",
+    "guid": "9a8b7c6d-5e4f-3d2c-1b0a-9c8b7a6d5e4f",
+    "title": "repo sync",
+    "version": "1.1.0",
+    "header_path": "scripts/repo-sync.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/requirements-notifications.txt",
+    "guid": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+    "title": "requirements notifications",
+    "version": "1.0.0",
+    "header_path": "scripts/requirements-notifications.txt",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/set-copilot-firewall.sh",
+    "guid": "b2c3d4e5-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+    "title": "set copilot firewall",
+    "version": "2.0.0",
+    "header_path": "scripts/set-copilot-firewall.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/setup-ci-app.sh",
+    "guid": "7e4a8c92-3b1f-4e5d-9a2c-6f8e1b3d4a7c",
+    "title": "setup ci app",
+    "version": "1.1.0",
+    "header_path": "scripts/setup-ci-app.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/setup-label-sync.sh",
+    "guid": "d1e2f3a4-b5c6-7890-1234-567890123def",
+    "title": "setup label sync",
+    "version": "1.0.0",
+    "header_path": "scripts/setup-label-sync.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/submit_codex_jobs.py",
+    "guid": "9c1d77e9-84a6-4b9b-9e02-d8f6c5bfa519",
+    "title": "submit codex jobs",
+    "version": "1.0.0",
+    "header_path": "scripts/submit_codex_jobs.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/sync-github-labels.py",
+    "guid": "b2c3d4e5-f6g7-8901-bcde-f23456789abc",
+    "title": "sync github labels",
+    "version": "1.2.0",
+    "header_path": "scripts/sync-github-labels.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/sync-gitignore.py",
+    "guid": "7b2c0e3d-9f81-4a5e-8c2b-1d4f6e9a3c10",
+    "title": "sync gitignore",
+    "version": "1.0.0",
+    "header_path": "scripts/sync-gitignore.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/sync-labels-fast.py",
+    "guid": "f1a2b3c4-d5e6-f7g8-h901-i234567890jk",
+    "title": "sync labels fast",
+    "version": "1.0.0",
+    "header_path": "scripts/sync-labels-fast.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/sync-labels-to-action-repos.py",
+    "guid": "8a9b0c1d-2e3f-4a5b-6c7d-8e9f0a1b2c3d",
+    "title": "sync labels to action repos",
+    "version": "1.0.0",
+    "header_path": "scripts/sync-labels-to-action-repos.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/sync-repo-setup.py",
+    "guid": "f1a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6",
+    "title": "sync repo setup",
+    "version": "1.0.1",
+    "header_path": "scripts/sync-repo-setup.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/tag-actions-v1.sh",
+    "guid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "tag actions v1",
+    "version": "1.0.0",
+    "header_path": "scripts/tag-actions-v1.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/tag-release-go-v2.sh",
+    "guid": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+    "title": "tag release go v2",
+    "version": "1.0.0",
+    "header_path": "scripts/tag-release-go-v2.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/template_repo/README.md",
+    "guid": "9a1b8d2e-4c57-4c3e-bb5f-7a3e12e6b4a1",
+    "title": "Template Repository Scripts",
+    "version": "1.1.0",
+    "header_path": "scripts/template_repo/README.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/template_repo/push_with_gh.py",
+    "guid": "a1b2c3d4-e5f6-7890-abcd-ef0123456789",
+    "title": "push with gh",
+    "version": "1.1.0",
+    "header_path": "scripts/template_repo/push_with_gh.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/template_repo/scaffold_template_repo.py",
+    "guid": "7f2d3a2e-4b5c-8d9e-0f1a-2b3c4d5e6f70",
+    "title": "scaffold template repo",
+    "version": "1.7.0",
+    "header_path": "scripts/template_repo/scaffold_template_repo.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/template_repo/validate_template_repo.py",
+    "guid": "5c1d2e3f-4a5b-6c7d-8e9f-0a1b2c3d4e5f",
+    "title": "validate template repo",
+    "version": "1.0.0",
+    "header_path": "scripts/template_repo/validate_template_repo.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/test-doc-summary.sh",
+    "guid": "12345678-1234-5678-9012-123456789abc",
+    "title": "test doc summary",
+    "version": "1.0.0",
+    "header_path": "scripts/test-doc-summary.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/trigger-and-monitor-ci.sh",
+    "guid": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+    "title": "trigger and monitor ci",
+    "version": "1.1.0",
+    "header_path": "scripts/trigger-and-monitor-ci.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/unified_github_project_manager_v2.py",
+    "guid": "4a5b6c7d-8e9f-0123-4567-89abcdef0123",
+    "title": "unified github project manager v2",
+    "version": "3.2.1",
+    "header_path": "scripts/unified_github_project_manager_v2.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/unified_github_project_manager_v3.py",
+    "guid": "4a5b6c7d-8e9f-0123-4567-89abcdef0123",
+    "title": "unified github project manager v3",
+    "version": "3.3.1",
+    "header_path": "scripts/unified_github_project_manager_v2.py",
+    "path_mismatch": true
+  },
+  {
+    "path": "scripts/unified_operations_detector.py",
+    "guid": "8b9c0d1e-2f3a-4b5c-6d7e-8f9a0b1c2d3e",
+    "title": "unified operations detector",
+    "version": "1.0.0",
+    "header_path": "scripts/unified_operations_detector.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/update-repository-automation.py",
+    "guid": "7f8a9b0c-1d2e-3f4a-5b6c-7d8e9f0a1b2c",
+    "title": "update repository automation",
+    "version": "1.2.0",
+    "header_path": "scripts/update-repository-automation.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/update_instructions_ignore_blocks.py",
+    "guid": "7f3c9a3e-1b2c-4d5e-8f90-abc123def456",
+    "title": "update instructions ignore blocks",
+    "version": "1.0.1",
+    "header_path": "scripts/update_instructions_ignore_blocks.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/update_workflow_versions.py",
+    "guid": "9b8a7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d",
+    "title": "update workflow versions",
+    "version": "1.0.0",
+    "header_path": "scripts/update_workflow_versions.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/validate-and-tag-actions.sh",
+    "guid": "8a3c4567-e89b-12d3-a456-426614174001",
+    "title": "validate and tag actions",
+    "version": "1.0.0",
+    "header_path": "scripts/validate-and-tag-actions.sh",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/validate-linter-configs.py",
+    "guid": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    "title": "validate linter configs",
+    "version": "1.1.0",
+    "header_path": "scripts/validate-linter-configs.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/workflow-debugger.py",
+    "guid": "9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d",
+    "title": "workflow debugger",
+    "version": "2.1.1",
+    "header_path": "scripts/workflow-debugger.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "templates/codeql/advanced-codeql.yml",
+    "guid": "39345513-6299-446c-ab22-422e5af99459",
+    "title": "ghcommon-advanced-codeql",
+    "version": "1.0.0",
+    "header_path": "templates/codeql/advanced-codeql.yml",
+    "path_mismatch": false
+  },
+  {
+    "path": "testdata/README.md",
+    "guid": "5a7f9d2c-4b3e-4e51-9f2f-2c3d4a5b6c7d",
+    "title": "file: testdata/README.md",
+    "version": "1.0.0",
+    "header_path": "testdata/README.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "testdata/docker/Dockerfile",
+    "guid": "02468ace-1357-9bdf-0246-8ace13579bdf",
+    "title": "Dockerfile",
+    "version": "1.0.0",
+    "header_path": "testdata/docker/Dockerfile",
+    "path_mismatch": false
+  },
+  {
+    "path": "testdata/go/README.md",
+    "guid": "4d5f6a7b-8c9d-0e1f-2a3b-4c5d6e7f8a9b",
+    "title": "Go Test Fixtures",
+    "version": "1.0.0",
+    "header_path": "testdata/go/README.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "testdata/go/benchmark_test.go",
+    "guid": "5d6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b",
+    "title": "benchmark test",
+    "version": "1.0.0",
+    "header_path": "testdata/go/benchmark_test.go",
+    "path_mismatch": false
+  },
+  {
+    "path": "testdata/go/calculator.go",
+    "guid": "2d3f4a5b-6c7d-8e9f-0a1b-2c3d4e5f6a7b",
+    "title": "calculator",
+    "version": "1.0.0",
+    "header_path": "testdata/go/calculator.go",
+    "path_mismatch": false
+  },
+  {
+    "path": "testdata/go/calculator_test.go",
+    "guid": "3d4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b",
+    "title": "calculator test",
+    "version": "2.0.0",
+    "header_path": "testdata/go/calculator_test.go",
+    "path_mismatch": false
+  },
+  {
+    "path": "testdata/go/go.mod",
+    "guid": "1d2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f5a6b",
+    "title": "go",
+    "version": "1.0.0",
+    "header_path": "testdata/go/go.mod",
+    "path_mismatch": false
+  },
+  {
+    "path": "testdata/go/main.go",
+    "guid": "1d2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f5a6b",
+    "title": "main",
+    "version": "2.0.0",
+    "header_path": "testdata/go/main.go",
+    "path_mismatch": false
+  },
+  {
+    "path": "testdata/node/index.js",
+    "guid": "13579bdf-2468-ace0-b135-79bdf13579bd",
+    "title": "index",
+    "version": "1.0.0",
+    "header_path": "testdata/node/index.js",
+    "path_mismatch": false
+  },
+  {
+    "path": "testdata/protobuf/hello.proto",
+    "guid": "8642ace0-b135-79bd-f246-8ace0b13579d",
+    "title": "hello",
+    "version": "1.0.0",
+    "header_path": "testdata/protobuf/hello.proto",
+    "path_mismatch": false
+  },
+  {
+    "path": "testdata/python/hello_world.py",
+    "guid": "4c2d6e8f-1b3a-4d5f-9c7e-8f1a2b3c4d5e",
+    "title": "hello world",
+    "version": "1.0.0",
+    "header_path": "testdata/python/hello_world.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "testdata/rust/Cargo.toml",
+    "guid": "0a1b2c3d-4e5f-6071-8a9b-bcdef0123456",
+    "title": "Cargo",
+    "version": "1.0.0",
+    "header_path": "testdata/rust/Cargo.toml",
+    "path_mismatch": false
+  },
+  {
+    "path": "testdata/rust/src/main.rs",
+    "guid": "6f5e4d3c-2b1a-0987-6543-21fedcba9876",
+    "title": "main",
+    "version": "1.0.1",
+    "header_path": "testdata/rust/src/main.rs",
+    "path_mismatch": false
+  },
+  {
+    "path": "tests/workflow_scripts/test_automation_workflow.py",
+    "guid": "d9f5c8b3-2c4d-4e5f-9a7b-3c2d1f0e1a2b",
+    "title": "test automation workflow",
+    "version": "1.2.0",
+    "header_path": "tests/workflow_scripts/test_automation_workflow.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "tests/workflow_scripts/test_docs_workflow.py",
+    "guid": "2f3a4b5c-6d7e-8f90-a1b2-c3d4e5f60718",
+    "title": "test docs workflow",
+    "version": "1.0.0",
+    "header_path": "tests/workflow_scripts/test_docs_workflow.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "tests/workflow_scripts/test_generate_release_summary.py",
+    "guid": "3b2c1d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e",
+    "title": "test generate release summary",
+    "version": "1.0.0",
+    "header_path": "tests/workflow_scripts/test_generate_release_summary.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "tests/workflow_scripts/test_maintenance_workflow.py",
+    "guid": "7c8d9e0f-a1b2-4c3d-8e9f-0a1b2c3d4e5f",
+    "title": "test maintenance workflow",
+    "version": "1.0.0",
+    "header_path": "tests/workflow_scripts/test_maintenance_workflow.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "tests/workflow_scripts/test_publish_to_github_packages.py",
+    "guid": "6e77a1f8-5c76-41a8-9e3c-9f89cb237a9f",
+    "title": "test publish to github packages",
+    "version": "1.0.0",
+    "header_path": "tests/workflow_scripts/test_publish_to_github_packages.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "tests/workflow_scripts/test_workflow_common.py",
+    "guid": "4dcbebd7-74dd-4c5f-9442-7ad2c49ea5a6",
+    "title": "test workflow common",
+    "version": "1.0.0",
+    "header_path": "tests/workflow_scripts/test_workflow_common.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "tools/mass-protobuf-fixer.py",
+    "guid": "9f8e7d6c-5b4a-3f9e-8d7c-6b5a4f3e2d1c",
+    "title": "mass protobuf fixer",
+    "version": "1.0.1",
+    "header_path": "tools/mass-protobuf-fixer.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "tools/protobuf-cycle-fixer.py",
+    "guid": "8f7e6d5c-4b3a-2f9e-8d7c-6b5a4f3e2d1c",
+    "title": "protobuf cycle fixer",
+    "version": "1.0.1",
+    "header_path": "tools/protobuf-cycle-fixer.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "workflow-templates/sync-receiver.yml",
+    "guid": "f7g8h9i0-j1k2-l3m4-n5o6-p7q8r9s0t1u2",
+    "title": "Sync Receiver",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/sync-receiver.yml",
+    "path_mismatch": true
+  }
+]
