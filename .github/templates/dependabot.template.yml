@@ -1,13 +1,19 @@
-# Dependabot Configuration Template
-# version: 1.0.0
-# guid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-# last-edited: 2026-02-09
+# file: .github/templates/dependabot.template.yml
+# version: 1.1.0
+# guid: 606986d1-5509-49ea-84cc-6ee708b7c244
+# last-edited: 2026-07-16
 #
 # Instructions:
 # 1. Copy this template to .github/dependabot.yml
 # 2. Customize the multi-ecosystem-group with the repository's ecosystems
 # 3. Add/remove package-ecosystem entries based on your project
 # 4. Update schedule/timezone as needed
+#
+# IMPORTANT: entries that reference `multi-ecosystem-group` must NOT also set
+# their own `schedule` key — schedule is a group-only key, and GitHub rejects
+# the whole dependabot.yml file if any grouped entry redefines it. The
+# schedule for grouped ecosystems below comes entirely from the
+# multi-ecosystem-groups.dependencies block above.
 # 5. Commit with: deps: initialize multi-ecosystem dependabot config
 
 version: 2
@@ -46,8 +52,6 @@ updates:
     multi-ecosystem-group: dependencies
     labels:
       - devcontainers
-    schedule:
-      interval: monthly
 
   # Docker (if present)
   - package-ecosystem: docker
@@ -56,8 +60,6 @@ updates:
     multi-ecosystem-group: dependencies
     labels:
       - containers
-    schedule:
-      interval: monthly
 
   # Docker Compose (if present)
   - package-ecosystem: docker-compose
@@ -66,8 +68,6 @@ updates:
     multi-ecosystem-group: dependencies
     labels:
       - containers
-    schedule:
-      interval: monthly
 
   # Git Submodules (if present)
   - package-ecosystem: gitsubmodule
@@ -76,9 +76,6 @@ updates:
     multi-ecosystem-group: dependencies
     labels:
       - submodules
-    schedule:
-      interval: monthly
-      day: tuesday
 
   # Go Modules (if present)
   - package-ecosystem: gomod
@@ -111,8 +108,6 @@ updates:
     multi-ecosystem-group: dependencies
     labels:
       - tech:rust
-    schedule:
-      interval: monthly
 
   # Cargo / Rust (if present)
   - package-ecosystem: cargo

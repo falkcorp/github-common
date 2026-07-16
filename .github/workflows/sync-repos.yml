@@ -1,3 +1,8 @@
+# file: .github/workflows/sync-repos.yml
+# version: 1.0.1
+# guid: f5a72cf8-cb71-4d52-836d-108f37d3945d
+# last-edited: 2026-07-16
+
 name: Sync .github Structure to Repos
 
 on:
@@ -6,7 +11,7 @@ on:
       repos:
         description: 'Comma-separated list of repos to sync (owner/repo format)'
         required: true
-        default: 'falkcorp/audiobook-organizer,jdfalk/apt-cacher-go,jdfalk/subtitle-manager,falkcorp/safe-ai-util,falkcorp/gcommon-proto,jdfalk/transcoderr,jdfalk/ubuntu-autoinstall-webhook,jdfalk/public-scratch,jdfalk/project-template,jdfalk/magnet-handler'
+        default: 'falkcorp/audiobook-organizer,falkcorp/apt-cacher-go,falkcorp/subtitle-manager,falkcorp/safe-ai-util,falkcorp/gcommon-proto,falkcorp/transcoderr,falkcorp/ubuntu-autoinstall-webhook,jdfalk/public-scratch,jdfalk/project-template,falkcorp/magnet-handler'
       branch:
         description: 'Branch name for sync changes'
         required: false
