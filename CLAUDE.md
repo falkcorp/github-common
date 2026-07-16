@@ -1,7 +1,7 @@
 <!-- file: CLAUDE.md -->
-<!-- version: 3.1.0 -->
+<!-- version: 3.2.0 -->
 <!-- guid: 3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f -->
-<!-- last-edited: 2026-06-13 -->
+<!-- last-edited: 2026-07-16 -->
 
 # CLAUDE.md
 
@@ -41,6 +41,15 @@ This repository uses direct-edit documentation workflow:
 - Do not use legacy doc-update scripts (create-doc-update.sh,
   doc_update_manager.py)
 - Follow semantic versioning for version numbers
+
+**Exception — `CHANGELOG.md` is assembled, not hand-edited.** Do not edit
+`CHANGELOG.md` directly. Add a changelog fragment under `changelog.d/` (run
+`scriv create`, or write the Markdown file by hand) so parallel PRs never
+collide on the changelog. The fragments are folded into `CHANGELOG.md` at
+release time by `scriv`. See `changelog.d/README.md` and
+`.github/prompts/ai-changelog.prompt.md`. This is a focused, tool-backed revival
+of the fragment idea — not the retired bespoke JSON `doc_update_manager.py`
+system.
 
 ## 🔧 Git Operations Policy
 

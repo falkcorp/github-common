@@ -1,0 +1,98 @@
+# file: .github/workflows/changelog-collect.yml
+# version: 1.0.0
+# guid: cc1d2590-1a97-4243-a599-919d9e14ab2c
+
+name: Collect Changelog
+
+# Assembles CHANGELOG.md from the changelog.d/ fragments when a stable release
+# is published, then commits the result back to the default branch. Fragments
+# are folded into a new "## <version>" section at the scriv-insert-here marker
+# and removed. See changelog.d/README.md.
+#
+# GitHub *release notes* stay commit-based (release_workflow.py); this workflow
+# only maintains the richer, hand-detailed CHANGELOG.md.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version heading to collect fragments under (e.g. v1.12.0)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: changelog-collect-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    name: Collect fragments into CHANGELOG.md
+    runs-on: ubuntu-latest
+    # Skip pre-releases (RCs); only stable releases update the changelog.
+    if: ${{ github.event_name == 'workflow_dispatch' || !github.event.release.prerelease }}
+    timeout-minutes: 10
+    steps:
+      - name: Checkout default branch
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+          # PAT (if configured) can push past branch protection; falls back to
+          # the workflow token otherwise.
+          token: ${{ secrets.JF_CI_GH_PAT || github.token }}
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.13'
+
+      - name: Install scriv
+        run: python3 -m pip install --quiet scriv
+
+      - name: Collect fragments and commit
+        env:
+          VERSION: ${{ github.event.inputs.version || github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${VERSION:-}" ]]; then
+            echo "::error::No version supplied."
+            exit 1
+          fi
+
+          # Only fragments count — README.md, templates/ and scriv.ini are not.
+          if ! find changelog.d -maxdepth 1 -name '*.md' ! -name 'README.md' \
+              | grep -q .; then
+            echo "::notice::No changelog fragments to collect for ${VERSION}; nothing to do."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          python3 -m scriv collect --version "${VERSION}"
+
+          if git diff --cached --quiet && git diff --quiet; then
+            echo "::notice::scriv produced no changes; nothing to commit."
+            exit 0
+          fi
+
+          git add -A CHANGELOG.md changelog.d
+          git commit -m "docs(changelog): collect fragments for ${VERSION}"
+
+          retry_count=0
+          max_retries=4
+          until git push origin "HEAD:${{ github.event.repository.default_branch }}" \
+              || [ $retry_count -eq $max_retries ]; do
+            retry_count=$((retry_count + 1))
+            echo "Retry $retry_count/$max_retries for changelog push..."
+            sleep $((2 ** retry_count))
+            git pull --rebase origin "${{ github.event.repository.default_branch }}"
+          done
+          [ $retry_count -lt $max_retries ] || { echo "::error::Failed to push changelog"; exit 1; }
+
+          echo "CHANGELOG.md updated for ${VERSION}"

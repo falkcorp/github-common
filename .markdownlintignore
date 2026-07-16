@@ -1,3 +1,9 @@
 .vscode/**
 dependency-analysis/**
 logs/**
+
+# Changelog fragments are partial Markdown assembled into CHANGELOG.md;
+# they intentionally start below H1, so skip them (but keep the README).
+changelog.d/*.md
+changelog.d/templates/**
+!changelog.d/README.md

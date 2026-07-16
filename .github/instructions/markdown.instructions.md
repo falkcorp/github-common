@@ -1,7 +1,7 @@
 <!-- file: .github/instructions/markdown.instructions.md -->
-<!-- version: 1.2.1 -->
+<!-- version: 1.3.0 -->
 <!-- guid: e2f8a5b1-9c4d-4e2f-8a5b-4d9c8a5b1e2f -->
-<!-- last-edited: 2026-01-19 -->
+<!-- last-edited: 2026-07-16 -->
 <!-- DO NOT EDIT: This file is managed centrally in ghcommon repository -->
 <!-- To update: Create an issue/PR in jdfalk/ghcommon -->
 
@@ -23,6 +23,11 @@ description: |
   for additional best practices.
 - All Markdown files must begin with the required file header (see general
   instructions for details and Markdown example).
+- **Exception:** changelog fragments under `changelog.d/` (excluding its
+  `README.md`) are exempt from the file-header rule. Their contents are
+  concatenated verbatim into `CHANGELOG.md` by
+  [`scriv`](https://scriv.readthedocs.io/), so a header would leak into the
+  changelog. See `changelog.d/README.md`.
 
 ## File Structure and Organization
 

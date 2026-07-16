@@ -11,3 +11,8 @@
 workflow-permissions-analysis.json
 **/doc-updates/*.json
 **/processed/*.json
+
+# Changelog fragments are assembled verbatim into CHANGELOG.md (keep README)
+changelog.d/*.md
+changelog.d/templates/**
+!changelog.d/README.md
