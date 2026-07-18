@@ -1,5 +1,5 @@
 <!-- file: .github/prompts/ai-changelog.prompt.md -->
-<!-- version: 2.0.0 -->
+<!-- version: 2.1.0 -->
 <!-- guid: 253c622c-7e27-41ad-99f9-d81791d6b251 -->
 <!-- last-edited: 2026-07-16 -->
 
@@ -35,6 +35,7 @@ CI check fails any PR that changes code without a fragment.
 - Use clear, concise language and Markdown formatting.
 - Link to related issues, PRs, and documentation where useful.
 
-Assembly into `CHANGELOG.md` happens automatically at release time via
-`.github/workflows/changelog-collect.yml` (`scriv collect`); GitHub release
+Assembly into `CHANGELOG.md` happens automatically at release time via the
+shared `reusable-release.yml` workflow (`scriv collect`), and the fragment
+requirement is enforced by the shared `reusable-ci.yml` workflow; GitHub release
 notes remain commit-based and separate.

@@ -1,5 +1,5 @@
 <!-- file: changelog.d/README.md -->
-<!-- version: 1.0.0 -->
+<!-- version: 1.1.0 -->
 <!-- guid: 8d3a1f26-4c7b-4e59-b0a2-6f1d9c8e5a34 -->
 <!-- last-edited: 2026-07-16 -->
 
@@ -60,11 +60,13 @@ the new stable version.
 
 ## How assembly works
 
-- `scriv collect --version <tag>` (run by
-  `.github/workflows/changelog-collect.yml` when a release is published) inserts
-  a new `## <version> — <date>` section at the `<!-- scriv-insert-here -->`
-  marker in `CHANGELOG.md`, grouped by category, and removes the collected
-  fragments.
+- `scriv collect --version <tag>` (run by the shared release workflow
+  `reusable-release.yml` on stable releases) inserts a new
+  `## <version> — <date>` section at the `<!-- scriv-insert-here -->` marker in
+  `CHANGELOG.md`, grouped by category, and removes the collected fragments.
+- The PR fragment check comes from the shared CI workflow (`reusable-ci.yml`).
+  Both the check and the collect step activate automatically for any repo that
+  has this `changelog.d/scriv.ini` — no per-repo workflow files are needed.
 - Configuration lives in [`scriv.ini`](scriv.ini); the new-fragment scaffold is
   [`templates/new_fragment.md.j2`](templates/new_fragment.md.j2).
 - GitHub **release notes** stay commit-based (`release_workflow.py`); this
