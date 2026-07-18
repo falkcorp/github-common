@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # file: scripts/copilot-firewall/copilot_firewall/main.py
-# version: 1.0.0
+# version: 1.0.1
 # guid: 9h0i1j2k-4c5d-6e7f-8g9h-0i1j2k3l4m5n
 
 """Main module for GitHub Copilot Firewall Allowlist Manager."""
@@ -17,9 +17,10 @@ try:
     from rich.console import Console
     from rich.table import Table
 except ImportError as e:
-    console = Console()
-    console.print(f"[red]Required dependency missing: {e}[/red]")
-    console.print("[red]Please install with: pip install inquirer rich[/red]")
+    # rich/Console may be the very import that just failed, so report the missing
+    # dependency with a plain stderr write rather than a Console() call.
+    print(f"Required dependency missing: {e}", file=sys.stderr)
+    print("Please install with: pip install inquirer rich", file=sys.stderr)
     sys.exit(1)
 
 # The value for the variable
