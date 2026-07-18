@@ -784,6 +784,67 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
+  # Require a changelog fragment on PRs for repos that use the changelog.d/
+  # fragment system. Opt-in by presence: the job self-skips (passes) for every
+  # repo without changelog.d/scriv.ini. See changelog.d/README.md in
+  # falkcorp/github-common.
+  changelog-fragment-check:
+    name: Changelog Fragment Check
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    env:
+      BASE_REF: ${{ github.event.pull_request.base.ref }}
+      SKIP_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'skip-changelog') }}
+      PR_TITLE: ${{ github.event.pull_request.title }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+
+      - name: Require a changelog fragment
+        run: |
+          set -euo pipefail
+
+          # Opt-in by presence: repos without the fragment system pass immediately.
+          if [ ! -f changelog.d/scriv.ini ]; then
+            echo "::notice::changelog.d/scriv.ini not present — changelog fragments not enabled here."
+            exit 0
+          fi
+
+          if [ "${SKIP_LABEL}" = "true" ]; then
+            echo "::notice::'skip-changelog' label present — skipping."
+            exit 0
+          fi
+          case "${PR_TITLE}" in
+            *"[skip changelog]"*)
+              echo "::notice::'[skip changelog]' in PR title — skipping."
+              exit 0
+              ;;
+          esac
+
+          git fetch --no-tags origin "${BASE_REF}"
+
+          # Files added on this branch that are real fragments: Markdown under
+          # changelog.d/, excluding the docs/config/template scaffolding.
+          added="$(git diff --name-only --diff-filter=A "origin/${BASE_REF}...HEAD" \
+            | { grep -E '^changelog\.d/.*\.md$' || true; } \
+            | { grep -vE '^changelog\.d/(README\.md$|templates/)' || true; })"
+
+          if [ -n "${added}" ]; then
+            echo "Found changelog fragment(s):"
+            echo "${added}"
+            exit 0
+          fi
+
+          echo "::error::No changelog fragment under changelog.d/. Run 'scriv create'"
+          echo "(see changelog.d/README.md), or add the 'skip-changelog' label or"
+          echo "'[skip changelog]' to the PR title if no changelog entry is needed."
+          exit 1
+
   # Summary job
   ci-summary:
     name: CI Summary

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # file: scripts/intelligent_sync_to_repos.py
-# version: 1.3.0
+# version: 1.4.0
 # guid: a1b2c3d4-e5f6-7890-1234-567890abcdef
 
 """Intelligent sync script that understands the new modular .github structure.
@@ -90,6 +90,13 @@ MANAGED_FILES = {
     ".github/prompts/pull-request.prompt.md",
     ".github/prompts/security-review.prompt.md",
     ".github/prompts/test-generation.prompt.md",
+    # Changelog fragments (scriv) scaffolding. CHANGELOG.md is assembled from
+    # these fragments by the reusable release workflow and enforced by the
+    # reusable CI workflow; both are opt-in by presence of changelog.d/scriv.ini.
+    # CHANGELOG.md itself is repo-specific and intentionally NOT synced.
+    "changelog.d/scriv.ini",
+    "changelog.d/templates/new_fragment.md.j2",
+    "changelog.d/README.md",
     # Core documentation (versioned) - DEPRECATED, moved to instructions/
     # These are kept for backward compatibility but should be removed eventually
     ".github/test-generation.md",
