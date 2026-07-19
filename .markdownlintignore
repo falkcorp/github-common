@@ -7,3 +7,8 @@ logs/**
 changelog.d/*.md
 changelog.d/templates/**
 !changelog.d/README.md
+
+# TODO fragments are partial Markdown assembled into TODO.md; same deal.
+todo.d/*.md
+todo.d/templates/**
+!todo.d/README.md
