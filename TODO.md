@@ -1,9 +1,18 @@
 <!-- file: TODO.md -->
-<!-- version: 2.3.4 -->
+<!-- version: 2.3.5 -->
 <!-- guid: 4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a -->
-<!-- last-edited: 2026-06-10 -->
+<!-- last-edited: 2026-07-19 -->
 
 # TODO
+
+## 📥 Inbox
+
+Tasks assembled from `todo.d/` fragments. Add a new task by dropping a fragment
+file in `todo.d/` rather than editing this section by hand — see
+[`todo.d/README.md`](todo.d/README.md). Checking a task off, or promoting it
+into one of the curated sections below, is a normal direct edit.
+
+<!-- todo-insert-here -->
 
 ## ✅ Recently completed (June 10, 2026)
 

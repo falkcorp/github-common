@@ -155,7 +155,7 @@
     "path": ".github/instructions/markdown.instructions.md",
     "guid": "e2f8a5b1-9c4d-4e2f-8a5b-4d9c8a5b1e2f",
     "title": "Markdown Coding Instructions",
-    "version": "1.2.1",
+    "version": "1.3.0",
     "header_path": ".github/instructions/markdown.instructions.md",
     "path_mismatch": false
   },
@@ -275,7 +275,7 @@
     "path": ".github/prompts/ai-changelog.prompt.md",
     "guid": "253c622c-7e27-41ad-99f9-d81791d6b251",
     "title": "AI Changelog Generation Prompt",
-    "version": "1.0.0",
+    "version": "2.1.0",
     "header_path": ".github/prompts/ai-changelog.prompt.md",
     "path_mismatch": false
   },
@@ -947,7 +947,7 @@
     "path": ".github/workflows/pr-automation.yml",
     "guid": "a7b8c9d0-e1f2-3456-a789-0123456789bc",
     "title": "PR Automation",
-    "version": "4.5.6",
+    "version": "4.5.7",
     "header_path": ".github/workflows/pr-automation.yml",
     "path_mismatch": false
   },
@@ -1216,6 +1216,14 @@
     "path_mismatch": false
   },
   {
+    "path": ".github/workflows/todo-collect.yml",
+    "guid": "31b770c1-e21e-4f13-b78e-cd30348f2b8d",
+    "title": "Collect TODO Fragments",
+    "version": "1.0.0",
+    "header_path": ".github/workflows/todo-collect.yml",
+    "path_mismatch": false
+  },
+  {
     "path": ".github/workflows/unified-automation.yml",
     "guid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
     "title": "Unified Automation",
@@ -1400,6 +1408,14 @@
     "path_mismatch": true
   },
   {
+    "path": "AI_FRAGMENT_SYSTEM_STATUS.md",
+    "guid": "7f2c4e91-8a3d-4b6e-9c15-2d0f8e4a6b73",
+    "title": "Fragment-Assembly System \u2014 Status & Handoff",
+    "version": "1.0.0",
+    "header_path": "AI_FRAGMENT_SYSTEM_STATUS.md",
+    "path_mismatch": false
+  },
+  {
     "path": "CACHE_STRATEGY_IMPLEMENTATION.md",
     "guid": "cache-impl-2025-12-26",
     "title": "Robust Manual Caching Strategy Implementation",
@@ -1435,7 +1451,7 @@
     "path": "CLAUDE.md",
     "guid": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
     "title": "CLAUDE.md",
-    "version": "3.1.0",
+    "version": "3.3.0",
     "header_path": "CLAUDE.md",
     "path_mismatch": false
   },
@@ -1507,7 +1523,7 @@
     "path": "TODO.md",
     "guid": "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
     "title": "TODO",
-    "version": "2.3.4",
+    "version": "2.3.5",
     "header_path": "TODO.md",
     "path_mismatch": false
   },
@@ -1541,6 +1557,22 @@
     "title": "analyze dependencies",
     "version": "1.1.0",
     "header_path": "analyze-dependencies.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "changelog.d/README.md",
+    "guid": "8d3a1f26-4c7b-4e59-b0a2-6f1d9c8e5a34",
+    "title": "Changelog fragments (`changelog.d/`)",
+    "version": "1.1.0",
+    "header_path": "changelog.d/README.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "changelog.d/scriv.ini",
+    "guid": "5b1c9a7e-0d2f-4a63-9c81-3e6f4b2a8d10",
+    "title": "scriv",
+    "version": "1.0.0",
+    "header_path": "changelog.d/scriv.ini",
     "path_mismatch": false
   },
   {
@@ -2944,6 +2976,14 @@
     "path_mismatch": false
   },
   {
+    "path": "pytest.ini",
+    "guid": "213e0a8b-0e5e-4eee-9621-95588aedfd9d",
+    "title": "pytest",
+    "version": "1.0.0",
+    "header_path": "pytest.ini",
+    "path_mismatch": false
+  },
+  {
     "path": "repo-comparison-chart.md",
     "guid": "6f263283-29c4-475e-b162-09dfdcd9ab9d",
     "title": "repo comparison chart",
@@ -2963,7 +3003,7 @@
     "path": "requirements.txt",
     "guid": "f7e6d5c4-b3a2-1098-7654-321fedcba987",
     "title": "requirements",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "header_path": "requirements.txt",
     "path_mismatch": false
   },
@@ -3029,6 +3069,14 @@
     "title": "Scripts Directory",
     "version": "2.0.1",
     "header_path": "scripts/README.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "scripts/assemble_todo.py",
+    "guid": "af7ef324-6c69-411e-b1a9-98c9ba2b31e3",
+    "title": "assemble todo",
+    "version": "1.0.0",
+    "header_path": "scripts/assemble_todo.py",
     "path_mismatch": false
   },
   {
@@ -3099,7 +3147,7 @@
     "path": "scripts/copilot-firewall/copilot_firewall/main.py",
     "guid": "9h0i1j2k-4c5d-6e7f-8g9h-0i1j2k3l4m5n",
     "title": "main",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": "scripts/copilot-firewall/copilot_firewall/main.py",
     "path_mismatch": false
   },
@@ -3163,7 +3211,7 @@
     "path": "scripts/intelligent_sync_to_repos.py",
     "guid": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
     "title": "intelligent sync to repos",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "header_path": "scripts/intelligent_sync_to_repos.py",
     "path_mismatch": false
   },
@@ -3645,6 +3693,22 @@
     "title": "test workflow common",
     "version": "1.0.0",
     "header_path": "tests/workflow_scripts/test_workflow_common.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "todo.d/README.md",
+    "guid": "8a115d15-dddc-4542-8b5b-95fe2af64516",
+    "title": "TODO fragments (`todo.d/`)",
+    "version": "1.0.0",
+    "header_path": "todo.d/README.md",
+    "path_mismatch": false
+  },
+  {
+    "path": "todo.d/todo.ini",
+    "guid": "7c624b24-8d1d-4b41-8869-64c854b61993",
+    "title": "todo",
+    "version": "1.0.0",
+    "header_path": "todo.d/todo.ini",
     "path_mismatch": false
   },
   {

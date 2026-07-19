@@ -1,7 +1,7 @@
 <!-- file: CLAUDE.md -->
-<!-- version: 3.2.0 -->
+<!-- version: 3.3.0 -->
 <!-- guid: 3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f -->
-<!-- last-edited: 2026-07-16 -->
+<!-- last-edited: 2026-07-19 -->
 
 # CLAUDE.md
 
@@ -50,6 +50,14 @@ release time by `scriv`. See `changelog.d/README.md` and
 `.github/prompts/ai-changelog.prompt.md`. This is a focused, tool-backed revival
 of the fragment idea — not the retired bespoke JSON `doc_update_manager.py`
 system.
+
+**Exception — new `TODO.md` tasks are added via fragments.** To add a task, drop
+a Markdown fragment in `todo.d/` (see `todo.d/README.md`) rather than editing
+the `## 📥 Inbox` section of `TODO.md`, so parallel PRs never collide on the
+TODO list. `scripts/assemble_todo.py` folds fragments in and deletes them, run
+daily by `.github/workflows/todo-collect.yml`. This is **add-only**: checking a
+task off, deleting it, or promoting it out of the Inbox into a curated section
+is a normal direct edit of `TODO.md`.
 
 ## 🔧 Git Operations Policy
 
