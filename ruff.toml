@@ -1,6 +1,7 @@
 # file: ruff.toml
-# version: 1.1.0
+# version: 1.2.0
 # guid: f1a2b3c4-d5e6-789f-a012-456789abcdef
+# last-edited: 2026-07-19
 
 # Ruff configuration following Google Python Style Guide
 # https://google.github.io/styleguide/pyguide.html
@@ -42,6 +43,11 @@ ignore = [
     "E501",  # line too long, handled by formatter
     "B008",  # do not perform function calls in argument defaults
     "C901",  # too complex (handled by C90)
+    # ERA001 (commented-out code) cannot coexist with this repo's mandatory
+    # `# file:` / `# version:` / `# guid:` header block — it flags the header on
+    # every Python file (37 files today), and its autofix DELETES it. The header
+    # rule wins; ERA001 is off. See .standards/instructions/file-headers.md.
+    "ERA001",
     "D100",  # Missing docstring in public module
     "D104",  # Missing docstring in public package
     "D203",  # 1 blank line required before class docstring (conflicts with D211)

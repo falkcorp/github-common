@@ -37,10 +37,10 @@ from __future__ import annotations
 import argparse
 import configparser
 import datetime
+from pathlib import Path
 import re
 import subprocess
 import sys
-from pathlib import Path
 
 CONFIG_FILE = Path("todo.d/todo.ini")
 
@@ -49,8 +49,12 @@ CONFIG_FILE = Path("todo.d/todo.ini")
 # scriv treats a fully-commented changelog fragment.
 HTML_COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
 
-VERSION_HEADER = re.compile(r"^(<!--\s*version:\s*)(\d+)\.(\d+)\.(\d+)(\s*-->)$", re.M)
-LAST_EDITED_HEADER = re.compile(r"^(<!--\s*last-edited:\s*)(\S+)(\s*-->)$", re.M)
+VERSION_HEADER = re.compile(
+    r"^(<!--\s*version:\s*)(\d+)\.(\d+)\.(\d+)(\s*-->)$", re.M
+)
+LAST_EDITED_HEADER = re.compile(
+    r"^(<!--\s*last-edited:\s*)(\S+)(\s*-->)$", re.M
+)
 
 
 class AssemblyError(RuntimeError):
@@ -77,7 +81,9 @@ def find_fragments(fragment_dir: Path) -> list[Path]:
     """
     if not fragment_dir.is_dir():
         return []
-    return sorted(path for path in fragment_dir.glob("*.md") if path.name != "README.md")
+    return sorted(
+        path for path in fragment_dir.glob("*.md") if path.name != "README.md"
+    )
 
 
 def fragment_body(path: Path) -> str:
@@ -106,13 +112,17 @@ def bump_header(text: str, today: str) -> str:
 
     text, count = VERSION_HEADER.subn(_bump, text, count=1)
     if not count:
-        raise AssemblyError("Output file has no '<!-- version: X.Y.Z -->' header.")
+        raise AssemblyError(
+            "Output file has no '<!-- version: X.Y.Z -->' header."
+        )
 
     text, count = LAST_EDITED_HEADER.subn(
         lambda m: f"{m.group(1)}{today}{m.group(3)}", text, count=1
     )
     if not count:
-        raise AssemblyError("Output file has no '<!-- last-edited: ... -->' header.")
+        raise AssemblyError(
+            "Output file has no '<!-- last-edited: ... -->' header."
+        )
     return text
 
 
@@ -123,7 +133,9 @@ def insert_at_marker(text: str, marker: str, addition: str) -> str:
     tasks sit at the top of the inbox — the same "newest at the marker" ordering
     scriv uses for release sections.
     """
-    marker_line = re.compile(rf"^([ \t]*<!--\s*{re.escape(marker)}\s*-->[ \t]*)$", re.M)
+    marker_line = re.compile(
+        rf"^([ \t]*<!--\s*{re.escape(marker)}\s*-->[ \t]*)$", re.M
+    )
     match = marker_line.search(text)
     if not match:
         raise AssemblyError(

@@ -1,9 +1,17 @@
 # file: .github/linters/ruff.toml
-# version: 1.2.0
+# version: 1.3.0
 # guid: 4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c
+# last-edited: 2026-07-19
 
 # Ruff configuration file
-line-length = 100
+#
+# Formatting settings MUST match the root ruff.toml. Pre-commit pins ruff to
+# this file (--config=.github/linters/ruff.toml) while CI's Python job resolves
+# ruff.toml by auto-discovery, so any formatting divergence makes the two
+# rewrite each other: pre-commit reformats a file, CI's `ruff format --check`
+# then rejects it. Lint *rule* selection may differ (CI is the stricter, and
+# authoritative, gate); line-length and style must not.
+line-length = 80
 target-version = "py38"
 
 # Exclude non-source/workflow folders from linting
@@ -36,6 +44,17 @@ ignore = [
 "__init__.py" = ["F401"]  # unused imports in __init__.py
 "test_*.py" = ["S101"]    # allow assert in tests
 "scripts/protobuf_cycle_fixer.py" = ["UP031"]  # printf-string-formatting (Python 3.12 f-string escapes not available on 3.8)
+
+# Must match the root ruff.toml. I001 is autofixed by BOTH this config (via
+# pre-commit) and the root config (via CI), so a divergence here means the two
+# rewrite each other's import blocks forever.
+[lint.isort]
+known-first-party = ["gcommon"]
+known-third-party = ["fastapi", "pydantic", "starlette", "requests", "yaml"]
+force-sort-within-sections = true
+force-single-line = false
+combine-as-imports = true
+split-on-trailing-comma = true
 
 [format]
 quote-style = "double"
