@@ -49,7 +49,7 @@ def test_generate_release_summary_failure(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Script exits with failure when any component fails."""
+    """Script records a component failure in the summary without exiting."""
     summary = tmp_path / "summary.md"
     monkeypatch.setenv("GITHUB_STEP_SUMMARY", str(summary))
 
@@ -69,9 +69,10 @@ def test_generate_release_summary_failure(
     monkeypatch.setenv("SUMMARY_AUTO_PRERELEASE", "false")
     monkeypatch.setenv("SUMMARY_AUTO_DRAFT", "false")
 
-    with pytest.raises(SystemExit) as excinfo:
-        generate_release_summary.main()
+    # Deliberately does NOT exit non-zero: the script records the failure in the
+    # step summary and lets the CI summary job decide the overall run status.
+    # See the comment in generate_release_summary.main().
+    generate_release_summary.main()
 
-    assert excinfo.value.code == 1
     content = summary.read_text(encoding="utf-8")
     assert "❌ **Some components failed**" in content

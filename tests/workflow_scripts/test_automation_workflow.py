@@ -7,8 +7,8 @@
 
 from __future__ import annotations
 
-import json
 from datetime import datetime, timedelta, timezone
+import json
 from pathlib import Path
 from typing import Any
 
@@ -150,7 +150,9 @@ def test_collect_workflow_metrics_groups_runs() -> None:
 
     assert metrics.total_runs == 3
     assert pytest.approx(metrics.success_rate, rel=1e-6) == 2 / 3
-    assert pytest.approx(metrics.average_duration, rel=1e-6) == (30 + 60 + 45) / 3
+    assert (
+        pytest.approx(metrics.average_duration, rel=1e-6) == (30 + 60 + 45) / 3
+    )
     ci_summary = metrics.workflows["CI"]
     assert ci_summary.runs == 2
     assert ci_summary.failures == 1
@@ -193,7 +195,9 @@ def test_detect_self_healing_actions_flags_failures() -> None:
 
     slugs = {action.slug for action in actions}
     assert "CI-failure-streak" in slugs
-    cache_action = next(action for action in actions if action.slug.startswith("CI-cache"))
+    cache_action = next(
+        action for action in actions if action.slug.startswith("CI-cache")
+    )
     assert cache_action.severity == "medium"
 
 
@@ -208,7 +212,8 @@ def test_filter_runs_by_lookback_filters_old_entries() -> None:
     filtered = automation_workflow.filter_runs_by_lookback(runs, 10, now=now)
     assert len(filtered) == 2
     assert all(
-        item["name"] != "CI" or item["run_started_at"].startswith("2024-02") for item in filtered
+        item["name"] != "CI" or item["run_started_at"].startswith("2024-02")
+        for item in filtered
     )
 
 
@@ -269,7 +274,12 @@ def test_cache_key_includes_branch_and_writes_outputs(
     assert payload["key"].startswith("ci-feature-new-thing-")
     outputs = output_file.read_text(encoding="utf-8")
     assert "cache-key=ci-feature-new-thing-" in outputs
-    assert "restore-keys=" in outputs
+    # restore-keys is a newline-joined list, so write_output emits it in the
+    # heredoc form GitHub Actions requires for multiline values
+    # (name<<DELIM / value / DELIM) rather than as name=value.
+    assert "restore-keys<<" in outputs
+    for restore_key in payload["restore_keys"]:
+        assert restore_key in outputs
     assert "cache-paths=" in outputs
     assert "cache-branch=feature-new-thing" in outputs
 
