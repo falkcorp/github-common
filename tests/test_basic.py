@@ -68,7 +68,9 @@ class TestWorkflowIntegrity(unittest.TestCase):
         repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         workflows_dir = os.path.join(repo_root, ".github", "workflows")
 
-        expected_workflows = ["ci.yml", "matrix-build.yml", "security.yml"]
+        # matrix-build.yml was intentionally removed as deprecated in 4b41a69;
+        # it is not a missing file, so it is not expected here.
+        expected_workflows = ["ci.yml", "security.yml"]
 
         for workflow in expected_workflows:
             workflow_path = os.path.join(workflows_dir, workflow)

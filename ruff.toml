@@ -59,8 +59,18 @@ ignore = [
 
 [lint.per-file-ignores]
 "__init__.py" = ["F401", "D104"]
-"test_*.py" = ["S101", "D100", "D103", "PLR2004"]
-"**/tests/**/*.py" = ["S101", "D100", "D103", "PLR2004"]
+# Rules that do not apply to test code:
+#   S101/S106    - asserts and fake credentials ("token") are the point of a test
+#   D100-D107    - test doubles like DummyResponse do not need docstrings
+#   PLR2004      - magic numbers in assertions are clearer inline
+#   ARG001/ARG005- stub signatures must mirror the real callee even when the
+#                  test ignores an argument (**kwargs on a fake subprocess.run)
+#   PT009        - tests/test_basic.py is deliberately unittest.TestCase-style
+#   PLC0415      - a test that asserts stdlib imports work must import inline
+#   RUF001       - tests assert on the exact emoji (ℹ️, ❌) the scripts print
+# Keep these two lists identical.
+"test_*.py" = ["S101", "S106", "D100", "D101", "D102", "D103", "D107", "PLR2004", "ARG001", "ARG005", "PT009", "PLC0415", "RUF001"]
+"**/tests/**/*.py" = ["S101", "S106", "D100", "D101", "D102", "D103", "D107", "PLR2004", "ARG001", "ARG005", "PT009", "PLC0415", "RUF001"]
 "scripts/**/*.py" = ["T20", "S602", "S603", "S607"]
 "**/migrations/**/*.py" = ["D100", "D103"]
 
