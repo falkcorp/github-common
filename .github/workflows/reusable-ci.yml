@@ -427,7 +427,14 @@ jobs:
           if [ -f .github/ghcommon-ref.txt ]; then
             ref="$(cat .github/ghcommon-ref.txt)"
           else
-            ref="e04c222a0366d5801d3b02bb76519f19ba1fa440"
+            # Fallback pin for repos with no .github/ghcommon-ref.txt. This MUST be
+            # kept current with this workflow: the workflow is consumed at @main but
+            # the scripts come from this SHA, so a stale pin means main invokes
+            # subcommands the pinned ci_workflow.py does not define. The previous pin
+            # (e04c222, 2026-03-28) predated the rust-* commands added in 767acd4
+            # (2026-05-27), so every repo without the ref file failed Rust CI with
+            # "Unknown command: rust-build".
+            ref="e73b80106099118143806b0ce58e0a73cbcfb27c"
           fi
           echo "ref=$ref" >> "$GITHUB_OUTPUT"
 
@@ -537,7 +544,7 @@ jobs:
           if [ -f .github/ghcommon-ref.txt ]; then
             ref="$(cat .github/ghcommon-ref.txt)"
           else
-            ref="e04c222a0366d5801d3b02bb76519f19ba1fa440"
+            ref="e73b80106099118143806b0ce58e0a73cbcfb27c"
           fi
           echo "ref=$ref" >> "$GITHUB_OUTPUT"
 
@@ -603,7 +610,7 @@ jobs:
           if [ -f .github/ghcommon-ref.txt ]; then
             ref="$(cat .github/ghcommon-ref.txt)"
           else
-            ref="e04c222a0366d5801d3b02bb76519f19ba1fa440"
+            ref="e73b80106099118143806b0ce58e0a73cbcfb27c"
           fi
           echo "ref=$ref" >> "$GITHUB_OUTPUT"
 
@@ -698,7 +705,7 @@ jobs:
           if [ -f .github/ghcommon-ref.txt ]; then
             ref="$(cat .github/ghcommon-ref.txt)"
           else
-            ref="e04c222a0366d5801d3b02bb76519f19ba1fa440"
+            ref="e73b80106099118143806b0ce58e0a73cbcfb27c"
           fi
           echo "ref=$ref" >> "$GITHUB_OUTPUT"
 
@@ -896,7 +903,7 @@ jobs:
           if [ -f .github/ghcommon-ref.txt ]; then
             ref="$(cat .github/ghcommon-ref.txt)"
           else
-            ref="e04c222a0366d5801d3b02bb76519f19ba1fa440"
+            ref="e73b80106099118143806b0ce58e0a73cbcfb27c"
           fi
           echo "ref=$ref" >> "$GITHUB_OUTPUT"
 
