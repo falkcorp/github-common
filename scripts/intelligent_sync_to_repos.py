@@ -145,6 +145,7 @@ REPO_SPECIFIC_FILES = {
 
 
 def parse_args():
+    """Parse the command-line arguments for a sync run."""
     parser = argparse.ArgumentParser(
         description="Intelligently sync .github structure to target repos."
     )
@@ -163,6 +164,7 @@ def parse_args():
 
 
 def run(cmd: list[str], cwd=None, check=True, dry_run=False):
+    """Run a command, logging it first and honoring dry-run mode."""
     logging.info(f"$ {' '.join(cmd)}")
     if dry_run:
         logging.info("  [DRY RUN] Command not executed")
@@ -182,7 +184,7 @@ def run(cmd: list[str], cwd=None, check=True, dry_run=False):
 
 
 def create_vscode_copilot_symlinks(repo_dir: str, dry_run: bool):
-    """Create VS Code Copilot symlinks in .vscode/copilot/ pointing to .github/instructions/"""
+    """Create .vscode/copilot symlinks pointing at .github/instructions."""
     vscode_copilot_dir = os.path.join(repo_dir, ".vscode", "copilot")
     github_instructions_dir = os.path.join(repo_dir, ".github", "instructions")
 
@@ -217,6 +219,7 @@ def create_vscode_copilot_symlinks(repo_dir: str, dry_run: bool):
 def sync_to_repo(
     repo: str, branch: str, gh_token: str, summary: list[str], dry_run: bool
 ):
+    """Sync the managed files into one repo and open or update its PR."""
     logging.info(f"\n=== Syncing to {repo} ===")
 
     if dry_run:
@@ -483,6 +486,7 @@ See [jdfalk/ghcommon](https://github.com/jdfalk/ghcommon) for the source of trut
 
 
 def main():
+    """Sync every requested repo and write a run summary."""
     args = parse_args()
 
     if not args.dry_run:
@@ -491,7 +495,7 @@ def main():
             print("GH_TOKEN environment variable is required.", file=sys.stderr)
             sys.exit(1)
     else:
-        gh_token = "dummy-for-dry-run"
+        gh_token = "dummy-for-dry-run"  # noqa: S105 - placeholder, never used to authenticate
 
     repos = [r.strip() for r in args.repos.split(",") if r.strip()]
     branch = args.branch
