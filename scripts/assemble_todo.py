@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # file: scripts/assemble_todo.py
-# version: 1.0.0
+# version: 1.1.0
 # guid: af7ef324-6c69-411e-b1a9-98c9ba2b31e3
 # last-edited: 2026-07-19
 
@@ -97,9 +97,15 @@ def fragment_body(path: Path) -> str:
 def bump_header(text: str, today: str) -> str:
     """Bump the output file's patch version and refresh ``last-edited``.
 
-    Every file this repo touches must carry an updated header, and the collect
-    commit is a real modification of TODO.md — so the assembler maintains the
-    header itself rather than leaving CI to complain about a stale one.
+    The collect commit is a real modification of the output file, so the
+    assembler maintains its header rather than leaving CI to complain about a
+    stale one.
+
+    Best-effort by design: each header line is updated only if present. Adding
+    tasks is the job, and header upkeep must never be the reason a scheduled
+    collect fails — repos that adopt this system carry heterogeneous headers,
+    and plenty have a `version:` line but no `last-edited:` (or neither). A
+    missing line is reported as a warning and the collect proceeds.
     """
 
     def _bump(match: re.Match[str]) -> str:
@@ -112,17 +118,13 @@ def bump_header(text: str, today: str) -> str:
 
     text, count = VERSION_HEADER.subn(_bump, text, count=1)
     if not count:
-        raise AssemblyError(
-            "Output file has no '<!-- version: X.Y.Z -->' header."
-        )
+        print("warning: no '<!-- version: X.Y.Z -->' header to bump.")
 
     text, count = LAST_EDITED_HEADER.subn(
         lambda m: f"{m.group(1)}{today}{m.group(3)}", text, count=1
     )
     if not count:
-        raise AssemblyError(
-            "Output file has no '<!-- last-edited: ... -->' header."
-        )
+        print("warning: no '<!-- last-edited: ... -->' header to refresh.")
     return text
 
 
