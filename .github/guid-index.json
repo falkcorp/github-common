@@ -3211,7 +3211,7 @@
     "path": "scripts/intelligent_sync_to_repos.py",
     "guid": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
     "title": "intelligent sync to repos",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "header_path": "scripts/intelligent_sync_to_repos.py",
     "path_mismatch": false
   },
