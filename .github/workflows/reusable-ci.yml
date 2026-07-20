@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-ci.yml
-# version: 1.12.5
+# version: 1.13.0
 # guid: reusable-ci-2025-09-24-core-workflow
 
 name: Reusable CI Workflow
@@ -506,11 +506,30 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
+      # actions/setup-python fails the job outright when `cache: pip` is set but
+      # the repo has no requirements.txt / pyproject.toml ("No file in ... matched
+      # to [**/requirements.txt or **/pyproject.toml]"). A repo can legitimately
+      # have Python sources and no dependency manifest — a single stdlib-only
+      # script is enough to activate this job — so detect the manifest and only
+      # ask for the pip cache when there is something to cache.
+      - name: Detect Python dependency manifest
+        id: py-manifest
+        run: |
+          set -euo pipefail
+          if find . -path ./.git -prune -o \
+               \( -name 'requirements*.txt' -o -name 'pyproject.toml' \) -print \
+               | grep -q .; then
+            echo "cache=pip" >> "$GITHUB_OUTPUT"
+          else
+            echo "cache=" >> "$GITHUB_OUTPUT"
+            echo "::notice::No Python dependency manifest found; skipping the pip cache."
+          fi
+
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: ${{ matrix.python-version }}
-          cache: pip
+          cache: ${{ steps.py-manifest.outputs.cache }}
 
       - name: Get ghcommon workflow ref
         id: ghcommon-ref
