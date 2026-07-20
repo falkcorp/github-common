@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # file: scripts/intelligent_sync_to_repos.py
-# version: 1.4.0
+# version: 1.5.0
 # guid: a1b2c3d4-e5f6-7890-1234-567890abcdef
 
 """Intelligent sync script that understands the new modular .github structure.
@@ -97,6 +97,15 @@ MANAGED_FILES = {
     "changelog.d/scriv.ini",
     "changelog.d/templates/new_fragment.md.j2",
     "changelog.d/README.md",
+    # TODO fragment scaffolding. TODO.md is assembled from these fragments by
+    # scripts/assemble_todo.py, run by .github/workflows/todo-collect.yml;
+    # opt-in by presence of todo.d/todo.ini. TODO.md itself is repo-specific
+    # and intentionally NOT synced — it carries each repo's own insert marker.
+    "todo.d/todo.ini",
+    "todo.d/templates/new_fragment.md",
+    "todo.d/README.md",
+    "scripts/assemble_todo.py",
+    ".github/workflows/todo-collect.yml",
     # Core documentation (versioned) - DEPRECATED, moved to instructions/
     # These are kept for backward compatibility but should be removed eventually
     ".github/test-generation.md",
@@ -139,8 +148,12 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description="Intelligently sync .github structure to target repos."
     )
-    parser.add_argument("--repos", required=True, help="Comma-separated list of target repos")
-    parser.add_argument("--branch", required=True, help="Branch name to push to")
+    parser.add_argument(
+        "--repos", required=True, help="Comma-separated list of target repos"
+    )
+    parser.add_argument(
+        "--branch", required=True, help="Branch name to push to"
+    )
     parser.add_argument(
         "--dry-run",
         action="store_true",
@@ -154,13 +167,17 @@ def run(cmd: list[str], cwd=None, check=True, dry_run=False):
     if dry_run:
         logging.info("  [DRY RUN] Command not executed")
         return None
-    result = subprocess.run(cmd, cwd=cwd, check=check, capture_output=True, text=True)
+    result = subprocess.run(
+        cmd, cwd=cwd, check=check, capture_output=True, text=True
+    )
     if result.stdout:
         logging.info(result.stdout)
     if result.stderr:
         logging.error(result.stderr)
     if check and result.returncode != 0:
-        raise subprocess.CalledProcessError(result.returncode, cmd, result.stdout, result.stderr)
+        raise subprocess.CalledProcessError(
+            result.returncode, cmd, result.stdout, result.stderr
+        )
     return result
 
 
@@ -170,7 +187,9 @@ def create_vscode_copilot_symlinks(repo_dir: str, dry_run: bool):
     github_instructions_dir = os.path.join(repo_dir, ".github", "instructions")
 
     if not os.path.exists(github_instructions_dir):
-        logging.info("  [SKIP] .github/instructions/ not found, skipping VS Code symlinks")
+        logging.info(
+            "  [SKIP] .github/instructions/ not found, skipping VS Code symlinks"
+        )
         return
 
     if dry_run:
@@ -195,7 +214,9 @@ def create_vscode_copilot_symlinks(repo_dir: str, dry_run: bool):
             )
 
 
-def sync_to_repo(repo: str, branch: str, gh_token: str, summary: list[str], dry_run: bool):
+def sync_to_repo(
+    repo: str, branch: str, gh_token: str, summary: list[str], dry_run: bool
+):
     logging.info(f"\n=== Syncing to {repo} ===")
 
     if dry_run:
@@ -217,9 +238,13 @@ def sync_to_repo(repo: str, branch: str, gh_token: str, summary: list[str], dry_
         # Show VS Code symlinks that would be created
         logging.info("    VS Code Copilot symlinks:")
         for file in MANAGED_FILES:
-            if file.startswith(".github/instructions/") and file.endswith(".instructions.md"):
+            if file.startswith(".github/instructions/") and file.endswith(
+                ".instructions.md"
+            ):
                 basename = os.path.basename(file)
-                logging.info(f"      CREATE: .vscode/copilot/{basename} -> ../../{file}")
+                logging.info(
+                    f"      CREATE: .vscode/copilot/{basename} -> ../../{file}"
+                )
 
         summary.append(
             f"[DRY RUN] {repo}: Would sync {len(MANAGED_FILES)} files and clean up {len(OLD_FILES_TO_REMOVE)} old files"
@@ -339,7 +364,9 @@ the new VS Code Copilot customization features."""
 
                 # Create or update PR after successful sync
                 if not dry_run:
-                    create_or_update_pr(repo, branch, summary)  # PR creation handled separately
+                    create_or_update_pr(
+                        repo, branch, summary
+                    )  # PR creation handled separately
             except subprocess.CalledProcessError as e:
                 summary.append(f"[FAIL] {repo}: Push failed - {e!s}")
         else:
@@ -446,9 +473,13 @@ See [jdfalk/ghcommon](https://github.com/jdfalk/ghcommon) for the source of trut
                 logging.warning(
                     f"Could not create PR for {repo} after {max_retries} attempts: {e.stderr}"
                 )
-                summary.append(f"[WARN] {repo}: Could not create PR - {e.stderr.strip()}")
+                summary.append(
+                    f"[WARN] {repo}: Could not create PR - {e.stderr.strip()}"
+                )
             else:
-                logging.info(f"  PR creation failed, waiting {retry_delay}s before retry...")
+                logging.info(
+                    f"  PR creation failed, waiting {retry_delay}s before retry..."
+                )
 
 
 def main():
