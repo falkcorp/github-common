@@ -278,7 +278,7 @@ jobs:
         with:
           submodules: recursive
           repository: falkcorp/github-common
-          ref: e04c222a0366d5801d3b02bb76519f19ba1fa440 # v1.10.3+
+          ref: e73b80106099118143806b0ce58e0a73cbcfb27c # v1.10.3+
           path: .ghcommon
           sparse-checkout: |
             .github/scripts
