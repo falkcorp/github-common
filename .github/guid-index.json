@@ -3075,7 +3075,7 @@
     "path": "scripts/assemble_todo.py",
     "guid": "af7ef324-6c69-411e-b1a9-98c9ba2b31e3",
     "title": "assemble todo",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "header_path": "scripts/assemble_todo.py",
     "path_mismatch": false
   },
