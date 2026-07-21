@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-release.yml
-# version: 2.14.5
+# version: 2.14.6
 # guid: 7b8c9d0e-1f2a-3b4c-5d6e-7f8a9b0c1d2e
 
 name: Reusable Release Coordinator
@@ -360,7 +360,7 @@ jobs:
           private-key: ${{ secrets.CI_APP_PRIVATE_KEY }}
 
       - name: Build Go
-        uses: falkcorp/gha-release-go@e6b2fa793ea1f43d6baee44c77c6047b5abe7f15 # v2.0.1 (GORELEASER_CURRENT_TAG pin)
+        uses: falkcorp/gha-release-go@cf4aea678c05f80410cd468683f38bd782f7915e # v1.0.3 (GORELEASER_CURRENT_TAG pin)
         with:
           protobuf-artifacts: ${{ needs.detect-languages.outputs.protobuf-needed }}
           release-version: ${{ needs.detect-languages.outputs.release-tag }}
@@ -385,7 +385,7 @@ jobs:
         with:
           submodules: recursive
       - name: Build Python
-        uses: falkcorp/gha-release-python@f3105cab8ecca34051c16c989cc809b19ae5a297 # v2.0.0
+        uses: falkcorp/gha-release-python@a6acf4ec1ced26d355ab06032a014c415bb5be13 # v1.0.3
         with:
           protobuf-artifacts: ${{ needs.detect-languages.outputs.protobuf-needed }}
 
@@ -404,7 +404,7 @@ jobs:
         with:
           submodules: recursive
       - name: Build Rust
-        uses: falkcorp/gha-release-rust@fcee6b67fc61c0da24d890d850793ccae981ccbf # v2.0.0
+        uses: falkcorp/gha-release-rust@9cdb217e2a5caa4855b6568df8416f2014cee01b # v1.0.3
         with:
           protobuf-artifacts: ${{ needs.detect-languages.outputs.protobuf-needed }}
           release-version: ${{ needs.detect-languages.outputs.release-tag }}
@@ -424,7 +424,7 @@ jobs:
         with:
           submodules: recursive
       - name: Build Frontend
-        uses: falkcorp/gha-release-frontend@d2a4a8364559606e0f5ac04ef87963a660eab8ac # v2.0.0
+        uses: falkcorp/gha-release-frontend@731cf92c81c31e1372edc7612c055b160a704c1f # v1.0.3
 
   # Docker Build
   build-docker:
@@ -441,7 +441,7 @@ jobs:
         with:
           submodules: recursive
       - name: Build Docker
-        uses: falkcorp/gha-release-docker@5438b1e9389357ebe4142d23944ee89f0afd9d11 # v2.0.0
+        uses: falkcorp/gha-release-docker@f277535984a419a3c68d9336234ed429accea5b2 # v1.0.3
         with:
           registry: ${{ needs.detect-languages.outputs.registry }}
           image-name: ${{ needs.detect-languages.outputs.image-name }}
@@ -526,7 +526,7 @@ jobs:
           path: ./artifacts
       - name: Package and organize release artifacts
         id: package-artifacts
-        uses: falkcorp/gha-package-assets@c1dc41c8fb6800606eee2714da4d7b807d55ecc4 # v1.2.0
+        uses: falkcorp/gha-package-assets@a55b9a19b91fc5882d571849ad44c2e460688f7b # v1.1.5
         with:
           artifacts-dir: ./artifacts
 
