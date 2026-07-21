@@ -3,8 +3,8 @@
 # guid: c2d3e4f5-7g8h-9i0j-1k2l-3m4n5o6p7q8r
 # last-edited: 2026-07-14
 
-inquirer>=3.1.0
-rich>=13.0.0
+inquirer>=3.4.1
+rich>=13.9.4
 
 # Transitive dep pinned to patched version (Dependabot alert #24)
 Pygments>=2.20.0
