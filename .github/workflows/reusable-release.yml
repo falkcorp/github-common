@@ -135,12 +135,12 @@ jobs:
       has-config: ${{ steps.load-config.outputs.has-config }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
       - name: Load repository configuration
         id: load-config
-        uses: falkcorp/gha-load-config@bb213cbf6b6e789bea8ad0787f2914760d00536b # v1.1.3
+        uses: falkcorp/gha-load-config@3ec49a74178f365d9791be2d132583a5c2578d09 # v1.1.3
         with:
           config-file: .github/repository-config.yml
           fail-on-missing: false
@@ -173,7 +173,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
           fetch-depth: 0
@@ -187,7 +187,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: Detect project languages and generate matrices
         id: detect
-        uses: falkcorp/gha-detect-languages@d5712363aae458b4bbb47bbb1780f02de2a03784 # v1.1.5
+        uses: falkcorp/gha-detect-languages@b2e051b4ec8467f2a82fe195fc5a3bc3c7ccf983 # v1.1.5
         with:
           skip-detection: ${{ inputs.skip-language-detection }}
           build-target: ${{ inputs.build-target || 'all' }}
@@ -310,11 +310,11 @@ jobs:
     if: ${{ needs.detect-languages.outputs.protobuf-needed == 'true' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
       - name: Generate protobuf
-        uses: falkcorp/gha-release-protobuf@1c07a62621ea5bdaf7fd46643fd4e650c69de8d9 # v1.0.2+
+        uses: falkcorp/gha-release-protobuf@0e3f1f18b2f2576895c359691f57de04dd9a37fb # v1.0.2+
 
   # Go Build
   build-go:
@@ -327,7 +327,7 @@ jobs:
       (inputs.build-target == 'all' || inputs.build-target == 'go')
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
           fetch-depth: 0
@@ -381,7 +381,7 @@ jobs:
       (inputs.build-target == 'all' || inputs.build-target == 'python')
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
       - name: Build Python
@@ -400,7 +400,7 @@ jobs:
       (inputs.build-target == 'all' || inputs.build-target == 'rust')
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
       - name: Build Rust
@@ -420,7 +420,7 @@ jobs:
       (inputs.build-target == 'all' || inputs.build-target == 'frontend')
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
       - name: Build Frontend
@@ -437,7 +437,7 @@ jobs:
       (inputs.build-target == 'all' || inputs.build-target == 'docker')
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
       - name: Build Docker
@@ -471,7 +471,7 @@ jobs:
       release-created: ${{ steps.check-release.outputs.created }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
           fetch-depth: 0
@@ -486,7 +486,7 @@ jobs:
           fi
 
       - name: Checkout ghcommon workflow scripts
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # do not add submodules: recursive here — sparse-checkout can't lazy-fetch .gitmodules, causing a promisor-fetch 400
           repository: falkcorp/github-common
@@ -566,7 +566,7 @@ jobs:
 
       - name: Create GitHub Release
         id: release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
+        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
         if: github.event_name != 'pull_request'
         with:
           tag_name: ${{ steps.version.outputs.version }}
@@ -852,7 +852,7 @@ jobs:
       REPOSITORY_CONFIG: ${{ needs.load-config.outputs.config }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
 
@@ -866,7 +866,7 @@ jobs:
           fi
 
       - name: Checkout ghcommon workflow scripts
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # do not add submodules: recursive here — sparse-checkout can't lazy-fetch .gitmodules, causing a promisor-fetch 400
           repository: falkcorp/github-common
@@ -936,7 +936,7 @@ jobs:
       !inputs.draft
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
           fetch-depth: 0
@@ -1023,7 +1023,7 @@ jobs:
       release-created: ${{ needs.create-release.outputs.release-created || 'false' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
 
@@ -1037,7 +1037,7 @@ jobs:
           fi
 
       - name: Checkout ghcommon workflow scripts
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # do not add submodules: recursive here — sparse-checkout can't lazy-fetch .gitmodules, causing a promisor-fetch 400
           repository: falkcorp/github-common
