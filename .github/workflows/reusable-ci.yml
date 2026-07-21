@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-ci.yml
-# version: 1.13.0
+# version: 1.14.0
 # guid: reusable-ci-2025-09-24-core-workflow
 
 name: Reusable CI Workflow
@@ -652,16 +652,16 @@ jobs:
         with:
           command: rust-clippy
 
+      # Build and test run inline rather than through gha-ci-workflow-helpers:
+      # the action never implemented the rust-build / rust-test commands (only
+      # rust-format and rust-clippy exist, in every release through v1.1.7), so
+      # invoking them failed every Rust CI run with "Unknown command: rust-build".
       - name: Build Rust project
-        uses: falkcorp/gha-ci-workflow-helpers@c8b87fae92ee0a0458e47b970ed892310323aa58 # v1.1.4
-        with:
-          command: rust-build
+        run: cargo build --release
 
       - name: Test Rust project
         if: ${{ !inputs.skip-tests }}
-        uses: falkcorp/gha-ci-workflow-helpers@c8b87fae92ee0a0458e47b970ed892310323aa58 # v1.1.4
-        with:
-          command: rust-test
+        run: cargo test --release
 
   # Setup npm cache for frontend using advanced cache strategy
   frontend-npm-cache:
