@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     container:
-      image: ghcr.io/falkcorp/burndown-runner-image:ob-7d131c2
+      image: ghcr.io/falkcorp/burndown-runner-image:ob-1680f86
     steps:
       - name: Materialize App key
         env:
