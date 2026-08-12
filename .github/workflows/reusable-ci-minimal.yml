@@ -1,7 +1,7 @@
 # file: .github/workflows/reusable-ci-minimal.yml
-# version: 1.0.0
+# version: 1.1.0
 # guid: c9d8e7f6-a5b4-3c2d-1e0f-9a8b7c6d5e4f
-# last-edited: 2026-05-01
+# last-edited: 2026-08-12
 
 # Fast parallel CI for PRs and pushes. Runs short tests only.
 # Uses manual actions/cache — NOT setup-go's built-in cache, which is unreliable.
@@ -99,7 +99,20 @@ jobs:
   go-test-short:
     name: Go Tests (short, race)
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # 35, not 20. The test step below runs `go test` with `-timeout 30m`, so a
+    # job cap of 20 killed the runner TEN MINUTES BEFORE Go's own timeout could
+    # fire — and Go's timeout is the only thing that prints a goroutine dump
+    # naming the stuck test. Every such run produced `conclusion=cancelled`
+    # with no evidence whatsoever, and `cancelled` reads as a test failure on
+    # the PR even though nothing failed. Observed repeatedly in
+    # falkcorp/audiobook-organizer (#2311, #2315, #2319 — the last cancelled at
+    # exactly 20m16s).
+    #
+    # INVARIANT: this cap must stay strictly greater than the longest -timeout
+    # passed to any `go test` invocation in this job, plus setup time. If you
+    # raise the test timeout, raise this too — otherwise you silently make
+    # every slow run undiagnosable again.
+    timeout-minutes: 35
     env:
       GOEXPERIMENT: ${{ inputs.go-experiment }}
     steps:
