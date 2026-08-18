@@ -42,6 +42,26 @@ on:
         required: false
         type: boolean
         default: true
+      go-lint:
+        description: 'Run golangci-lint. Opt-in (default false): consuming repos have their own .golangci.yml with their own backlog, and turning this on by default would fail their CI on findings they never agreed to gate on.'
+        required: false
+        type: boolean
+        default: false
+      golangci-lint-version:
+        description: 'golangci-lint version to install (go install ...@<version>)'
+        required: false
+        type: string
+        default: 'v2.12.2'
+      golangci-lint-args:
+        description: 'Extra args for `golangci-lint run`. Use --enable-only to scope which linters gate CI when the repo config enables more than CI should fail on (e.g. --enable-only interfacebloat,nolintlint).'
+        required: false
+        type: string
+        default: ''
+      super-linter:
+        description: 'Run Super Linter in ADVISORY mode (reports, never fails the build). Opt-in.'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -136,6 +156,111 @@ jobs:
       - name: Test (short, race)
         run: go test -short -race -timeout 30m ./...
 
+  # ── Go: golangci-lint (opt-in) ──────────────────────────────────────────────
+  go-lint:
+    name: Go Lint
+    if: inputs.go-lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GOEXPERIMENT: ${{ inputs.go-experiment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          submodules: recursive
+
+      - name: Set up Go (no built-in cache)
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
+        with:
+          go-version: ${{ inputs.go-version }}
+          cache: false
+
+      - name: Restore Go cache (manual)
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ inputs.go-version }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-${{ inputs.go-version }}-
+            ${{ runner.os }}-go-
+
+      - name: Install system packages
+        if: inputs.system-packages != ''
+        env:
+          PACKAGES: ${{ inputs.system-packages }}
+        run: |
+          # shellcheck disable=SC2086
+          sudo apt-get update && sudo apt-get install -y $PACKAGES
+
+      # Installed via `go install` rather than golangci-lint-action so the
+      # version is pinned in this file's inputs and there is no extra third-party
+      # action to SHA-pin and keep current.
+      - name: Install golangci-lint
+        env:
+          GOLANGCI_VERSION: ${{ inputs.golangci-lint-version }}
+        run: |
+          go install "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@${GOLANGCI_VERSION}"
+          golangci-lint --version
+
+      - name: golangci-lint run
+        env:
+          EXTRA_ARGS: ${{ inputs.golangci-lint-args }}
+        run: |
+          # shellcheck disable=SC2086
+          golangci-lint run $EXTRA_ARGS ./...
+
+  # ── Super Linter (opt-in, ADVISORY) ─────────────────────────────────────────
+  super-linter:
+    name: Super Linter (advisory)
+    if: inputs.super-linter
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          # Super Linter needs history to diff against the base branch when
+          # VALIDATE_ALL_CODEBASE=false.
+          fetch-depth: 0
+
+      # Loads super-linter-pr.env (or super-linter-ci.env off a PR) from the repo
+      # root into GITHUB_ENV. Same file convention ghcommon itself uses. Blank
+      # lines and # comments are skipped; everything else must be KEY=VALUE.
+      - name: Load Super Linter config
+        run: |
+          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ] && [ -f super-linter-pr.env ]; then
+            cfg=super-linter-pr.env
+          elif [ -f super-linter-ci.env ]; then
+            cfg=super-linter-ci.env
+          else
+            echo "No super-linter-*.env at repo root; using Super Linter defaults."
+            cfg=""
+          fi
+          if [ -n "$cfg" ]; then
+            echo "Loading $cfg"
+            grep -E '^[A-Za-z_][A-Za-z0-9_]*=' "$cfg" >> "$GITHUB_ENV"
+          fi
+
+      # ADVISORY BY DESIGN. Two independent mechanisms, deliberately both:
+      #   DISABLE_ERRORS=true  - Super Linter's own switch; it still reports every
+      #                          finding but exits 0. This is the intent.
+      #   continue-on-error    - the belt. DISABLE_ERRORS is set by the repo's env
+      #                          file too, and a repo that ships DISABLE_ERRORS=false
+      #                          would otherwise start hard-failing its own PRs the
+      #                          moment it opts in. The env block below wins over the
+      #                          loaded file, but continue-on-error means a future
+      #                          rename or removal of the flag upstream still cannot
+      #                          block anyone.
+      - name: Run Super Linter
+        continue-on-error: true
+        uses: super-linter/super-linter@9e863354e3ff62e0727d37183162c4a88873df41 # v8.6.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DISABLE_ERRORS: 'true'
+
   # ── Frontend: lint + build ───────────────────────────────────────────────────
   frontend-lint-build:
     name: Frontend Lint & Build
@@ -213,7 +338,15 @@ jobs:
   # ── Summary ──────────────────────────────────────────────────────────────────
   ci-minimal-summary:
     name: Minimal CI Summary
-    needs: [go-vet-build, go-test-short, frontend-lint-build, frontend-test]
+    needs:
+      [
+        go-vet-build,
+        go-test-short,
+        go-lint,
+        super-linter,
+        frontend-lint-build,
+        frontend-test,
+      ]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -222,6 +355,8 @@ jobs:
         env:
           VET_BUILD: ${{ needs.go-vet-build.result }}
           TEST_SHORT: ${{ needs.go-test-short.result }}
+          GO_LINT: ${{ needs.go-lint.result }}
+          SUPER_LINTER: ${{ needs.super-linter.result }}
           FE_LINT_BUILD: ${{ needs.frontend-lint-build.result }}
           FE_TEST: ${{ needs.frontend-test.result }}
         run: |
@@ -230,17 +365,24 @@ jobs:
             printf '| Job | Result |\n|-----|--------|\n'
             printf '| Go Vet & Build | %s |\n' "$VET_BUILD"
             printf '| Go Tests (short) | %s |\n' "$TEST_SHORT"
+            printf '| Go Lint | %s |\n' "$GO_LINT"
+            printf '| Super Linter (advisory) | %s |\n' "$SUPER_LINTER"
             printf '| Frontend Lint & Build | %s |\n' "$FE_LINT_BUILD"
             printf '| Frontend Unit Tests | %s |\n' "$FE_TEST"
           } >> "$GITHUB_STEP_SUMMARY"
 
+          # go-lint IS a gate when opted in: it must reach this aggregator or a
+          # lint failure would be invisible to a caller whose required check is
+          # this summary job. super-linter is deliberately NOT in this list - it
+          # is advisory and reports into the table only.
           failed=0
-          for result in "$VET_BUILD" "$TEST_SHORT"; do
+          for result in "$VET_BUILD" "$TEST_SHORT" "$GO_LINT"; do
             if [ "$result" = "failure" ]; then
               failed=1
             fi
           done
-          # Frontend jobs may be skipped if run-frontend=false; skip != failure
+          # Frontend jobs may be skipped if run-frontend=false, and go-lint /
+          # super-linter are skipped when not opted in; skip != failure.
           for result in "$FE_LINT_BUILD" "$FE_TEST"; do
             if [ "$result" = "failure" ]; then
               failed=1
