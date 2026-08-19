@@ -1,7 +1,7 @@
 <!-- file: CLAUDE.md -->
-<!-- version: 3.3.0 -->
+<!-- version: 3.4.0 -->
 <!-- guid: 3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f -->
-<!-- last-edited: 2026-07-19 -->
+<!-- last-edited: 2026-08-19 -->
 
 # CLAUDE.md
 
@@ -58,6 +58,37 @@ TODO list. `scripts/assemble_todo.py` folds fragments in and deletes them, run
 daily by `.github/workflows/todo-collect.yml`. This is **add-only**: checking a
 task off, deleting it, or promoting it out of the Inbox into a curated section
 is a normal direct edit of `TODO.md`.
+
+## 🚧 Worktree Discipline (MANDATORY)
+
+- **NEVER** edit files directly in the main working tree.
+- **ALWAYS** create a worktree + feature branch before any code or workflow
+  change: `git worktree add .worktrees/<branch-name> -b <branch-name>` (this
+  repo's own history already uses `.worktrees/<branch>` — keep using it rather
+  than inventing a second convention).
+- **NEVER** commit directly to `main` — all changes go through PRs.
+- If you catch yourself editing `main`, **STOP immediately**, move the changes
+  to a worktree, and reset `main`.
+
+**Before any edit:** run `git worktree list` to confirm where you are. If you're
+in the primary checkout (`main`), create a worktree first.
+
+**After the PR merges:** remove the worktree immediately —
+
+```bash
+git worktree remove .worktrees/<branch>   # or the full path
+git worktree prune                         # cleans up any stale refs
+```
+
+Never leave a merged worktree sitting around — `git worktree list` should stay
+short.
+
+**Why:** this repo publishes the reusable workflows
+(`.github/workflows/reusable-*.yml`) that every `falkcorp` repo's CI depends on
+— a bad edit here breaks CI everywhere at once, not just locally. Direct commits
+to `main` also collide with concurrent work; this repo has already had unrelated
+staged changes sitting on `main` in the same file at the same time. This is
+non-negotiable — no exceptions.
 
 ## 🔧 Git Operations Policy
 
