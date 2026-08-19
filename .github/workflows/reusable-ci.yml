@@ -825,6 +825,7 @@ jobs:
       BASE_REF: ${{ github.event.pull_request.base.ref }}
       SKIP_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'skip-changelog') }}
       PR_TITLE: ${{ github.event.pull_request.title }}
+      PR_AUTHOR: ${{ github.event.pull_request.user.login }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -838,6 +839,13 @@ jobs:
           # Opt-in by presence: repos without the fragment system pass immediately.
           if [ ! -f changelog.d/scriv.ini ]; then
             echo "::notice::changelog.d/scriv.ini not present — changelog fragments not enabled here."
+            exit 0
+          fi
+
+          # Dependabot PRs are dependency bumps, not user-facing changes we expect
+          # a fragment for — dependabot has no way to run 'scriv create' itself.
+          if [ "${PR_AUTHOR}" = "dependabot[bot]" ]; then
+            echo "::notice::PR author is dependabot[bot] — skipping."
             exit 0
           fi
 
