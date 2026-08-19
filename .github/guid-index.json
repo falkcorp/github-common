@@ -971,7 +971,7 @@
     "path": ".github/workflows/reusable-ci-minimal.yml",
     "guid": "c9d8e7f6-a5b4-3c2d-1e0f-9a8b7c6d5e4f",
     "title": "Reusable CI (Minimal / Fast)",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "header_path": ".github/workflows/reusable-ci-minimal.yml",
     "path_mismatch": false
   },
