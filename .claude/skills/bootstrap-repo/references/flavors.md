@@ -94,7 +94,8 @@ These come from `ghcommon/scripts/sync-repo-setup.py`, regardless of flavor:
 - `.github/dependabot.yml` — language-aware dependabot config
 - `.github/repository-config.yml` — seeded with `repository.type: <flavor>`
 
-Repo settings and branch protection are flavor-independent.
+Repo settings are flavor-independent. Branch rules come from org-wide rulesets,
+not per-repo protection — see `references/branch-protection.md`.
 
 ## Adding a new flavor
 

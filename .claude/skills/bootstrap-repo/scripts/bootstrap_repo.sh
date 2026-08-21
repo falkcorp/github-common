@@ -13,9 +13,16 @@
 #                     --name REPO \
 #                     [--owner jdfalk] [--private|--public] \
 #                     [--ghcommon PATH] [--repo-path PATH] \
-#                     [--skip-protection] [--skip-labels]
+#                     [--skip-labels]
 #
-# See references/repo-settings.md and references/branch-protection.md.
+# See references/repo-settings.md.
+#
+# Branch protection is deliberately NOT applied here. falkcorp uses
+# ORG-WIDE RULESETS for branch rules; classic per-repo protection has no
+# bypass list, so it blocks org automation (the template-sync bot could
+# not push to main in 15 repos) and its required-status contexts were
+# job IDs that GitHub never reports, deadlocking every PR. Removed
+# 2026-08-21.
 
 set -euo pipefail
 
@@ -30,7 +37,6 @@ NAME=""
 VISIBILITY="--private"
 GHCOMMON=""
 REPO_PATH=""
-SKIP_PROTECTION=0
 SKIP_LABELS=0
 
 usage() {
@@ -71,10 +77,6 @@ while [[ $# -gt 0 ]]; do
   --repo-path)
     REPO_PATH="$2"
     shift 2
-    ;;
-  --skip-protection)
-    SKIP_PROTECTION=1
-    shift
     ;;
   --skip-labels)
     SKIP_LABELS=1
@@ -280,18 +282,10 @@ else
   echo "→ No file changes to commit"
 fi
 
-# ---------- apply branch protection (after commit so main exists) ----------
-
-if [[ ${SKIP_PROTECTION} -eq 0 ]]; then
-  "${SCRIPT_DIR}/apply_branch_protection.sh" "${OWNER}" "${NAME}" "${REPO_PATH}"
-else
-  echo "→ Skipping branch protection (--skip-protection)"
-fi
-
 # ---------- verify ----------
 
 "${SCRIPT_DIR}/verify_bootstrap.sh" --owner "${OWNER}" --repo "${NAME}" \
-  --repo-path "${REPO_PATH}" --flavor "${FLAVOR}"
+  --flavor "${FLAVOR}"
 
 # ---------- update registry ----------
 
