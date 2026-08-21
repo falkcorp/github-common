@@ -1,12 +1,13 @@
 ---
 name: bootstrap-repo
-description: Create a new GitHub repo or apply ghcommon house standards to an existing one. Use when the user says "create a new repo", "bootstrap a repo", "set up a new repo to our standards", "apply our standards to repo X", "make this repo compliant", "new action/library/service/cli repo", or wants merge settings, branch protection, labels, dependabot, and instruction files configured in one shot. Wraps gh repo create, applies repo-level settings (rebase-only, auto-merge, no delete) and branch protection on main, runs ghcommon's label and instruction-file sync scripts, seeds flavor-specific overlay files, and records the bootstrap in ghcommon/.github/bootstrapped-repos.json.
+description: Create a new GitHub repo or apply ghcommon house standards to an existing one. Use when the user says "create a new repo", "bootstrap a repo", "set up a new repo to our standards", "apply our standards to repo X", "make this repo compliant", "new action/library/service/cli repo", or wants merge settings, branch protection, labels, dependabot, and instruction files configured in one shot. Wraps gh repo create, applies repo-level settings (rebase-only, auto-merge, no delete), runs ghcommon's label and instruction-file sync scripts, seeds flavor-specific overlay files, and records the bootstrap in ghcommon/.github/bootstrapped-repos.json.
 ---
 
 # bootstrap-repo
 
-Apply the full jdfalk/ghcommon house standard to a repo: settings, branch
-protection, labels, dependabot, instruction files, flavor overlay.
+Apply the full jdfalk/ghcommon house standard to a repo: settings, labels,
+dependabot, instruction files, flavor overlay. Branch rules come from the
+org-wide rulesets, NOT per-repo protection.
 
 ## When to use
 
@@ -26,10 +27,11 @@ which orchestrates:
 5. Flavor-specific overlay (action.yml, CHANGELOG.md, Dockerfile)
 6. Seed `.github/repository-config.yml` with `repository.type: <flavor>`
 7. Initial bootstrap commit + push to `main`
-8. `apply_branch_protection.sh` — `PUT /repos/:o/:r/branches/main/protection`
-9. `verify_bootstrap.sh` — read-back diff against expected state
+8. `verify_bootstrap.sh` — read-back diff against expected state
 
-Steps 2 and 8 are split because branch protection requires `main` to exist.
+Branch protection is intentionally NOT applied — see
+`references/branch-protection.md`. falkcorp uses org-wide rulesets; classic
+per-repo protection has no bypass list and deadlocked 15 repos.
 
 ## Decision tree
 
@@ -61,7 +63,6 @@ Steps 2 and 8 are split because branch protection requires `main` to exist.
 #   --private | --public  (default: --private; create mode only)
 #   --ghcommon PATH       (default: ~/repos/github.com/jdfalk/ghcommon)
 #   --repo-path PATH      (skip clone, use this checkout)
-#   --skip-protection     (don't apply branch protection)
 #   --skip-labels         (don't sync labels)
 ```
 
@@ -72,8 +73,7 @@ Standalone use:
 
 ```bash
 .claude/skills/bootstrap-repo/scripts/verify_bootstrap.sh \
-    --owner jdfalk --repo my-thing --flavor library \
-    --repo-path ~/repos/github.com/jdfalk/my-thing
+    --owner jdfalk --repo my-thing --flavor library
 ```
 
 ## Registry
@@ -99,5 +99,5 @@ across machines and to enable future "bootstrap-all" sweeps.
 ## References
 
 - `references/repo-settings.md` — every repo-level setting and why
-- `references/branch-protection.md` — protection ruleset and the matrix-job caveat
+- `references/branch-protection.md` — why classic protection is NOT applied
 - `references/flavors.md` — per-flavor file inventory

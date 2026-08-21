@@ -7,15 +7,12 @@
 #
 # Usage:
 #   verify_bootstrap.sh --owner OWNER --repo REPO \
-#                       [--repo-path PATH] [--flavor FLAVOR]
+#                       [--flavor FLAVOR]
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 OWNER=""
 REPO=""
-REPO_PATH=""
 FLAVOR=""
 
 while [[ $# -gt 0 ]]; do
@@ -26,10 +23,6 @@ while [[ $# -gt 0 ]]; do
     ;;
   --repo)
     REPO="$2"
-    shift 2
-    ;;
-  --repo-path)
-    REPO_PATH="$2"
     shift 2
     ;;
   --flavor)
@@ -44,7 +37,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 [[ -z ${OWNER} || -z ${REPO} ]] && {
-  echo "usage: $0 --owner OWNER --repo REPO [--repo-path PATH] [--flavor FLAVOR]" >&2
+  echo "usage: $0 --owner OWNER --repo REPO [--flavor FLAVOR]" >&2
   exit 2
 }
 
@@ -84,54 +77,34 @@ if [[ ${DRIFT} -eq 0 ]]; then
   echo "  ✓ Repo settings match"
 fi
 
-# ---------- branch protection ----------
+# ---------- branch protection (must be ABSENT) ----------
+#
+# falkcorp manages branch rules with ORG-WIDE RULESETS. Classic per-repo
+# protection is not just redundant here, it is harmful: it has no bypass_actors
+# list at all, so org automation cannot be exempted from it. Measured 2026-08-21
+# — classic protection on 15 repos blocked the template-sync bot's push to main
+# for ~4 months (GH006 "Changes must be made through a pull request"), and the
+# contexts this skill used to install were job IDs, which GitHub never reports
+# (it reports display names), so every required check sat "Expected" forever and
+# 34 Dependabot PRs were unmergeable. Deleting classic protection fixed both.
+#
+# So this is now a NEGATIVE check: its presence is drift.
 
-echo "→ Checking branch protection on ${OWNER}/${REPO}:main"
-PROTECTION=$(gh api "repos/${OWNER}/${REPO}/branches/main/protection" 2>/dev/null || echo "")
-
-if [[ -z ${PROTECTION} ]]; then
-  echo "  ✗ No protection on main"
+echo "→ Checking that classic branch protection is ABSENT on ${OWNER}/${REPO}:main"
+# NB: test the EXIT STATUS, not the output. `gh api` prints HTTP error bodies to
+# STDOUT, so a 404 still yields a non-empty string:
+#   {"message":"Branch not protected","status":"404"}
+# Capturing stdout and testing -n/-z therefore reports "protected" for every
+# repo, protected or not. The pre-2026-08-21 version of this check had the same
+# bug inverted and could never detect missing protection.
+if gh api "repos/${OWNER}/${REPO}/branches/main/protection" >/dev/null 2>&1; then
+  echo "  ✗ classic branch protection is present — it should be removed."
+  echo "    Branch rules belong in the org-wide ruleset, not per-repo protection."
+  echo "    Remove with:"
+  echo "      gh api -X DELETE repos/${OWNER}/${REPO}/branches/main/protection"
   DRIFT=1
 else
-  check() {
-    local path="$1" expected="$2"
-    local actual
-    actual=$(echo "${PROTECTION}" | jq -r "${path}")
-    if [[ ${actual} != "${expected}" ]]; then
-      echo "  ✗ ${path}: expected=${expected} actual=${actual}"
-      DRIFT=1
-    fi
-  }
-  # required_status_checks may be null (no PR-triggering workflows). Only check
-  # .strict when the object exists.
-  HAS_RSC=$(echo "${PROTECTION}" | jq -r '.required_status_checks != null')
-  if [[ ${HAS_RSC} == "true" ]]; then
-    check '.required_status_checks.strict' 'true'
-  fi
-  check '.enforce_admins.enabled' 'false'
-  check '.required_pull_request_reviews.dismiss_stale_reviews' 'true'
-  check '.required_pull_request_reviews.required_approving_review_count' '0'
-  check '.required_linear_history.enabled' 'true'
-  check '.allow_force_pushes.enabled' 'false'
-  check '.allow_deletions.enabled' 'false'
-  check '.required_conversation_resolution.enabled' 'true'
-
-  # Status check contexts: compare against discover_status_checks output
-  if [[ -n ${REPO_PATH} && -d "${REPO_PATH}/.github/workflows" ]]; then
-    EXPECTED_CONTEXTS=$(python3 "${SCRIPT_DIR}/discover_status_checks.py" \
-      "${REPO_PATH}/.github/workflows" | sort)
-    ACTUAL_CONTEXTS=$(echo "${PROTECTION}" |
-      jq -r '.required_status_checks.contexts[]?' | sort)
-    if [[ ${EXPECTED_CONTEXTS} != "${ACTUAL_CONTEXTS}" ]]; then
-      echo "  ✗ status check contexts drift:"
-      diff <(echo "${EXPECTED_CONTEXTS}") <(echo "${ACTUAL_CONTEXTS}") || true
-      DRIFT=1
-    fi
-  fi
-
-  if [[ ${DRIFT} -eq 0 ]]; then
-    echo "  ✓ Branch protection matches"
-  fi
+  echo "  ✓ No classic branch protection (org rulesets govern main)"
 fi
 
 # ---------- summary ----------
