@@ -2672,6 +2672,14 @@
     "path_mismatch": false
   },
   {
+    "path": "docs/plans/2026-08-24-release-draft-upsert-and-notes.md",
+    "guid": "6f0b2a41-9c3d-4e18-8a75-2b1c4d90e7a3",
+    "title": "Release-pipeline repair: duplicate drafts, flat notes, RC-based diff base, skipped release job",
+    "version": "1.0.0",
+    "header_path": "docs/plans/2026-08-24-release-draft-upsert-and-notes.md",
+    "path_mismatch": false
+  },
+  {
     "path": "docs/refactors/workflows/v2/README.md",
     "guid": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
     "title": "Workflow Refactoring V2 - Documentation Hub",
