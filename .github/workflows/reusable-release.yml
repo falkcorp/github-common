@@ -1,6 +1,7 @@
 # file: .github/workflows/reusable-release.yml
-# version: 2.14.6
+# version: 2.15.0
 # guid: 7b8c9d0e-1f2a-3b4c-5d6e-7f8a9b0c1d2e
+# last-edited: 2026-08-25
 
 name: Reusable Release Coordinator
 
@@ -434,11 +435,30 @@ jobs:
       # Left unset when no stable tag exists, which restores today's behaviour
       # rather than inventing a base. Requires the `fetch-depth: 0` checkout
       # above; a shallow clone has no tags to search.
-      - name: Resolve previous stable tag for release notes
+      #
+      # CURRENT_TAG is the resolved release tag, NOT github.ref_name: on a
+      # workflow_dispatch ref_name is "main", which never matches a v* tag, so
+      # the self-exclusion below silently did nothing.
+      - name: Pin goreleaser's current and previous tags
         env:
-          CURRENT_TAG: ${{ github.ref_name }}
+          CURRENT_TAG: ${{ needs.detect-languages.outputs.release-tag }}
         run: |
           set -euo pipefail
+
+          # goreleaser derives .Version from the tag `git describe` finds at
+          # HEAD. This repo cuts an RC per merge, so that tag is an RC even on
+          # a stable run: a dispatch for v0.219.1 built v0.219.1-rc.96 and then
+          # 422'd uploading assets that the rc.96 release already had. Pinning
+          # the tag explicitly is the only thing that makes a stable cut
+          # deterministic -- gha-release-go creates the tag but never exports
+          # this variable.
+          if [ -n "${CURRENT_TAG}" ]; then
+            echo "Current tag: ${CURRENT_TAG}"
+            echo "GORELEASER_CURRENT_TAG=${CURRENT_TAG}" >> "$GITHUB_ENV"
+          else
+            echo "No release tag resolved; leaving GORELEASER_CURRENT_TAG unset."
+          fi
+
           PREV_STABLE=$(
             git tag -l 'v*' \
               | { grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' || true; } \
@@ -454,7 +474,7 @@ jobs:
           fi
 
       - name: Build Go
-        uses: falkcorp/gha-release-go@cf4aea678c05f80410cd468683f38bd782f7915e # v1.0.3 (GORELEASER_CURRENT_TAG pin)
+        uses: falkcorp/gha-release-go@cf4aea678c05f80410cd468683f38bd782f7915e # v1.0.3 -- creates the tag; does NOT export GORELEASER_CURRENT_TAG (set above)
         with:
           protobuf-artifacts: ${{ needs.detect-languages.outputs.protobuf-needed }}
           release-version: ${{ needs.detect-languages.outputs.release-tag }}
