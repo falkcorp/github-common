@@ -62,6 +62,17 @@ on:
         required: false
         type: boolean
         default: false
+      disabled-languages:
+        description: >-
+          Comma-separated languages to force OFF, e.g. 'python,docker'.
+          The *-enabled booleans above can only force a language ON: they
+          default to false, and false is indistinguishable from "caller said
+          nothing", so it is resolved as 'auto' (detect). That makes "never
+          build this" unexpressible without this input. Valid values:
+          go, python, rust, frontend, docker, protobuf.
+        required: false
+        type: string
+        default: ''
       system-packages:
         description: 'Space-separated list of apt packages to install before build (e.g. libtag1-dev)'
         required: false
@@ -185,18 +196,74 @@ jobs:
             echo "registry=${REGISTRY}"
             echo "image-name=${IMAGE_NAME}"
           } >> "$GITHUB_OUTPUT"
+      # Resolve each language to true / false / auto before handing it to the
+      # detector. This used to be six inline `${{ inputs.x && 'true' || 'auto'
+      # }}` ternaries, which cannot express "off": the inputs are booleans
+      # defaulting to false, so an explicit `docker-enabled: false` is byte
+      # identical to omitting it, and both resolve to 'auto'. A caller who
+      # wanted Docker skipped got Docker built anyway.
+      #
+      # Precedence: disabled-languages wins over *-enabled. Saying "never
+      # build this" should not be silently overridden by a stale force-on.
+      - name: Resolve language flags
+        id: langflags
+        env:
+          DISABLED: ${{ inputs.disabled-languages }}
+          FORCE_GO: ${{ inputs.go-enabled }}
+          FORCE_PYTHON: ${{ inputs.python-enabled }}
+          FORCE_RUST: ${{ inputs.rust-enabled }}
+          FORCE_FRONTEND: ${{ inputs.frontend-enabled }}
+          FORCE_DOCKER: ${{ inputs.docker-enabled }}
+          FORCE_PROTOBUF: ${{ inputs.protobuf-enabled }}
+        run: |
+          set -euo pipefail
+
+          # Exact, whitespace-tolerant membership test. Deliberately not
+          # `contains()`: that is a substring match, so 'go' would match a
+          # future entry like 'golang' or 'mongo'.
+          #
+          # `[:blank:]` (space/tab), NOT `[:space:]` — the latter includes the
+          # newlines the preceding `tr` just created, collapsing 'python,docker'
+          # into the single token 'pythondocker'. Single-entry lists would still
+          # have worked, so this fails only on multi-language lists.
+          is_disabled() {
+            printf '%s' "${DISABLED:-}" \
+              | tr ',' '\n' \
+              | tr -d '[:blank:]' \
+              | grep -qxF "$1"
+          }
+
+          resolve() {
+            if is_disabled "$1"; then
+              echo "false"
+            elif [ "$2" = "true" ]; then
+              echo "true"
+            else
+              echo "auto"
+            fi
+          }
+
+          {
+            echo "go=$(resolve go "${FORCE_GO}")"
+            echo "python=$(resolve python "${FORCE_PYTHON}")"
+            echo "rust=$(resolve rust "${FORCE_RUST}")"
+            echo "frontend=$(resolve frontend "${FORCE_FRONTEND}")"
+            echo "docker=$(resolve docker "${FORCE_DOCKER}")"
+            echo "protobuf=$(resolve protobuf "${FORCE_PROTOBUF}")"
+          } | tee -a "$GITHUB_OUTPUT"
+
       - name: Detect project languages and generate matrices
         id: detect
         uses: falkcorp/gha-detect-languages@b2e051b4ec8467f2a82fe195fc5a3bc3c7ccf983 # v1.1.5
         with:
           skip-detection: ${{ inputs.skip-language-detection }}
           build-target: ${{ inputs.build-target || 'all' }}
-          go-enabled: ${{ inputs.go-enabled && 'true' || 'auto' }}
-          python-enabled: ${{ inputs.python-enabled && 'true' || 'auto' }}
-          rust-enabled: ${{ inputs.rust-enabled && 'true' || 'auto' }}
-          frontend-enabled: ${{ inputs.frontend-enabled && 'true' || 'auto' }}
-          docker-enabled: ${{ inputs.docker-enabled && 'true' || 'auto' }}
-          protobuf-enabled: ${{ inputs.protobuf-enabled && 'true' || 'auto' }}
+          go-enabled: ${{ steps.langflags.outputs.go }}
+          python-enabled: ${{ steps.langflags.outputs.python }}
+          rust-enabled: ${{ steps.langflags.outputs.rust }}
+          frontend-enabled: ${{ steps.langflags.outputs.frontend }}
+          docker-enabled: ${{ steps.langflags.outputs.docker }}
+          protobuf-enabled: ${{ steps.langflags.outputs.protobuf }}
 
       - name: Determine release strategy
         id: release-strategy
@@ -358,6 +425,33 @@ jobs:
         with:
           app-id: ${{ secrets.CI_APP_ID }}
           private-key: ${{ secrets.CI_APP_PRIVATE_KEY }}
+
+      # goreleaser's `{{ .PreviousTag }}` walks back exactly one tag. On a repo
+      # that cuts an RC per merge, that tag is almost always an RC, so release
+      # notes diff from `v0.218.1-rc.181` instead of the previous stable and
+      # list two commits. Pin the diff base to the newest STABLE tag instead.
+      #
+      # Left unset when no stable tag exists, which restores today's behaviour
+      # rather than inventing a base. Requires the `fetch-depth: 0` checkout
+      # above; a shallow clone has no tags to search.
+      - name: Resolve previous stable tag for release notes
+        env:
+          CURRENT_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          PREV_STABLE=$(
+            git tag -l 'v*' \
+              | { grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' || true; } \
+              | { grep -vxF "${CURRENT_TAG}" || true; } \
+              | sort -V \
+              | tail -n1
+          )
+          if [ -n "$PREV_STABLE" ]; then
+            echo "Previous stable tag: $PREV_STABLE"
+            echo "GORELEASER_PREVIOUS_TAG=$PREV_STABLE" >> "$GITHUB_ENV"
+          else
+            echo "No stable tag found; leaving GORELEASER_PREVIOUS_TAG unset."
+          fi
 
       - name: Build Go
         uses: falkcorp/gha-release-go@cf4aea678c05f80410cd468683f38bd782f7915e # v1.0.3 (GORELEASER_CURRENT_TAG pin)
@@ -683,39 +777,61 @@ jobs:
           echo "Managing draft release for $FULL_VERSION (latest RC: $RC_TAG)"
 
           # Find existing draft releases
-          DRAFTS=$(gh release list --json tagName,isDraft --jq '[.[] | select(.isDraft)] | sort_by(.tagName) | reverse')
+          # Enumerate drafts with `gh api --paginate`, not `gh release list`.
+          # `gh release list` defaults to 30 items and this repo family routinely
+          # carries hundreds of RC prereleases, so the existing draft fell outside
+          # the window, the lookup below came back empty, and each run created
+          # ANOTHER draft on the same tag. audiobook-organizer accumulated 5
+          # same-tag drafts for v0.218.1 that way.
+          #
+          # We also carry the release `id`. Drafts have no git tag until they are
+          # published, so several drafts can share one tag_name and `gh release
+          # edit "$TAG"` cannot say which is meant. The id is unambiguous.
+          DRAFTS=$(
+            gh api --paginate "repos/${GITHUB_REPOSITORY}/releases" \
+              --jq '[.[] | select(.draft) | {id, tagName: .tag_name, createdAt: .created_at}]' \
+            | jq -s 'add // [] | sort_by(.createdAt) | reverse'
+          )
           DRAFT_COUNT=$(echo "$DRAFTS" | jq 'length')
+          echo "Found $DRAFT_COUNT draft release(s) across all pages"
 
-          # Check if a draft for this specific version exists
-          EXISTING_DRAFT=$(echo "$DRAFTS" | jq -r "[.[] | select(.tagName == \"$FULL_VERSION\")] | first // empty | .tagName")
+          # Every draft already on this exact version, newest first.
+          MATCHING_IDS=$(echo "$DRAFTS" | jq -r --arg v "$FULL_VERSION" \
+            '[.[] | select(.tagName == $v) | .id] | .[]')
+          EXISTING_ID=$(echo "$MATCHING_IDS" | head -n1)
 
-          if [ -n "$EXISTING_DRAFT" ]; then
-            echo "Updating existing draft release $FULL_VERSION"
-            gh release edit "$FULL_VERSION" \
-              --target "$GITHUB_SHA" \
-              --title "$FULL_VERSION" \
-              --notes "$(cat <<NOTES_EOF
+          NOTES=$(cat <<NOTES_EOF
           Draft release for $FULL_VERSION — will be published when ready.
 
           Latest RC: $RC_TAG
 
           $CHANGELOG
           NOTES_EOF
-          )"
+          )
+
+          if [ -n "$EXISTING_ID" ]; then
+            echo "Updating existing draft release $FULL_VERSION (id=$EXISTING_ID)"
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/releases/${EXISTING_ID}" \
+              -f tag_name="$FULL_VERSION" \
+              -f target_commitish="$GITHUB_SHA" \
+              -f name="$FULL_VERSION" \
+              -f body="$NOTES" \
+              -F draft=true >/dev/null
+
+            # Any further drafts on this same version are duplicates minted by
+            # earlier truncated runs. Collapse them so the tag has exactly one.
+            echo "$MATCHING_IDS" | tail -n +2 | while IFS= read -r dup_id; do
+              [ -z "$dup_id" ] && continue
+              echo "Deleting duplicate draft on $FULL_VERSION (id=$dup_id)"
+              gh api -X DELETE "repos/${GITHUB_REPOSITORY}/releases/${dup_id}" >/dev/null
+            done
           else
             echo "Creating new draft release for $FULL_VERSION"
-            # Create new draft — the tag doesn't exist yet, it will be created when published
+            # The tag does not exist yet; it is created when the draft is published.
             gh release create "$FULL_VERSION" \
               --target "$GITHUB_SHA" \
               --title "$FULL_VERSION" \
-              --notes "$(cat <<NOTES_EOF
-          Draft release for $FULL_VERSION — will be published when ready.
-
-          Latest RC: $RC_TAG
-
-          $CHANGELOG
-          NOTES_EOF
-          )" \
+              --notes "$NOTES" \
               --draft
           fi
 
@@ -741,8 +857,18 @@ jobs:
       #   - Drafts: delete every superseded one. They're WIP notes, no value.
       #   - RC prereleases: keep the RC_KEEP_COUNT most recent by createdAt
       #     for rollback / historical debugging, delete the rest.
+      # DISABLED 2026-08-24. This step and each caller repo's own RC-cleanup
+      # workflow were both purging release candidates on different policies
+      # (here: keep 5, superseded-by-stable; audiobook-organizer's
+      # cleanup-rc-releases.yml: keep 3, per-base), which makes an unexpected
+      # RC count impossible to attribute to one of them. RC purging is owned by
+      # the caller repo so the policy lives next to the repo it applies to.
+      #
+      # Gated off rather than deleted: the draft half of this logic is still the
+      # only thing that removes drafts superseded by a stable cut, and it should
+      # be split out before this block goes away for good.
       - name: Clean up superseded drafts and prereleases
-        if: needs.detect-languages.outputs.release-branch-strategy == 'stable' && steps.release.outcome == 'success' && github.event_name != 'pull_request'
+        if: false && needs.detect-languages.outputs.release-branch-strategy == 'stable' && steps.release.outcome == 'success' && github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           STABLE_VERSION: ${{ steps.version.outputs.version }}
