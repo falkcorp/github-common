@@ -9,4 +9,4 @@
 requests>=2.34.2
 
 # Environment variable management
-python-dotenv>=1.2.2
+python-dotenv>=1.2.3

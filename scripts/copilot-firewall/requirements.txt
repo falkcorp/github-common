@@ -7,4 +7,4 @@ inquirer>=3.4.1
 rich>=13.9.4
 
 # Transitive dep pinned to patched version (Dependabot alert #24)
-Pygments>=2.20.0
+Pygments>=2.21.0
