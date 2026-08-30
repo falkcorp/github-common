@@ -1,7 +1,7 @@
 <!-- file: .github/instructions/go.instructions.md -->
-<!-- version: 1.11.0 -->
+<!-- version: 1.12.0 -->
 <!-- guid: 4a5b6c7d-8e9f-1a2b-3c4d-5e6f7a8b9c0d -->
-<!-- last-edited: 2026-01-19 -->
+<!-- last-edited: 2026-08-30 -->
 <!-- DO NOT EDIT: This file is managed centrally in ghcommon repository -->
 <!-- To update: Create an issue/PR in jdfalk/ghcommon -->
 
@@ -33,12 +33,196 @@ description: |
 
 ## Version Requirements
 
-- **MANDATORY**: All Go projects must use Go 1.23.0 or higher
+- **MANDATORY**: All Go projects must use Go 1.26.0 or higher
 - **NO EXCEPTIONS**: Do not use older Go versions in any repository
-- Update `go.mod` files to specify `go 1.23` minimum version
-- Update `go.work` files to specify `go 1.23` minimum version
-- All Go file headers must use version 1.23.0 or higher
+- Update `go.mod` files to specify `go 1.26` minimum version
+- Update `go.work` files to specify `go 1.26` minimum version
 - Use `go version` to verify your installation meets requirements
+- Projects that opt into JSON v2 must set `GOEXPERIMENT=jsonv2` on **every**
+  build path — local shell, CI, release builders and Docker images. A local
+  `.envrc` alone is not sufficient; a builder that misses the flag compiles
+  different marshalling behaviour than the one you tested.
+
+## Modern Go Idioms (1.24-1.26) — Required
+
+These are the current forms. Do not write the older equivalents in new code, and
+convert them when you are already editing the surrounding lines. Each entry
+states the form to use and the reason it replaced the old one.
+
+### Errors: `errors.AsType[T]` (1.26)
+
+```go
+// Old
+var apiErr *APIError
+if errors.As(err, &apiErr) {
+    return apiErr.StatusCode
+}
+
+// Current
+if apiErr, ok := errors.AsType[*APIError](err); ok {
+    return apiErr.StatusCode
+}
+```
+
+No output-parameter pointer, tighter variable scope, and the type is explicit at
+the operation. `errors.Is` is unchanged and still correct for sentinel checks.
+
+### Goroutines: `sync.WaitGroup.Go` (1.25)
+
+```go
+// Old                          // Current
+wg.Add(1)                       wg.Go(func() {
+go func() {                         work()
+    defer wg.Done()             })
+    work()
+}()
+```
+
+You cannot forget `Done`, and `Add` cannot drift away from the launch. Keep an
+explicit `Add` only where counting and goroutine creation are deliberately
+separate.
+
+### Pointers: `new(expression)` (1.26)
+
+```go
+req.Attempts = new(10)      // was: v := 10; req.Attempts = &v
+```
+
+Delete trivial `intPtr`/`strPtr` helpers that existed only as pointer plumbing.
+Keep helpers whose names carry domain meaning.
+
+### Sorting: typed `slices` functions
+
+```go
+slices.SortFunc(items, func(a, b Item) int { return cmp.Compare(a.Name, b.Name) })
+```
+
+Use `slices.SortStableFunc` when stability matters. Prefer these over
+`sort.Slice`, which is untyped and index-based.
+
+### `any`, not `interface{}`
+
+`map[string]any`, `[]any`, `func(v any)`. This is spelling, not semantics — but
+be consistent in project-owned code.
+
+---
+
+## Testing Standards (1.24-1.26)
+
+### `testing/synctest` — the concurrency isolation harness (1.25)
+
+**This is the single highest-value testing change available.** `synctest.Test`
+runs a test body inside a *bubble*:
+
+- Every goroutine started inside the bubble is tracked.
+- Time is **virtual**. The fake clock advances only when every goroutine in the
+  bubble is durably blocked, so ordering is deterministic rather than racy.
+- `synctest.Wait()` blocks until all other bubbled goroutines are durably
+  blocked — this is what replaces "sleep and hope the worker got there."
+- A goroutine that escapes the bubble, or blocks on something outside it,
+  **panics** instead of hanging silently.
+
+```go
+func TestWorkerDrains(t *testing.T) {
+    synctest.Test(t, func(t *testing.T) {
+        w := startWorker()
+        w.Submit(job)
+        synctest.Wait()          // not time.Sleep(100 * time.Millisecond)
+        require.Equal(t, 1, w.Completed())
+    })
+}
+```
+
+Audit every test using `time.Sleep`, `time.After`, `time.NewTimer` or
+`time.NewTicker` for conversion.
+
+**A sleep is an undecidable version of "did the background work finish?"** The
+usual failure is not a red test — it is a timeout constant that grows over time
+because a correct implementation keeps losing a race with the assertion on a
+loaded machine. A budget that has been raised more than once is a defect report,
+not a tuning parameter.
+
+**Do not convert a sleep that stands in for real I/O**, a subprocess, or a
+database fsync. A fake clock does not make those faster and the conversion will
+hang.
+
+### `t.Context()` / `b.Context()` (1.24)
+
+```go
+ctx := t.Context()                                   // cancelled at test shutdown
+ctx, cancel := context.WithCancel(t.Context())       // if you need early cancel
+```
+
+### `t.ArtifactDir()` vs `t.TempDir()` (1.26)
+
+`t.TempDir()` for disposable test-internal files. `t.ArtifactDir()` for output a
+human may want to inspect after a failure — diagnostic dumps, failed-input
+captures, generated media, benchmark reports.
+
+### Benchmarks: `for b.Loop()`
+
+See the dedicated `testing.B.Loop()` section below.
+
+### Test isolation: do not read package globals inside testable code
+
+Go isolates env (`t.Setenv`), working directory (`t.Chdir`), filesystem
+(`t.TempDir`, `os.Root`), lifetime (`t.Context`) and concurrency (`synctest`).
+**It has nothing that isolates a package-level global.** There is no harness for
+it, so it must be handled by design.
+
+A function that reads process-global config in its own body can only be tested
+by mutating that global, which couples every test in the package to every other
+one and produces order-dependent failures that `-shuffle` exposes and CI does
+not.
+
+```go
+// Hard to test: reads a global. A caller that forgets to configure it gets
+// zero values and a silently disabled guard.
+func Cleanup(root string) { app := appconfig.Current(); ... }
+
+// Testable: the dependency is a required parameter. A caller that omits it is
+// a COMPILE ERROR, not a silent misbehaviour at runtime.
+func Cleanup(root string, app AppDirs) { ... }
+```
+
+Resolve globals **once at the entry point** and pass the value down. This is not
+only a testing concern: a function that silently reads an unpopulated global
+fails *open* in production, which is how a safety guard comes to protect nothing.
+
+Where a test must touch a global anyway, restore it with `t.Cleanup`, and check
+whether your snapshot is a **shallow** copy — restoring a struct does not undo
+an in-place write to a map or slice field inside it.
+
+### Assert on behaviour, not on rendered output
+
+Do not assert against a log line that truncates, paginates or elides. Such a
+test passes until the underlying collection grows past the truncation boundary,
+then fails for a reason unrelated to the behaviour it claims to cover. Assert
+against the underlying accessor and let a separate test cover the rendering.
+
+---
+
+## JSON v2: use `omitzero`, not `omitempty`
+
+Under `GOEXPERIMENT=jsonv2`, **`omitempty` does not mean what it means in v1.**
+v2 emits `false` and `0` for `omitempty` fields where v1 omitted them, so the
+serialized shape of a struct changes silently on the flag alone.
+
+```go
+Enabled bool `json:"enabled,omitzero"`   // omitted when false
+Count   int  `json:"count,omitzero"`     // omitted when 0
+```
+
+Use `omitzero` for the v1 `omitempty` behaviour. Audit existing tags when
+enabling the experiment — this is a wire-format change, and a consumer that
+distinguishes "absent" from "false" will observe it.
+
+**Never let a config struct round-trip through a full-struct marshal without
+checking this.** A field that serializes as its zero value can overwrite a real
+setting with a disabled one, and a `0` that means "disabled" is
+indistinguishable from a `0` that means "never set."
+
+---
 
 ## Architecture: Go Version Strategy
 
@@ -200,7 +384,7 @@ package mypackage
 
 #### Compatibility
 
-- **Write for minimum version**: Target Go 1.23 for maximum compatibility
+- **Write for minimum version**: Target Go 1.26 for maximum compatibility
 - **Test across versions**: CI tests all supported versions on main branch
 - **Document requirements**: Clearly state minimum Go version in README
 
@@ -393,7 +577,7 @@ for i, v := range items {
 }
 
 // Good - longer scope
-func processUserData(userData map[string]interface{}) error {
+func processUserData(userData map[string]any) error {
     userID, exists := userData["id"]
     if !exists {
         return errors.New("user ID not found")
@@ -402,7 +586,7 @@ func processUserData(userData map[string]interface{}) error {
 }
 
 // Bad
-func processUserData(d map[string]interface{}) error {  // 'd' too short for scope
+func processUserData(d map[string]any) error {  // 'd' too short for scope
     userIdentificationNumber, exists := d["id"]  // Too long for simple value
     // ...
 }
@@ -634,11 +818,9 @@ func processItems(items []Item) {
     var wg sync.WaitGroup
 
     for _, item := range items {
-        wg.Add(1)
-        go func(item Item) {
-            defer wg.Done()
+        wg.Go(func() {
             process(item)
-        }(item)
+        })
     }
 
     wg.Wait()
@@ -702,8 +884,8 @@ func CalculateTotal(price, taxRate float64) (float64, error) {
 
 ```go
 // Sort items by priority to ensure high-priority items are processed first
-sort.Slice(items, func(i, j int) bool {
-    return items[i].Priority > items[j].Priority
+slices.SortFunc(items, func(a, b Item) int {
+    return cmp.Compare(b.Priority, a.Priority)
 })
 ```
 
@@ -874,7 +1056,7 @@ func BenchmarkDatabaseQuery(b *testing.B) {
 
 ```go
 func BenchmarkJSONOperations(b *testing.B) {
-    data := map[string]interface{}{
+    data := map[string]any{
         "name": "John Doe",
         "age":  30,
         "active": true,
@@ -891,7 +1073,7 @@ func BenchmarkJSONOperations(b *testing.B) {
 
     b.Run("Unmarshal", func(b *testing.B) {
         jsonData, _ := json.Marshal(data)
-        var result map[string]interface{}
+        var result map[string]any
 
         for b.Loop() {
             err := json.Unmarshal(jsonData, &result)
@@ -2671,11 +2853,9 @@ func ProcessParallel(n int, worker func(int)) {
     var wg sync.WaitGroup
 
     for i := range n {
-        wg.Add(1)
-        go func(id int) {
-            defer wg.Done()
-            worker(id)
-        }(i)
+        wg.Go(func() {
+            worker(i)
+        })
     }
 
     wg.Wait()
