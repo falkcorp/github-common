@@ -67,6 +67,28 @@ description: |
   `replace` it with a patched copy to win the bump — that converts a loud
   compile error into exactly the silent runtime corruption the gate prevents.
   Wait for upstream, and record the blocker by name so nobody re-derives it.
+
+- **A second blocker in the same repo, of the opposite kind.** Even once
+  `swiss` is unblocked, `audiobook-organizer` will not compile on 1.27, because
+  *our own* code calls an API Go removed:
+
+  ```
+  internal/metadata/audible.go:184:     undefined: json.DiscardUnknownMembers
+  internal/metadata/audible.go:218:     undefined: json.DiscardUnknownMembers
+  internal/metadata/googlebooks.go:121: undefined: json.DiscardUnknownMembers
+  ```
+
+  `encoding/json/v2` declared `DiscardUnknownMembers` in 1.26 and **dropped it
+  in 1.27** (`RejectUnknownMembers` survives in both). That is the price of the
+  `GOEXPERIMENT=jsonv2` opt-in mandated above: **an experiment's API is
+  explicitly outside the Go compatibility promise and can change between
+  releases.** Budget for it, and expect to discover it at the toolchain bump
+  rather than at the flag. Here the fix is deletion, not a shim — unknown
+  members are ignored by default, so the option only ever asked for the default.
+
+- **Separate the two kinds of blocker, because they have different owners.** A
+  dependency gating itself off the new toolchain is upstream's to fix and you
+  wait; your own use of a changed or removed API is yours and you fix it now.
 - Projects that opt into JSON v2 must set `GOEXPERIMENT=jsonv2` on **every**
   build path — local shell, CI, release builders and Docker images. A local
   `.envrc` alone is not sufficient; a builder that misses the flag compiles
