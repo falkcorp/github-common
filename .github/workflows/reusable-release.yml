@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-release.yml
-# version: 2.15.2
+# version: 2.15.3
 # guid: 7b8c9d0e-1f2a-3b4c-5d6e-7f8a9b0c1d2e
 # last-edited: 2026-08-30
 
@@ -228,10 +228,13 @@ jobs:
           # into the single token 'pythondocker'. Single-entry lists would still
           # have worked, so this fails only on multi-language lists.
           is_disabled() {
-            printf '%s' "${DISABLED:-}" \
-              | tr ',' '\n' \
-              | tr -d '[:blank:]' \
-              | grep -qxF "$1"
+            # The normalisation pipeline feeds a here-string, and is NOT piped
+            # straight into `grep -q`. `grep -q` exits on the first match; an
+            # upstream stage still writing then dies on EPIPE, and pipefail
+            # turns that into a FAILED pipeline even though grep matched — so
+            # a disabled language would read as enabled. Command substitution
+            # drains every stage, and a here-string is a redirect, not a pipe.
+            grep -qxF "$1" <<<"$(printf '%s' "${DISABLED:-}" | tr ',' '\n' | tr -d '[:blank:]')"
           }
 
           resolve() {
@@ -843,7 +846,7 @@ jobs:
           # Every draft already on this exact version, newest first.
           MATCHING_IDS=$(echo "$DRAFTS" | jq -r --arg v "$FULL_VERSION" \
             '[.[] | select(.tagName == $v) | .id] | .[]')
-          EXISTING_ID=$(echo "$MATCHING_IDS" | head -n1)
+          EXISTING_ID=${MATCHING_IDS%%$'\n'*}
 
           NOTES=$(cat <<NOTES_EOF
           Draft release for $FULL_VERSION — will be published when ready.
@@ -966,20 +969,31 @@ jobs:
             base="${tag#v}"
             base="${base%%-*}"
 
-            if ! echo "$base" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            if ! grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$' <<<"$base"; then
               echo "Skipping non-semver tag: $tag"
               continue
             fi
 
             # sort -V outputs smallest first; if base sorts first, base <= stable
-            smallest=$(printf '%s\n%s\n' "$base" "$stable_num" | sort -V | head -1)
+            # `sort -V | head -1` is the same hazard; capture and slice instead.
+            sorted_pair=$(printf '%s\n%s\n' "$base" "$stable_num" | sort -V)
+            smallest=${sorted_pair%%$'\n'*}
             if [ "$smallest" != "$base" ]; then
               # Newer than stable (shouldn't happen, but guard anyway).
               continue
             fi
 
             # Superseded. If it's in the RC keep-list, spare it.
-            if [ -n "$keep_list" ] && printf '%s\n' "$keep_list" | grep -qxF "$tag"; then
+            #
+            # Here-string, NOT `printf ... | grep -qxF`. Same EPIPE-under-
+            # pipefail hazard as the changelog guard: grep exits on the first
+            # match, and if the producer is still writing it dies on EPIPE,
+            # which pipefail turns into a failed pipeline DESPITE the match.
+            # Here that inversion is destructive — the "spare it" branch is
+            # skipped and the tag falls through to `gh release delete
+            # --cleanup-tag`, deleting a release the keep-list named. A
+            # here-string is a redirect, not a pipeline, so nothing can EPIPE.
+            if [ -n "$keep_list" ] && grep -qxF "$tag" <<<"$keep_list"; then
               echo "Keeping recent RC: $tag"
               kept=$((kept + 1))
               continue
