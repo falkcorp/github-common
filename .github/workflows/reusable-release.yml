@@ -1,7 +1,7 @@
 # file: .github/workflows/reusable-release.yml
-# version: 2.15.0
+# version: 2.15.1
 # guid: 7b8c9d0e-1f2a-3b4c-5d6e-7f8a9b0c1d2e
-# last-edited: 2026-08-25
+# last-edited: 2026-08-30
 
 name: Reusable Release Coordinator
 
@@ -356,7 +356,14 @@ jobs:
             echo "Creating stable release: $VERSION_TAG"
           else
             # RC release: find the next rc number
-            LATEST_RC=$(git tag -l "${NEXT_VERSION}-rc.*" --sort=-v:refname | head -1)
+            # Same EPIPE-under-pipefail hazard as the changelog guard below:
+            # `head -1` exits early and `git tag -l` dies on EPIPE, which
+            # pipefail turns into a hard step failure once a version has enough
+            # RC tags to outrun the pipe buffer. Take the first line without a
+            # pipeline instead. (The sibling at "Find latest full release tag"
+            # is already defused by its trailing `|| true`.)
+            ALL_RC=$(git tag -l "${NEXT_VERSION}-rc.*" --sort=-v:refname)
+            LATEST_RC=${ALL_RC%%$'\n'*}
             if [ -z "$LATEST_RC" ]; then
               RC_NUM=1
             else
@@ -747,7 +754,18 @@ jobs:
           fi
 
           # Only real fragments count — README.md, templates/ and scriv.ini don't.
-          if ! find changelog.d -maxdepth 1 -name '*.md' ! -name 'README.md' | grep -q .; then
+          #
+          # Do NOT write this as `find ... | grep -q .`. `grep -q` exits on the
+          # first match, closing the pipe; `find` then dies on EPIPE, and under
+          # `set -o pipefail` the pipeline reports FAILURE even though grep
+          # succeeded. The leading `!` therefore fires this "no fragments"
+          # branch precisely when there are MANY fragments — and it exit 0s, so
+          # the release stays green while collection is silently skipped. It is
+          # a race that fragment growth makes near-certain (audiobook-organizer
+          # collected fine at 131 fragments / ~7 KB, then stalled for six
+          # releases at 675 / ~36 KB). `-print -quit` stops at the first hit and
+          # needs no pipeline at all.
+          if [ -z "$(find changelog.d -maxdepth 1 -name '*.md' ! -name 'README.md' -print -quit)" ]; then
             echo "::notice::No changelog fragments to collect for ${VERSION}."
             exit 0
           fi
