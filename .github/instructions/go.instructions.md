@@ -1,5 +1,5 @@
 <!-- file: .github/instructions/go.instructions.md -->
-<!-- version: 1.12.0 -->
+<!-- version: 1.13.0 -->
 <!-- guid: 4a5b6c7d-8e9f-1a2b-3c4d-5e6f7a8b9c0d -->
 <!-- last-edited: 2026-08-30 -->
 <!-- DO NOT EDIT: This file is managed centrally in ghcommon repository -->
@@ -33,15 +33,64 @@ description: |
 
 ## Version Requirements
 
-- **MANDATORY**: All Go projects must use Go 1.26.0 or higher
+- **MANDATORY**: All Go projects must use Go 1.26.0 or higher. This is the
+  minimum *and* the default — `go.mod` says `go 1.26` and every CI
+  `go-version` pin says `'1.26'`.
 - **NO EXCEPTIONS**: Do not use older Go versions in any repository
 - Update `go.mod` files to specify `go 1.26` minimum version
 - Update `go.work` files to specify `go 1.26` minimum version
 - Use `go version` to verify your installation meets requirements
+- **PREFER Go 1.27 wherever every third-party library and tool supports it.**
+  If a repo's full dependency graph builds, vets and tests clean on 1.27, move
+  it — `go.mod` and every CI `go-version` bumped together. A repo that *could*
+  be on 1.27 and is sitting on 1.26 for no stated reason is drift, not a
+  decision. Verify with a build, never a guess:
+
+  ```sh
+  GOTOOLCHAIN=go1.27.0 go build ./... && GOTOOLCHAIN=go1.27.0 go vet ./...
+  ```
+
+- **Do not bump a repo whose dependencies are not ready, and never force it.**
+  Worked example: `audiobook-organizer` is blocked on 1.27. Declaring
+  `go 1.27.0` fails in `github.com/cockroachdb/swiss` (transitive via
+  `github.com/cockroachdb/pebble/v2/internal/cache`) with `undefined: hashFn`,
+  `getRuntimeHasher`, `fastrand64`, because that file reaches into Go runtime
+  internals via `//go:linkname` and gates itself on an explicit upper bound:
+
+  ```go
+  //go:build (go1.20 && !go1.27) || untested_go_version
+  ```
+
+  Its own comment says it introspects runtime internals and requires manual
+  verification per Go release. **That is the library protecting callers, not a
+  bug.** Never set `-tags untested_go_version`, fork the dependency, or
+  `replace` it with a patched copy to win the bump — that converts a loud
+  compile error into exactly the silent runtime corruption the gate prevents.
+  Wait for upstream, and record the blocker by name so nobody re-derives it.
 - Projects that opt into JSON v2 must set `GOEXPERIMENT=jsonv2` on **every**
   build path — local shell, CI, release builders and Docker images. A local
   `.envrc` alone is not sufficient; a builder that misses the flag compiles
   different marshalling behaviour than the one you tested.
+
+## Deprecated Standard Library — Do Not Use
+
+These have had drop-in replacements for years. New code must not use them, and
+touching a file that still does means fixing it in the same change.
+
+| Deprecated | Use instead |
+| ---------- | ----------- |
+| `io/ioutil.ReadFile` | `os.ReadFile` |
+| `io/ioutil.WriteFile` | `os.WriteFile` |
+| `io/ioutil.ReadAll` | `io.ReadAll` |
+| `io/ioutil.ReadDir` | `os.ReadDir` (returns `[]os.DirEntry`, not `[]os.FileInfo`) |
+| `io/ioutil.TempFile` / `TempDir` | `os.CreateTemp` / `os.MkdirTemp` — in tests, `t.TempDir()` |
+| `io/ioutil.NopCloser` | `io.NopCloser` |
+| `io/ioutil.Discard` | `io.Discard` |
+
+**The whole package is deprecated**, so the import is the smell — grep for
+`"io/ioutil"`, not for individual functions. `os.ReadDir` is the one that is not
+a pure rename: it returns `[]os.DirEntry`, which is cheaper because it does not
+`stat` every entry, so call `.Info()` only where you actually need it.
 
 ## Modern Go Idioms (1.24-1.26) — Required
 
