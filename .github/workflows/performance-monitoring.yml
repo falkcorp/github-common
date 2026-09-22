@@ -33,7 +33,7 @@ jobs:
           submodules: recursive
 
       - name: Install toolchain
-        uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # stable
+        uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # stable
 
       - name: Restore cache
         uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
@@ -61,7 +61,7 @@ jobs:
         run: python3 .github/workflows/scripts/capture_benchmark_metrics.py benchmarks/rust.json
 
       - name: Publish benchmark result
-        uses: benchmark-action/github-action-benchmark@52576c92bccf6ac60c8223ec7eb2565637cae9ba # v1.22.1
+        uses: benchmark-action/github-action-benchmark@4322e5726e6334590d251fc4f92bec0efafc45dc # v1.22.2
         with:
           name: Rust Fixture Execution
           tool: 'customSmallerIsBetter'
@@ -114,7 +114,7 @@ jobs:
         run: python3 .github/workflows/scripts/capture_benchmark_metrics.py benchmarks/node.json
 
       - name: Publish benchmark result
-        uses: benchmark-action/github-action-benchmark@52576c92bccf6ac60c8223ec7eb2565637cae9ba # v1.22.1
+        uses: benchmark-action/github-action-benchmark@4322e5726e6334590d251fc4f92bec0efafc45dc # v1.22.2
         with:
           name: Node Fixture Execution
           tool: 'customSmallerIsBetter'
@@ -167,7 +167,7 @@ jobs:
         run: python3 .github/workflows/scripts/capture_benchmark_metrics.py benchmarks/python.json
 
       - name: Publish benchmark result
-        uses: benchmark-action/github-action-benchmark@52576c92bccf6ac60c8223ec7eb2565637cae9ba # v1.22.1
+        uses: benchmark-action/github-action-benchmark@4322e5726e6334590d251fc4f92bec0efafc45dc # v1.22.2
         with:
           name: Python Fixture Execution
           tool: 'customSmallerIsBetter'

@@ -15,5 +15,5 @@ requests>=2.34.2
 scriv>=1.8.0
 
 # Transitive deps pinned to patched versions (Dependabot alerts #5, #3, #4, #29, #30)
-urllib3>=2.7.0
-idna>=3.19
+urllib3>=2.8.0
+idna>=3.20
