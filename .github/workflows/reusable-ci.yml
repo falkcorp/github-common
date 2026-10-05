@@ -283,12 +283,18 @@ jobs:
       # file matching its filter. `:(glob)` pathspec magic gives `**/` the same
       # zero-or-more-directories meaning paths-filter's picomatch gives it.
       #
-      # Two categories gate on the job's entry point instead, because a matching
-      # fixture file is not a buildable project: rust-ci runs `cargo build` at
-      # the repo root, and frontend-ci installs from the resolved frontend
-      # directory. github-common itself tracks testdata/rust/Cargo.toml and a
-      # root package.json with no web/ -- file matching alone started both jobs
-      # there and both failed.
+      # Three categories gate on the job's entry point instead, because a
+      # matching file is not a buildable project:
+      #   rust      - rust-ci runs `cargo build` at the repo root.
+      #   frontend  - frontend-ci installs from the resolved frontend directory.
+      #   python    - python-ci treats the repo root as the package (`pip install
+      #               -e .` whenever pyproject.toml exists, then pytest at the
+      #               root). A pyproject.toml holding only tool config (black,
+      #               ruff) is not a package and that install fails.
+      # Measured on forced runs: github-common (testdata/rust/Cargo.toml, a root
+      # package.json with no web/) failed rust-ci and frontend-ci;
+      # audiobook-organizer (config-only pyproject.toml, helper scripts) failed
+      # python-ci at `pip install -e .`.
       - name: Inventory tracked files
         if: steps.mode.outputs.force == 'true'
         id: inventory
@@ -327,6 +333,12 @@ jobs:
           tracked() {
             [[ -n "$(git ls-files -- "$1")" ]]
           }
+          python_project() {
+            if tracked setup.py || tracked setup.cfg || tracked requirements.txt; then
+              return 0
+            fi
+            tracked pyproject.toml && grep -qE '^\[(project|build-system)\]' pyproject.toml
+          }
           frontend_manifest="${FRONTEND_DIR:-.}"
           frontend_manifest="${frontend_manifest%/}/package.json"
           frontend_manifest="${frontend_manifest#./}"
@@ -335,6 +347,12 @@ jobs:
               rust_files)
                 if [[ "${hits[$i]}" == true ]] && ! tracked Cargo.toml; then
                   echo "rust_files: no root Cargo.toml, not forcing rust-ci"
+                  hits[i]=false
+                fi
+                ;;
+              python_files)
+                if [[ "${hits[$i]}" == true ]] && ! python_project; then
+                  echo "python_files: no root Python package (pyproject.toml with [project]/[build-system], setup.py, setup.cfg or requirements.txt), not forcing python-ci"
                   hits[i]=false
                 fi
                 ;;
