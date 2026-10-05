@@ -270,12 +270,30 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           filters: ${{ env.CHANGE_FILTERS }}
 
+      # frontend-ci runs in the directory this action resolves, so a forced
+      # run asks the same question with the same pin and config.
+      - name: Get frontend working directory
+        if: steps.mode.outputs.force == 'true'
+        id: frontend-dir
+        uses: falkcorp/gha-get-frontend-config@97f9fea2ba59e35fa23a74f0733b7a07005c5809 # v1.1.3
+        with:
+          repository-config: ${{ needs.load-config.outputs.config }}
+
       # Forced run: a category counts as changed when the repository tracks any
       # file matching its filter. `:(glob)` pathspec magic gives `**/` the same
       # zero-or-more-directories meaning paths-filter's picomatch gives it.
+      #
+      # Two categories gate on the job's entry point instead, because a matching
+      # fixture file is not a buildable project: rust-ci runs `cargo build` at
+      # the repo root, and frontend-ci installs from the resolved frontend
+      # directory. github-common itself tracks testdata/rust/Cargo.toml and a
+      # root package.json with no web/ -- file matching alone started both jobs
+      # there and both failed.
       - name: Inventory tracked files
         if: steps.mode.outputs.force == 'true'
         id: inventory
+        env:
+          FRONTEND_DIR: ${{ steps.frontend-dir.outputs.dir }}
         run: |
           key_re='^([a-z_]+):[[:space:]]*$'
           pat_re="^[[:space:]]+-[[:space:]]+'([^']+)'[[:space:]]*$"
@@ -306,6 +324,28 @@ jobs:
             echo "::error::CHANGE_FILTERS defined no categories"
             exit 1
           fi
+          tracked() {
+            [[ -n "$(git ls-files -- "$1")" ]]
+          }
+          frontend_manifest="${FRONTEND_DIR:-.}"
+          frontend_manifest="${frontend_manifest%/}/package.json"
+          frontend_manifest="${frontend_manifest#./}"
+          for i in "${!keys[@]}"; do
+            case "${keys[$i]}" in
+              rust_files)
+                if [[ "${hits[$i]}" == true ]] && ! tracked Cargo.toml; then
+                  echo "rust_files: no root Cargo.toml, not forcing rust-ci"
+                  hits[i]=false
+                fi
+                ;;
+              frontend_files)
+                if [[ "${hits[$i]}" == true ]] && ! tracked "$frontend_manifest"; then
+                  echo "frontend_files: no $frontend_manifest, not forcing frontend-ci"
+                  hits[i]=false
+                fi
+                ;;
+            esac
+          done
           for i in "${!keys[@]}"; do
             echo "${keys[$i]}=${hits[$i]}" >> "$GITHUB_OUTPUT"
             echo "${keys[$i]}=${hits[$i]}"
