@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 # file: .github/scripts/sync-release-determine-version.py
-# version: 1.0.0
+# version: 1.0.1
 # guid: f6a7b8c9-d0e1-2f3a-4b5c-6d7e8f9a0b1c
+# last-edited: 2026-10-05
 
 """Determine version for release based on manual input or semantic-release analysis.
+
 Usage: sync-release-determine-version.py <language> <manual_release_type> <github_token>
 """
 
 import json
+from pathlib import Path
 import re
 import subprocess
 import sys
-from pathlib import Path
 
 
 def get_current_version_rust():
@@ -24,8 +26,8 @@ def get_current_version_rust():
         if match:
             return match.group(1)
         raise ValueError("Could not find version in Cargo.toml")
-    except FileNotFoundError:
-        raise ValueError("Cargo.toml not found")
+    except FileNotFoundError as e:
+        raise ValueError("Cargo.toml not found") from e
 
 
 def get_current_version_go():
@@ -123,7 +125,9 @@ def run_semantic_release_dry_run(github_token):
         output = result.stdout + result.stderr
 
         # Look for version in output
-        version_match = re.search(r"The next release version is ([0-9.]+)", output)
+        version_match = re.search(
+            r"The next release version is ([0-9.]+)", output
+        )
         if version_match:
             return version_match.group(1)
 
@@ -180,12 +184,16 @@ def main():
             # Manual release
             print(f"Manual release type specified: {manual_release_type}")
 
-            new_version = increment_version(current_version, manual_release_type)
+            new_version = increment_version(
+                current_version, manual_release_type
+            )
 
             set_github_output("version", new_version)
             set_github_output("tag", f"v{new_version}")
             set_github_output("should-release", "true")
-            set_github_output("changelog", f"Manual {manual_release_type} release")
+            set_github_output(
+                "changelog", f"Manual {manual_release_type} release"
+            )
 
             print(f"Manual release version: {new_version}")
 

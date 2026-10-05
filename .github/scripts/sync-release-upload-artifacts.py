@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 # file: .github/scripts/sync-release-upload-artifacts.py
-# version: 1.0.0
+# version: 1.0.1
 # guid: c4d5e6f7-a8b9-c0d1-e2f3-a4b5c6d7e8f9
+# last-edited: 2026-10-05
 
 """Upload release artifacts to GitHub release."""
 
 import os
+from pathlib import Path
 import subprocess
 import sys
-from pathlib import Path
 
 
 def upload_artifacts(release_id, artifacts_dir):
@@ -41,7 +42,9 @@ def upload_artifacts(release_id, artifacts_dir):
             os.environ.get("GITHUB_REPOSITORY", ""),
         ]
 
-        result = subprocess.run(cmd, check=False, capture_output=True, text=True)
+        result = subprocess.run(
+            cmd, check=False, capture_output=True, text=True
+        )
         if result.returncode == 0:
             print(f"  ✓ Uploaded {artifact.name}")
         else:
@@ -51,7 +54,9 @@ def upload_artifacts(release_id, artifacts_dir):
 def main():
     """Main entry point."""
     if len(sys.argv) < 3:
-        print("Usage: sync-release-upload-artifacts.py <release_id> <artifacts_dir>")
+        print(
+            "Usage: sync-release-upload-artifacts.py <release_id> <artifacts_dir>"
+        )
         sys.exit(1)
 
     release_id = sys.argv[1]

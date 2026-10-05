@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # file: .github/scripts/sync-auto-commit.py
-# version: 1.0.0
+# version: 1.0.1
 # guid: f7a8b9c0-d1e2-3f4a-5b6c-7d8e9f0a1b2c
+# last-edited: 2026-10-05
 
 """Auto-commit script for workflow modernization.
+
 Creates conventional commits for workflow changes.
 """
 
@@ -12,7 +14,9 @@ import subprocess
 
 def run_command(cmd, capture_output=True):
     """Run a shell command."""
-    result = subprocess.run(cmd, check=False, shell=True, capture_output=capture_output, text=True)
+    result = subprocess.run(
+        cmd, check=False, shell=True, capture_output=capture_output, text=True
+    )
     if result.returncode != 0 and capture_output:
         print(f"Error running command: {cmd}")
         print(f"Error: {result.stderr}")

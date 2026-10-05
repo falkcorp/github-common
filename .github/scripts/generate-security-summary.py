@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # file: .github/scripts/generate-security-summary.py
-# version: 1.0.0
+# version: 1.0.1
 # guid: sec-sum-gen-2025-12-07
+# last-edited: 2026-10-05
 
 """Generate security scan summary for GitHub Actions.
 
@@ -12,8 +13,8 @@ and generates a formatted summary in GitHub Actions step summary format.
 from __future__ import annotations
 
 import os
-import sys
 from pathlib import Path
+import sys
 
 
 def main() -> int:
@@ -37,7 +38,9 @@ def main() -> int:
     warning_required = any(status == "failure" for status in results.values())
     summary_lines.append("")
     if warning_required:
-        summary_lines.append("⚠️ **Security issues detected. Please review the scan results.**")
+        summary_lines.append(
+            "⚠️ **Security issues detected. Please review the scan results.**"
+        )
     else:
         summary_lines.append("✅ **All security scans passed.**")
 

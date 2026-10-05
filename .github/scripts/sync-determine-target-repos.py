@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 # file: .github/scripts/sync-determine-target-repos.py
-# version: 1.0.1
+# version: 1.0.2
 # guid: a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d
+# last-edited: 2026-10-05
 
 """Determine target repositories for sync operations.
+
 Reads from repositories.txt and outputs repository names.
 """
 
 import os
-import sys
 from pathlib import Path
+import sys
 
 
 def get_target_repos():
@@ -23,8 +25,8 @@ def get_target_repos():
     repos = []
     try:
         with open(repo_file) as f:
-            for line in f:
-                line = line.strip()
+            for raw_line in f:
+                line = raw_line.strip()
                 if line and not line.startswith("#"):
                     # Extract repo name from owner/repo format
                     repo_name = line.split("/")[-1] if "/" in line else line

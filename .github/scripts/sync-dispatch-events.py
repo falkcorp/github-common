@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 # file: .github/scripts/sync-dispatch-events.py
-# version: 1.1.1
+# version: 1.1.2
 # guid: b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e
+# last-edited: 2026-10-05
 
 """Dispatch repository events to target repositories for synchronization."""
 
 import contextlib
 import json
 import os
+from pathlib import Path
 import subprocess
 import sys
-from pathlib import Path
 
 
 def get_target_repos():
@@ -24,8 +25,8 @@ def get_target_repos():
     repos = []
     try:
         with open(repo_file) as f:
-            for line in f:
-                line = line.strip()
+            for raw_line in f:
+                line = raw_line.strip()
                 if line and not line.startswith("#"):
                     # Keep full owner/repo format for API calls
                     repos.append(line)
@@ -75,11 +76,13 @@ def dispatch_event(repo, event_type, client_payload):
     ]
 
     try:
-        result = subprocess.run(curl_cmd, check=False, capture_output=True, text=True, timeout=30)
+        result = subprocess.run(
+            curl_cmd, check=False, capture_output=True, text=True, timeout=30
+        )
 
         if result.returncode == 0:
             status = (result.stdout or "").strip()
-            if status == "204" or status == "200":
+            if status in {"204", "200"}:
                 print(f"✅ Dispatched '{payload.get('event_type')}' to {repo}")
                 return True
             print(
@@ -121,7 +124,9 @@ def main():
     print(f"Dispatching '{event_type}' events to target repositories...")
     print(f"Source: {source_repo}@{source_sha}")
     with contextlib.suppress(Exception):
-        print(f"Client payload: {json.dumps(client_payload, separators=(',', ':'))}")
+        print(
+            f"Client payload: {json.dumps(client_payload, separators=(',', ':'))}"
+        )
 
     target_repos = get_target_repos()
 
@@ -140,7 +145,9 @@ def main():
 
     print(f"✅ Successfully dispatched to {successful} repositories")
     if failed > 0:
-        print(f"❌ Failed to dispatch to {failed} repositories", file=sys.stderr)
+        print(
+            f"❌ Failed to dispatch to {failed} repositories", file=sys.stderr
+        )
         sys.exit(1)
 
     print("All repository dispatch events sent successfully")

@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # file: .github/scripts/sync-receiver-generate-summary.py
-# version: 1.0.1
+# version: 1.0.2
 # guid: f6a7b8c9-d0e1-2f3a-4b5c-6d7e8f9a0b1c
+# last-edited: 2026-10-05
 
 """Generate synchronization summary for sync receiver workflow."""
 
+from datetime import datetime
 import os
 import subprocess
-from datetime import datetime
 
 
 def get_sync_changes():
@@ -56,7 +57,10 @@ def get_changed_files_summary():
     for _status, file_path in changes:
         if ".github/workflows/" in file_path:
             categories["workflows"].append(file_path)
-        elif ".github/instructions/" in file_path or "copilot-instructions.md" in file_path:
+        elif (
+            ".github/instructions/" in file_path
+            or "copilot-instructions.md" in file_path
+        ):
             categories["instructions"].append(file_path)
         elif ".github/scripts/" in file_path or "/scripts/" in file_path:
             categories["scripts"].append(file_path)
@@ -95,7 +99,7 @@ def generate_summary():
     changes_summary = get_changed_files_summary()
 
     # Generate summary markdown
-    summary = f"""# 📥 Repository Sync Received
+    return f"""# 📥 Repository Sync Received
 
 ## Overview
 - **Source Repository**: {source_repo}
@@ -123,8 +127,6 @@ def generate_summary():
 
 *This repository is automatically synchronized with the central ghcommon repository.*
 """
-
-    return summary
 
 
 def write_to_step_summary(content):

@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # file: .github/scripts/detect-build-matrix.py
-# version: 1.1.0
+# version: 1.1.1
 # guid: a1b2c3d4-e5f6-7890-1234-56789abcdef0
+# last-edited: 2026-10-05
 
 """Detect build matrix requirements for the repository.
+
 This script analyzes the repository to determine what technologies are used
 and generates appropriate build matrices for GitHub Actions.
 """
@@ -74,7 +76,8 @@ def detect_build_requirements():
 
     # Check for Python projects
     if any(
-        os.path.exists(f) for f in ["pyproject.toml", "requirements.txt", "setup.py"]
+        os.path.exists(f)
+        for f in ["pyproject.toml", "requirements.txt", "setup.py"]
     ) or check_file_exists("*.py"):
         print("Python project detected")
         flags["has_python"] = True
@@ -103,9 +106,7 @@ def detect_build_requirements():
         # Read package.json to determine if this is actually a frontend project
         try:
             with open("package.json") as f:
-                import json as json_lib
-
-                pkg_data = json_lib.load(f)
+                pkg_data = json.load(f)
 
             # Check for frontend indicators
             frontend_indicators = [
@@ -154,7 +155,9 @@ def detect_build_requirements():
                 **pkg_data.get("devDependencies", {}),
             }
 
-            has_frontend_deps = any(indicator in all_deps for indicator in frontend_indicators)
+            has_frontend_deps = any(
+                indicator in all_deps for indicator in frontend_indicators
+            )
             has_build_scripts = any(
                 script in build_scripts
                 for script in script_indicators
@@ -197,7 +200,9 @@ def detect_build_requirements():
         print("Docker project detected")
         flags["has_docker"] = True
         # Use docker-detect.py script for detailed Docker configuration
-        success, output = run_command("python3 .github/scripts/docker-detect.py")
+        success, _output = run_command(
+            "python3 .github/scripts/docker-detect.py"
+        )
         if success:
             print("Docker detection script completed successfully")
             # The docker-detect.py script will set its own outputs
@@ -215,7 +220,9 @@ def detect_build_requirements():
             }
 
     # Check for protobuf
-    if any(os.path.exists(f) for f in ["buf.yaml", "buf.gen.yaml"]) or check_file_exists("*.proto"):
+    if any(
+        os.path.exists(f) for f in ["buf.yaml", "buf.gen.yaml"]
+    ) or check_file_exists("*.proto"):
         print("Protobuf project detected")
         flags["protobuf_needed"] = True
 

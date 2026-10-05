@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # file: .github/scripts/run_buf_generate.py
-# version: 1.0.0
+# version: 1.0.1
 # guid: 8c5b2d4e-3f7a-45d1-9e2f-1b6c7d8e9f01
+# last-edited: 2026-10-05
 """Run buf generate with basic safety checks and clearer logging."""
 
 from __future__ import annotations
@@ -12,6 +13,7 @@ import sys
 
 
 def main() -> int:
+    """Run `buf generate` when buf.gen.yaml exists; return the exit code."""
     if not os.path.exists("buf.gen.yaml"):
         print("No buf.gen.yaml found, skipping generation")
         return 0

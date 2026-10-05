@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # file: .github/scripts/sync-release-build-artifacts.py
-# version: 1.0.0
+# version: 1.0.1
 # guid: f2a3b4c5-d6e7-8f9a-0b1c-2d3e4f5a6b7c
+# last-edited: 2026-10-05
 
-"""Build Artifacts Script
+"""Build Artifacts Script.
 
 Handles building release artifacts for different programming languages.
 Replaces embedded bash build scripts with reliable Python-based build logic.
@@ -11,9 +12,10 @@ Replaces embedded bash build scripts with reliable Python-based build logic.
 
 import json
 import os
+from pathlib import Path
 import subprocess
 import sys
-from pathlib import Path
+from typing import Optional
 
 
 def log(message: str, level: str = "INFO") -> None:
@@ -21,10 +23,14 @@ def log(message: str, level: str = "INFO") -> None:
     print(f"[{level}] {message}")
 
 
-def run_command(cmd: list, cwd: str = None, env: dict = None) -> tuple:
+def run_command(
+    cmd: list, cwd: Optional[str] = None, env: Optional[dict] = None
+) -> tuple:
     """Run a command and return (success, stdout, stderr)."""
     try:
-        result = subprocess.run(cmd, cwd=cwd, env=env, capture_output=True, text=True, check=False)
+        result = subprocess.run(
+            cmd, cwd=cwd, env=env, capture_output=True, text=True, check=False
+        )
         return result.returncode == 0, result.stdout, result.stderr
     except Exception as e:
         return False, "", str(e)
@@ -85,7 +91,7 @@ def build_rust_artifacts() -> bool:
             continue
 
         # Build for target
-        build_success, stdout, stderr = run_command(
+        build_success, _stdout, stderr = run_command(
             ["cargo", "build", "--release", "--target", target]
         )
 
@@ -174,7 +180,7 @@ def build_go_artifacts() -> bool:
         env["GOARCH"] = goarch
         env["CGO_ENABLED"] = "0"
 
-        build_success, stdout, stderr = run_command(
+        build_success, _stdout, stderr = run_command(
             ["go", "build", "-o", f"releases/{binary_name}", "."], env=env
         )
 
@@ -224,7 +230,7 @@ def build_python_artifacts() -> bool:
     releases_dir.mkdir(exist_ok=True)
 
     # Build wheel
-    build_success, stdout, stderr = run_command(
+    build_success, _stdout, stderr = run_command(
         ["python", "-m", "build", "--wheel", "--outdir", "releases"]
     )
 
@@ -252,7 +258,9 @@ def build_javascript_artifacts() -> bool:
             scripts = package_data.get("scripts", {})
 
             if "build" in scripts:
-                build_success, stdout, stderr = run_command(["npm", "run", "build"])
+                build_success, _stdout, stderr = run_command(
+                    ["npm", "run", "build"]
+                )
                 if build_success:
                     log("Successfully built JavaScript project")
                     return True
@@ -268,7 +276,11 @@ def build_javascript_artifacts() -> bool:
 
 def main():
     """Main execution function."""
-    language = sys.argv[1] if len(sys.argv) > 1 else os.environ.get("LANGUAGE", "unknown")
+    language = (
+        sys.argv[1]
+        if len(sys.argv) > 1
+        else os.environ.get("LANGUAGE", "unknown")
+    )
 
     log(f"Building artifacts for language: {language}")
 

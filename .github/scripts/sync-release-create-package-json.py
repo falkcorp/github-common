@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # file: .github/scripts/sync-release-create-package-json.py
-# version: 1.0.0
+# version: 1.0.1
 # guid: f6a7b8c9-d0e1-2f3a-4b5c-6d7e8f9a0b1c
+# last-edited: 2026-10-05
 
 """Create package.json for semantic-release based on language type.
+
 Usage: sync-release-create-package-json.py <language>
 """
 

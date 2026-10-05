@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # file: .github/scripts/sync-release-create-semantic-config.py
-# version: 1.0.0
+# version: 1.0.1
 # guid: e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b
+# last-edited: 2026-10-05
 
 """Create semantic-release configuration based on language type.
+
 Usage: sync-release-create-semantic-config.py <language>
 """
 
@@ -105,7 +107,9 @@ def get_python_config():
         [
             [
                 "@semantic-release/exec",
-                {"prepareCmd": "python scripts/update_version.py ${nextRelease.version}"},
+                {
+                    "prepareCmd": "python scripts/update_version.py ${nextRelease.version}"
+                },
             ],
             ["@semantic-release/changelog", {"changelogFile": "CHANGELOG.md"}],
             [
