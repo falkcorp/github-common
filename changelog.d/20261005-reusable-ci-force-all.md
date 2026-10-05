@@ -16,13 +16,22 @@ New input `force-all` (string, default `'auto'`):
 
 A forced run reports a category as changed when the repository tracks at least
 one file matching that category's filter (`git ls-files` with `:(glob)`
-pathspecs), so forcing never starts `rust-ci` in a repo with no Rust. Two
+pathspecs), so forcing never starts `rust-ci` in a repo with no Rust. Three
 categories gate on the job's entry point instead of any matching file:
-`rust_files` needs a tracked root `Cargo.toml` (rust-ci runs `cargo build` at
-the root), and `frontend_files` needs `package.json` in the directory
-`gha-get-frontend-config` resolves (where frontend-ci installs). Without this,
-this repo's own fixtures (`testdata/rust/Cargo.toml`, a root `package.json`
-with no `web/`) started both jobs on a forced run and both failed. The
+
+- `rust_files` needs a tracked root `Cargo.toml` (rust-ci runs `cargo build`
+  at the root).
+- `frontend_files` needs `package.json` in the directory
+  `gha-get-frontend-config` resolves (where frontend-ci installs).
+- `python_files` needs a root Python package: `pyproject.toml` with a
+  `[project]` or `[build-system]` table, `setup.py`, `setup.cfg` or
+  `requirements.txt` (python-ci runs `pip install -e .` at the root whenever
+  `pyproject.toml` exists, which fails on a config-only file).
+
+Without these, forced test runs failed on fixtures and tool config: this repo
+(`testdata/rust/Cargo.toml`, a root `package.json` with no `web/`) failed
+rust-ci and frontend-ci, and audiobook-organizer (a black-config-only
+`pyproject.toml`) failed python-ci at `pip install -e .`. The
 filter list is now defined once (`CHANGE_FILTERS`) and read by both paths. The
 Change Detection summary prints which mode ran, and `detect-changes` exposes a
 `force-all` output.
