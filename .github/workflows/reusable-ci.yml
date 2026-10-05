@@ -1,6 +1,7 @@
 # file: .github/workflows/reusable-ci.yml
-# version: 1.15.0
+# version: 1.16.0
 # guid: reusable-ci-2025-09-24-core-workflow
+# last-edited: 2026-10-05
 
 name: Reusable CI Workflow
 
@@ -62,6 +63,18 @@ on:
         required: false
         type: string
         default: ''
+      force-all:
+        description: >-
+          Run every CI job whose language the repository contains, instead of only
+          the jobs whose files changed. 'auto' (default) forces on schedule and
+          workflow_dispatch events, where there is no meaningful diff to inspect
+          (a scheduled run compares the commit with itself and finds nothing);
+          'true' always forces; 'false' never does. A forced category is reported
+          as changed only if the repository tracks at least one file matching its
+          filter, so forcing never starts rust-ci in a repo with no Rust.
+        required: false
+        type: string
+        default: 'auto'
     outputs:
       go-files:
         description: 'Whether Go files were detected'
@@ -141,17 +154,78 @@ jobs:
     permissions:
       contents: read
     needs: load-config
+    env:
+      # Single source of truth for the change categories. dorny/paths-filter
+      # reads it on a normal diff run; the inventory step parses it on a forced
+      # run. Keep the format to `key:` lines and `- 'glob'` lines -- the
+      # inventory parser fails the job on anything else rather than guess.
+      CHANGE_FILTERS: |
+        go_files:
+          - '**/*.go'
+          - 'go.mod'
+          - 'go.sum'
+        python_files:
+          - '**/*.py'
+          - 'requirements*.txt'
+          - 'pyproject.toml'
+          - 'setup.py'
+          - 'setup.cfg'
+        rust_files:
+          - '**/*.rs'
+          - 'Cargo.toml'
+          - 'Cargo.lock'
+        frontend_files:
+          - '**/*.js'
+          - '**/*.ts'
+          - '**/*.jsx'
+          - '**/*.tsx'
+          - '**/*.vue'
+          - '**/*.svelte'
+          - '**/*.html'
+          - '**/*.css'
+          - '**/*.scss'
+          - '**/*.sass'
+          - '**/*.less'
+          - 'package*.json'
+          - 'yarn.lock'
+          - 'pnpm-lock.yaml'
+        docker_files:
+          - 'Dockerfile*'
+          - 'docker-compose*.yml'
+          - 'docker-compose*.yaml'
+          - '.dockerignore'
+        docs_files:
+          - '**/*.md'
+          - 'docs/**'
+          - '*.md'
+        workflow_yaml:
+          - '.github/workflows/**'
+        workflow_scripts:
+          - '.github/actions/**'
+          - '.github/scripts/**'
+        lint_files:
+          - 'super-linter-*.env'
+          - '.markdownlint.json'
+          - '.yaml-lint.yml'
+          - 'clippy.toml'
+          - 'rustfmt.toml'
+          - '.eslintrc.*'
+          - '.pylintrc'
+          - '.python-black'
+          - '.prettierrc*'
+          - '.flake8'
     outputs:
-      go-files: ${{ steps.changes.outputs.go_files }}
-      python-files: ${{ steps.changes.outputs.python_files }}
-      rust-files: ${{ steps.changes.outputs.rust_files }}
-      frontend-files: ${{ steps.changes.outputs.frontend_files }}
-      docker-files: ${{ steps.changes.outputs.docker_files }}
-      docs-files: ${{ steps.changes.outputs.docs_files }}
-      workflow-files: ${{ steps.changes.outputs.workflow_yaml }}
-      workflows-files: ${{ steps.changes.outputs.workflow_yaml }}
-      workflows-scripts: ${{ steps.changes.outputs.workflow_scripts }}
-      lint-files: ${{ steps.changes.outputs.lint_files }}
+      force-all: ${{ steps.mode.outputs.force }}
+      go-files: ${{ steps.changes.outputs.go_files || steps.inventory.outputs.go_files }}
+      python-files: ${{ steps.changes.outputs.python_files || steps.inventory.outputs.python_files }}
+      rust-files: ${{ steps.changes.outputs.rust_files || steps.inventory.outputs.rust_files }}
+      frontend-files: ${{ steps.changes.outputs.frontend_files || steps.inventory.outputs.frontend_files }}
+      docker-files: ${{ steps.changes.outputs.docker_files || steps.inventory.outputs.docker_files }}
+      docs-files: ${{ steps.changes.outputs.docs_files || steps.inventory.outputs.docs_files }}
+      workflow-files: ${{ steps.changes.outputs.workflow_yaml || steps.inventory.outputs.workflow_yaml }}
+      workflows-files: ${{ steps.changes.outputs.workflow_yaml || steps.inventory.outputs.workflow_yaml }}
+      workflows-scripts: ${{ steps.changes.outputs.workflow_scripts || steps.inventory.outputs.workflow_scripts }}
+      lint-files: ${{ steps.changes.outputs.lint_files || steps.inventory.outputs.lint_files }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -159,83 +233,104 @@ jobs:
           submodules: recursive
           fetch-depth: 2
 
+      # A schedule or workflow_dispatch run has no diff worth inspecting:
+      # github.event.before is unset, so base falls back to github.sha and
+      # paths-filter compares the commit with itself, reporting every category
+      # unchanged. Every job then skipped, so a nightly caller never ran its
+      # tests. Resolve whether this run diffs or inventories.
+      - name: Resolve change-detection mode
+        id: mode
+        env:
+          FORCE_ALL: ${{ inputs.force-all }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          case "$FORCE_ALL" in
+            true) force=true ;;
+            false) force=false ;;
+            auto)
+              case "$EVENT_NAME" in
+                schedule|workflow_dispatch) force=true ;;
+                *) force=false ;;
+              esac
+              ;;
+            *)
+              echo "::error::force-all must be 'auto', 'true' or 'false', got '$FORCE_ALL'"
+              exit 1
+              ;;
+          esac
+          echo "force=$force" >> "$GITHUB_OUTPUT"
+          echo "force-all=$FORCE_ALL event=$EVENT_NAME -> force=$force"
+
       - name: Detect file changes
+        if: steps.mode.outputs.force != 'true'
         uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         id: changes
         with:
           base: ${{ github.event.pull_request.base.sha || github.event.before || github.sha }}
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          filters: |
-            go_files:
-              - '**/*.go'
-              - 'go.mod'
-              - 'go.sum'
-            python_files:
-              - '**/*.py'
-              - 'requirements*.txt'
-              - 'pyproject.toml'
-              - 'setup.py'
-              - 'setup.cfg'
-            rust_files:
-              - '**/*.rs'
-              - 'Cargo.toml'
-              - 'Cargo.lock'
-            frontend_files:
-              - '**/*.js'
-              - '**/*.ts'
-              - '**/*.jsx'
-              - '**/*.tsx'
-              - '**/*.vue'
-              - '**/*.svelte'
-              - '**/*.html'
-              - '**/*.css'
-              - '**/*.scss'
-              - '**/*.sass'
-              - '**/*.less'
-              - 'package*.json'
-              - 'yarn.lock'
-              - 'pnpm-lock.yaml'
-            docker_files:
-              - 'Dockerfile*'
-              - 'docker-compose*.yml'
-              - 'docker-compose*.yaml'
-              - '.dockerignore'
-            docs_files:
-              - '**/*.md'
-              - 'docs/**'
-              - '*.md'
-            workflow_yaml:
-              - '.github/workflows/**'
-            workflow_scripts:
-              - '.github/actions/**'
-              - '.github/scripts/**'
-            lint_files:
-              - 'super-linter-*.env'
-              - '.markdownlint.json'
-              - '.yaml-lint.yml'
-              - 'clippy.toml'
-              - 'rustfmt.toml'
-              - '.eslintrc.*'
-              - '.pylintrc'
-              - '.python-black'
-              - '.prettierrc*'
-              - '.flake8'
+          filters: ${{ env.CHANGE_FILTERS }}
+
+      # Forced run: a category counts as changed when the repository tracks any
+      # file matching its filter. `:(glob)` pathspec magic gives `**/` the same
+      # zero-or-more-directories meaning paths-filter's picomatch gives it.
+      - name: Inventory tracked files
+        if: steps.mode.outputs.force == 'true'
+        id: inventory
+        run: |
+          key_re='^([a-z_]+):[[:space:]]*$'
+          pat_re="^[[:space:]]+-[[:space:]]+'([^']+)'[[:space:]]*$"
+          # Parallel arrays (keys[i] -> hits[i]); the last element is the
+          # category currently being read.
+          keys=()
+          hits=()
+          while IFS= read -r line; do
+            [[ -z "${line//[[:space:]]/}" ]] && continue
+            if [[ $line =~ $key_re ]]; then
+              keys+=("${BASH_REMATCH[1]}")
+              hits+=(false)
+            elif [[ $line =~ $pat_re ]] && [[ ${#keys[@]} -gt 0 ]]; then
+              pat="${BASH_REMATCH[1]}"
+              last=$(( ${#keys[@]} - 1 ))
+              if [[ "${hits[last]}" == false ]]; then
+                files="$(git ls-files -- ":(glob)$pat")"
+                if [[ -n "$files" ]]; then
+                  hits[last]=true
+                fi
+              fi
+            else
+              echo "::error::Unparseable CHANGE_FILTERS line: '$line'"
+              exit 1
+            fi
+          done <<< "$CHANGE_FILTERS"
+          if [[ ${#keys[@]} -eq 0 ]]; then
+            echo "::error::CHANGE_FILTERS defined no categories"
+            exit 1
+          fi
+          for i in "${!keys[@]}"; do
+            echo "${keys[$i]}=${hits[$i]}" >> "$GITHUB_OUTPUT"
+            echo "${keys[$i]}=${hits[$i]}"
+          done
 
       - name: Debug change outputs
         env:
-          CI_GO_FILES: ${{ steps.changes.outputs.go_files }}
-          CI_PYTHON_FILES: ${{ steps.changes.outputs.python_files }}
-          CI_RUST_FILES: ${{ steps.changes.outputs.rust_files }}
-          CI_FRONTEND_FILES: ${{ steps.changes.outputs.frontend_files }}
-          CI_DOCKER_FILES: ${{ steps.changes.outputs.docker_files }}
-          CI_DOCS_FILES: ${{ steps.changes.outputs.docs_files }}
-          CI_WORKFLOW_FILES: ${{ steps.changes.outputs.workflow_yaml }}
-          CI_WORKFLOW_YAML_FILES: ${{ steps.changes.outputs.workflow_yaml }}
-          CI_WORKFLOW_SCRIPT_FILES: ${{ steps.changes.outputs.workflow_scripts }}
-          CI_LINT_FILES: ${{ steps.changes.outputs.lint_files }}
+          CI_FORCE_ALL: ${{ steps.mode.outputs.force }}
+          CI_GO_FILES: ${{ steps.changes.outputs.go_files || steps.inventory.outputs.go_files }}
+          CI_PYTHON_FILES: ${{ steps.changes.outputs.python_files || steps.inventory.outputs.python_files }}
+          CI_RUST_FILES: ${{ steps.changes.outputs.rust_files || steps.inventory.outputs.rust_files }}
+          CI_FRONTEND_FILES: ${{ steps.changes.outputs.frontend_files || steps.inventory.outputs.frontend_files }}
+          CI_DOCKER_FILES: ${{ steps.changes.outputs.docker_files || steps.inventory.outputs.docker_files }}
+          CI_DOCS_FILES: ${{ steps.changes.outputs.docs_files || steps.inventory.outputs.docs_files }}
+          CI_WORKFLOW_FILES: ${{ steps.changes.outputs.workflow_yaml || steps.inventory.outputs.workflow_yaml }}
+          CI_WORKFLOW_SCRIPT_FILES: ${{ steps.changes.outputs.workflow_scripts || steps.inventory.outputs.workflow_scripts }}
+          CI_LINT_FILES: ${{ steps.changes.outputs.lint_files || steps.inventory.outputs.lint_files }}
         run: |
           {
             printf '## Change Detection\n\n'
+            if [ "$CI_FORCE_ALL" = "true" ]; then
+              printf -- '- Mode: forced (every category the repository contains)\n'
+            else
+              printf -- '- Mode: diff\n'
+            fi
             printf -- '- Go files: %s\n' "$CI_GO_FILES"
             printf -- '- Python files: %s\n' "$CI_PYTHON_FILES"
             printf -- '- Rust files: %s\n' "$CI_RUST_FILES"
@@ -250,7 +345,7 @@ jobs:
   workflow-lint:
     name: Workflow Lint
     needs: detect-changes
-    if: needs.detect-changes.outputs.workflow-files == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.detect-changes.outputs.workflow-files == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -310,7 +405,7 @@ jobs:
   workflow-scripts-npm-cache:
     name: Cache npm (Workflow Scripts)
     needs: detect-changes
-    if: needs.detect-changes.outputs.workflows-scripts == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.detect-changes.outputs.workflows-scripts == 'true'
     uses: falkcorp/github-common/.github/workflows/reusable-advanced-cache.yml@d0c3326b96557c8ea9117c1c196b628e5e028186 # v1.10.3+
     with:
       language: 'node'
@@ -320,7 +415,7 @@ jobs:
   workflow-scripts:
     name: Workflow Scripts
     needs: [detect-changes, workflow-scripts-npm-cache]
-    if: needs.detect-changes.outputs.workflows-scripts == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.detect-changes.outputs.workflows-scripts == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
