@@ -1,5 +1,5 @@
 # file: .github/workflows/pr-automation.yml
-# version: 4.5.7
+# version: 4.5.8
 # guid: a7b8c9d0-e1f2-3456-a789-0123456789bc
 # NOTE: This file should be updated in ghcommon repository first, then copied to other repositories.
 # To update: Edit in https://github.com/falkcorp/github-common/.github/workflows/pr-automation.yml then copy to other repos
@@ -16,8 +16,11 @@ on:
   pull_request_target:
     types: [opened, edited, synchronize, reopened]
 
+# The group includes event_name: one push fires both a pull_request and a
+# pull_request_target run, and with a shared group whichever arrives second
+# cancelled the other, leaving its jobs as red "cancelled" checks on every PR.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 permissions:
