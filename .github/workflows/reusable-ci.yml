@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-ci.yml
-# version: 1.14.0
+# version: 1.15.0
 # guid: reusable-ci-2025-09-24-core-workflow
 
 name: Reusable CI Workflow
@@ -409,7 +409,12 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.load-config.outputs.go-matrix) }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    # 40, not 30: the go-test helper runs `go test -race` with no -timeout, so
+    # a hung test binary is killed by Go's default 10m. The cap must exceed
+    # setup (~4.5m) + the slowest measured suite (~20.5m) + that 10m, or the
+    # runner cancels the job before Go prints the goroutine dump naming the
+    # stuck test.
+    timeout-minutes: 40
     permissions:
       contents: read
     env:
@@ -481,13 +486,15 @@ jobs:
           command: go-test
           coverage-threshold: ${{ inputs.coverage-threshold || needs.load-config.outputs.coverage-threshold }}
 
+      # Only feeds go-test-coverage, which exits at once without .testcoverage.yml;
+      # without the file this step was a dead full-suite rerun (6-8 min).
       - name: Generate Go coverage profile
-        if: ${{ !inputs.skip-tests }}
+        if: ${{ !inputs.skip-tests && hashFiles('.testcoverage.yml') != '' }}
         continue-on-error: true
         run: go test ./... -coverprofile=./cover.out -covermode=atomic -coverpkg=./...
 
       - name: Check Go test coverage
-        if: ${{ !inputs.skip-tests }}
+        if: ${{ !inputs.skip-tests && hashFiles('.testcoverage.yml') != '' }}
         continue-on-error: true
         uses: vladopajic/go-test-coverage@f94bcf0d6b9fa5fb8b783830b22648f6c17475e2 # v2.19.0
         with:
