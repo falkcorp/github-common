@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
 # file: .github/scripts/sync-release-handle-manual-release.py
-# version: 1.0.0
+# version: 1.0.1
 # guid: b8c9d0e1-f2a3-4b5c-6d7e-8f9a0b1c2d3e
+# last-edited: 2026-10-05
 
 """Handle manual release version calculation.
+
 Usage: sync-release-handle-manual-release.py <release_type> <language>
 """
 
+import json
 import os
+from pathlib import Path
 import re
 import subprocess
 import sys
-from pathlib import Path
 
 
 def get_current_version_rust():
@@ -79,8 +82,6 @@ def get_current_version_js_ts():
     if not package_json.exists():
         return "0.0.0"
 
-    import json
-
     try:
         data = json.loads(package_json.read_text())
         return data.get("version", "0.0.0")
@@ -129,7 +130,7 @@ def increment_version(current_version, release_type):
         return f"{major}.{minor}.{patch}"
 
     except ValueError as e:
-        raise ValueError(f"Failed to increment version: {e}")
+        raise ValueError(f"Failed to increment version: {e}") from e
 
 
 def set_github_output(name, value):
@@ -144,7 +145,9 @@ def main():
     """Main entry point."""
     if len(sys.argv) != 3:
         print("Error: Both release_type and language parameters required")
-        print("Usage: sync-release-handle-manual-release.py <release_type> <language>")
+        print(
+            "Usage: sync-release-handle-manual-release.py <release_type> <language>"
+        )
         sys.exit(1)
 
     release_type = sys.argv[1]

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # file: .github/scripts/sync-workflow-modernizer.py
-# version: 1.0.1
+# version: 1.0.2
 # guid: e1f2a3b4-c5d6-7e8f-9a0b-1c2d3e4f5a6b
+# last-edited: 2026-10-05
 
-"""Workflow Modernization Script
+"""Workflow Modernization Script.
 
 This script modernizes GitHub Actions workflow files by replacing embedded bash
 scripts with external Python scripts for better reliability and maintainability.
@@ -18,16 +19,17 @@ The script ensures consistent patterns and environment variable usage across
 all language-specific workflows while maintaining the security improvements.
 """
 
-import os
+from datetime import datetime, timezone
+from pathlib import Path
 import re
 import sys
-from pathlib import Path
 
 
 class WorkflowModernizer:
     """Modernizes GitHub Actions workflow files by replacing bash with Python scripts."""
 
     def __init__(self, workflows_dir: str = ".github/workflows"):
+        """Locate the workflows and scripts directories."""
         self.workflows_dir = Path(workflows_dir)
         self.scripts_dir = Path(".github/scripts")
 
@@ -94,7 +96,9 @@ class WorkflowModernizer:
 
                 # Check if pattern exists
                 if re.search(pattern, content, flags):
-                    print(f"  ✅ Replacing {script_type} bash script with Python")
+                    print(
+                        f"  ✅ Replacing {script_type} bash script with Python"
+                    )
                     content = re.sub(pattern, replacement, content, flags=flags)
                 else:
                     print(f"  ℹ️  No {script_type} bash script found to replace")
@@ -167,11 +171,13 @@ class WorkflowModernizer:
         print("✅ All required Python scripts are available")
         return True
 
-    def generate_modernization_report(self, updated_workflows: list[str]) -> str:
+    def generate_modernization_report(
+        self, updated_workflows: list[str]
+    ) -> str:
         """Generate a report of the modernization results."""
         report = [
             "# Workflow Modernization Report",
-            f"Generated: {os.popen('date').read().strip()}",
+            f"Generated: {datetime.now(timezone.utc).strftime('%a %b %d %H:%M:%S UTC %Y')}",
             "",
             "## Summary",
             f"- Total workflows processed: {len(self.language_workflows)}",
@@ -185,7 +191,9 @@ class WorkflowModernizer:
             workflow_file = self.language_workflows[language]
             report.append(f"- ✅ {language}: {workflow_file}")
 
-        unchanged_workflows = set(self.language_workflows.keys()) - set(updated_workflows)
+        unchanged_workflows = set(self.language_workflows.keys()) - set(
+            updated_workflows
+        )
         if unchanged_workflows:
             report.append("")
             report.append("## Unchanged Workflows")

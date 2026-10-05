@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # file: .github/scripts/determine-security-languages.py
-# version: 1.1.0
+# version: 1.1.1
 # guid: a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d
+# last-edited: 2026-10-05
 
 """Determine which languages need security scanning based on file changes.
 
@@ -16,8 +17,10 @@ import sys
 
 
 def get_env_bool(key: str, default: bool = False) -> bool:
-    """Safely get a boolean environment variable."""
-    value = os.environ.get(key, "").lower()
+    """Safely get a boolean environment variable; unset or empty -> default."""
+    value = os.environ.get(key, "").strip().lower()
+    if not value:
+        return default
     return value in ("true", "1", "yes", "on")
 
 
@@ -53,7 +56,9 @@ def determine_security_languages() -> dict[str, any]:
     else:
         matrix = {"language": languages_with_changes}
         has_languages = True
-        print(f"Languages for security scanning: {', '.join(languages_with_changes)}")
+        print(
+            f"Languages for security scanning: {', '.join(languages_with_changes)}"
+        )
 
     result = {
         "matrix": matrix,
@@ -92,9 +97,13 @@ def main() -> None:
 
         # Write outputs for GitHub Actions
         write_github_output("matrix", json.dumps(result["matrix"]))
-        write_github_output("has-languages", str(result["has_languages"]).lower())
+        write_github_output(
+            "has-languages", str(result["has_languages"]).lower()
+        )
         write_github_output("language-count", str(result["language_count"]))
-        write_github_output("languages", json.dumps(result["languages"]))  # Output as JSON array
+        write_github_output(
+            "languages", json.dumps(result["languages"])
+        )  # Output as JSON array
 
         print("✅ Security language determination completed successfully")
 

@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 # file: .github/scripts/docker-security.py
-# version: 1.0.0
+# version: 1.0.1
 # guid: e2f3g4h5-i6j7-k8l9-m0n1-o2p3q4r5s6t7
+# last-edited: 2026-10-05
 
 """Docker security scanning utilities for matrix build system.
+
 Handles SBOM generation, image testing, and security reporting.
 """
 
 import json
 import subprocess
 import sys
+
 
 def run_command(cmd, capture_output=True, check=True):
     """Run a shell command and return the result."""
@@ -31,18 +34,19 @@ def run_command(cmd, capture_output=True, check=True):
     except Exception as e:
         return False, "", str(e)
 
+
 def generate_sbom(image_ref, output_file="sbom.spdx.json"):
     """Generate Software Bill of Materials."""
     print(f"Generating SBOM for {image_ref}...")
 
     # Try syft first (if available), fallback to docker sbom
     cmd = f"syft {image_ref} -o spdx-json > {output_file}"
-    success, stdout, stderr = run_command(cmd, check=False)
+    success, _stdout, stderr = run_command(cmd, check=False)
 
     if not success:
         # Fallback to docker sbom if syft is not available
         cmd = f"docker sbom {image_ref} --output {output_file}"
-        success, stdout, stderr = run_command(cmd, check=False)
+        success, _stdout, stderr = run_command(cmd, check=False)
 
     if not success:
         print(f"SBOM generation failed: {stderr}")
@@ -50,6 +54,7 @@ def generate_sbom(image_ref, output_file="sbom.spdx.json"):
 
     print(f"SBOM generated: {output_file}")
     return True, output_file
+
 
 def test_image_functionality(image_ref):
     """Test Docker image basic functionality."""
@@ -65,7 +70,11 @@ def test_image_functionality(image_ref):
         {
             "name": "Container Startup",
             "passed": success,
-            "message": ("Container starts successfully" if success else f"Failed: {stderr}"),
+            "message": (
+                "Container starts successfully"
+                if success
+                else f"Failed: {stderr}"
+            ),
         }
     )
 
@@ -78,7 +87,9 @@ def test_image_functionality(image_ref):
             "name": "Application Files",
             "passed": success,
             "message": (
-                "Application files present" if success else "Application structure unknown"
+                "Application files present"
+                if success
+                else "Application structure unknown"
             ),
         }
     )
@@ -87,18 +98,23 @@ def test_image_functionality(image_ref):
     print("Checking health configuration...")
     cmd = f'docker inspect {image_ref} --format="{{{{.Config.Healthcheck}}}}"'
     success, stdout, stderr = run_command(cmd, check=False)
-    has_healthcheck = success and stdout != "none" and stdout != "<nil>" and stdout.strip() != ""
+    has_healthcheck = (
+        success and stdout not in {"none", "<nil>"} and stdout.strip() != ""
+    )
     tests.append(
         {
             "name": "Health Check",
             "passed": has_healthcheck,
             "message": (
-                "Health check configured" if has_healthcheck else "No health check configured"
+                "Health check configured"
+                if has_healthcheck
+                else "No health check configured"
             ),
         }
     )
 
     return tests
+
 
 def validate_compose_files(compose_files):
     """Validate docker-compose files."""
@@ -107,17 +123,20 @@ def validate_compose_files(compose_files):
     for compose_file in compose_files:
         print(f"Validating {compose_file}...")
         cmd = f"docker-compose -f {compose_file} config"
-        success, stdout, stderr = run_command(cmd, check=False)
+        success, _stdout, stderr = run_command(cmd, check=False)
 
         results.append(
             {
                 "file": compose_file,
                 "valid": success,
-                "message": ("Valid configuration" if success else f"Invalid: {stderr}"),
+                "message": (
+                    "Valid configuration" if success else f"Invalid: {stderr}"
+                ),
             }
         )
 
     return results
+
 
 def generate_security_summary(scan_results, test_results, compose_results=None):
     """Generate security and testing summary for GitHub."""
@@ -158,10 +177,13 @@ def generate_security_summary(scan_results, test_results, compose_results=None):
         summary.append("## 🐳 Docker Compose Validation")
         for result in compose_results:
             status = "✅" if result["valid"] else "❌"
-            summary.append(f"- **{result['file']}**: {status} {result['message']}")
+            summary.append(
+                f"- **{result['file']}**: {status} {result['message']}"
+            )
         summary.append("")
 
     return "\n".join(summary)
+
 
 def main():
     """Main entry point."""
@@ -181,7 +203,7 @@ def main():
                 print("Error: image reference required")
                 sys.exit(1)
             image_ref = sys.argv[2]
-            success, output_file = generate_sbom(image_ref)
+            success, _output_file = generate_sbom(image_ref)
             sys.exit(0 if success else 1)
 
         elif command == "test-image":
@@ -219,6 +241,7 @@ def main():
     except Exception as e:
         print(f"Error executing {command}: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

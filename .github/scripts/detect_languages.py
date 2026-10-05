@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # file: .github/scripts/detect_languages.py
-# version: 1.2.0
+# version: 1.2.1
 # guid: 4f6c9d88-2d4b-4a1e-9c61-3e0b2b9a7f11
+# last-edited: 2026-10-05
 """Detect project languages and emit key=value lines for GitHub Actions outputs.
 
 Enhanced to respect `.github/workflow-config.yaml` for language versions,
@@ -51,7 +52,11 @@ def load_build_config() -> dict[str, Any]:
                 continue
 
             # Detect leaving build section (new top-level key)
-            if in_build and not line.startswith(" ") and not stripped.startswith("build:"):
+            if (
+                in_build
+                and not line.startswith(" ")
+                and not stripped.startswith("build:")
+            ):
                 # Reached a new top-level key; stop parsing build
                 break
 
@@ -77,7 +82,9 @@ def load_build_config() -> dict[str, Any]:
             key, remainder = key_match.groups()
 
             if remainder == "":  # list start or empty value
-                current_list_key = key if key.endswith("s") else None  # heuristic
+                current_list_key = (
+                    key if key.endswith("s") else None
+                )  # heuristic
                 if current_list_key:
                     build.setdefault(current_list_key, [])
                 continue
@@ -98,6 +105,7 @@ config_loaded = os.path.exists(CONFIG_PATH)
 
 
 def exists_any(*paths: str) -> bool:
+    """Return True if any of the given paths exists."""
     return any(os.path.exists(p) for p in paths)
 
 
@@ -109,7 +117,9 @@ has_python = (
     else False
 )
 has_frontend = exists_any("package.json", "yarn.lock", "pnpm-lock.yaml")
-has_docker = exists_any("Dockerfile", "docker-compose.yml", "docker-compose.yaml")
+has_docker = exists_any(
+    "Dockerfile", "docker-compose.yml", "docker-compose.yaml"
+)
 has_rust = exists_any("Cargo.toml")
 protobuf_needed = (
     (build_cfg.get("enable_protobuf") is True)
@@ -130,8 +140,9 @@ else:
 
 
 def build_matrix(
-    kind: str, versions: list[str], os_list: list[str], version_key: str
+    versions: list[str], os_list: list[str], version_key: str
 ) -> dict[str, Any]:
+    """Build a versions x OS include-matrix; the first entry is primary."""
     include: list[dict[str, Any]] = []
     if not versions or not os_list:
         return {"include": include}
@@ -163,15 +174,17 @@ operating_systems = build_cfg.get("operating_systems") or ["ubuntu-latest"]
 platforms = build_cfg.get("platforms") or ["linux/amd64", "linux/arm64"]
 
 go_matrix = (
-    build_matrix("go", go_versions, operating_systems, "go-version") if has_go else {"include": []}
+    build_matrix(go_versions, operating_systems, "go-version")
+    if has_go
+    else {"include": []}
 )
 python_matrix = (
-    build_matrix("python", python_versions, operating_systems, "python-version")
+    build_matrix(python_versions, operating_systems, "python-version")
     if has_python
     else {"include": []}
 )
 frontend_matrix = (
-    build_matrix("frontend", node_versions, operating_systems, "node-version")
+    build_matrix(node_versions, operating_systems, "node-version")
     if has_frontend
     else {"include": []}
 )
@@ -188,7 +201,8 @@ docker_matrix = (
 )
 
 
-def emit(key: str, value):
+def emit(key: str, value: object) -> None:
+    """Print a key=value line for GITHUB_OUTPUT."""
     print(f"{key}={value}")
 
 

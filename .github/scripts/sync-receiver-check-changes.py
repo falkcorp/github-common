@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # file: .github/scripts/sync-receiver-check-changes.py
-# version: 1.0.0
+# version: 1.0.1
 # guid: a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d
+# last-edited: 2026-10-05
 
 """Check if there are changes after sync operation.
+
 Usage: sync-receiver-check-changes.py
 """
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # file: .github/scripts/parse_config_json.py
-# version: 1.0.0
+# version: 1.0.1
 # guid: 2a1b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+# last-edited: 2026-10-05
 
 import json
 import os
@@ -9,6 +10,7 @@ import sys
 
 
 def main():
+    """Parse CONFIG_JSON from the environment and emit its fields."""
     config_json = os.environ.get("CONFIG_JSON", "{}")
     try:
         config = json.loads(config_json)

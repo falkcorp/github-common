@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # file: .github/scripts/monitor-rollout.py
-# version: 1.1.1
+# version: 1.1.2
 # guid: 7f1a3b2c-4d5e-6f7a-8b9c-0d1e2f3a4b5c
+# last-edited: 2026-10-05
 
-"""Monitor rollout across target repositories:
+"""Monitor rollout across target repositories.
 
 - Reads target repos from .github/repositories.txt or TARGET_REPOS env (space/comma-separated)
 - For each repo, fetches recent GitHub Actions runs and summarizes key workflows:
@@ -19,7 +20,7 @@ Optional flags:
 
 Auth:
   - Uses JF_CI_GH_PAT or GITHUB_TOKEN from environment
-"""  # noqa: D415
+"""
 
 import argparse
 import datetime as dt
@@ -29,13 +30,16 @@ import sys
 from urllib import error, request
 
 API_BASE = os.environ.get("GITHUB_API_URL", "https://api.github.com")
+HTTP_OK = 200
 
 
 def get_token() -> str | None:
+    """Return the GitHub token from JF_CI_GH_PAT or GITHUB_TOKEN, if set."""
     return os.environ.get("JF_CI_GH_PAT") or os.environ.get("GITHUB_TOKEN")
 
 
 def gh_headers() -> dict[str, str]:
+    """Build GitHub REST API request headers, with auth when a token is set."""
     headers = {
         "Accept": "application/vnd.github+json",
         "User-Agent": "ghcommon-monitor-rollout",
@@ -47,9 +51,13 @@ def gh_headers() -> dict[str, str]:
 
 
 def http_get(url: str) -> tuple[int, dict]:
-    req = request.Request(url, headers=gh_headers())
+    """GET a GitHub API URL; return (status, decoded JSON or error dict)."""
+    if not url.startswith(("https://", "http://")):
+        return 0, {"error": f"refusing non-HTTP(S) URL: {url}"}
+    # Scheme checked above, so S310's file:/custom-scheme concern is handled.
+    req = request.Request(url, headers=gh_headers())  # noqa: S310
     try:
-        with request.urlopen(req, timeout=30) as resp:
+        with request.urlopen(req, timeout=30) as resp:  # noqa: S310
             status = resp.getcode()
             data = resp.read()
             try:
@@ -67,10 +75,12 @@ def http_get(url: str) -> tuple[int, dict]:
 
 
 def now_utc() -> dt.datetime:
+    """Return the current time as an aware UTC datetime."""
     return dt.datetime.now(dt.timezone.utc)
 
 
 def parse_iso8601(s: str) -> dt.datetime | None:
+    """Parse an ISO 8601 timestamp (trailing Z allowed); None if invalid."""
     try:
         return dt.datetime.fromisoformat(s.replace("Z", "+00:00"))
     except Exception:
@@ -78,20 +88,23 @@ def parse_iso8601(s: str) -> dt.datetime | None:
 
 
 def load_target_repos(explicit: str | None) -> list[str]:
+    """Resolve target repos from --repos, TARGET_REPOS or repositories.txt."""
     if explicit:
-        parts = [p.strip() for p in explicit.replace(",", " ").split() if p.strip()]
-        return parts
+        return [
+            p.strip() for p in explicit.replace(",", " ").split() if p.strip()
+        ]
     env_repos = os.environ.get("TARGET_REPOS")
     if env_repos:
-        parts = [p.strip() for p in env_repos.replace(",", " ").split() if p.strip()]
-        return parts
+        return [
+            p.strip() for p in env_repos.replace(",", " ").split() if p.strip()
+        ]
     # Fallback to repositories.txt
     repos_file = os.path.join(os.getcwd(), ".github", "repositories.txt")
     repos: list[str] = []
     if os.path.exists(repos_file):
         with open(repos_file, encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
+            for raw_line in f:
+                line = raw_line.strip()
                 if not line or line.startswith("#"):
                     continue
                 # Support "repo" shorthand by defaulting owner to jdfalk
@@ -103,9 +116,10 @@ def load_target_repos(explicit: str | None) -> list[str]:
 
 
 def list_recent_runs(repo: str, per_page: int) -> list[dict]:
+    """Return the most recent workflow runs for a repo ([] on API error)."""
     url = f"{API_BASE}/repos/{repo}/actions/runs?per_page={per_page}"
     status, payload = http_get(url)
-    if status != 200:
+    if status != HTTP_OK:
         return []
     return payload.get("workflow_runs", []) or []
 
@@ -113,16 +127,24 @@ def list_recent_runs(repo: str, per_page: int) -> list[dict]:
 def pick_latest(
     runs: list[dict], name_contains: list[str], since_cutoff: dt.datetime
 ) -> dict | None:
+    """Return the newest run whose name contains every term, since cutoff."""
     name_lc = [n.lower() for n in name_contains]
     for run in runs:
         n = (run.get("name") or "").lower()
-        created_at = parse_iso8601(run.get("created_at") or run.get("run_started_at") or "")
-        if all(term in n for term in name_lc) and created_at and created_at >= since_cutoff:
+        created_at = parse_iso8601(
+            run.get("created_at") or run.get("run_started_at") or ""
+        )
+        if (
+            all(term in n for term in name_lc)
+            and created_at
+            and created_at >= since_cutoff
+        ):
             return run
     return None
 
 
 def summarize_repo(repo: str, per_page: int, since_hours: int) -> dict:
+    """Summarize the latest security, release and sync runs for a repo."""
     runs = list_recent_runs(repo, per_page)
     cutoff = now_utc() - dt.timedelta(hours=since_hours)
     sec = pick_latest(runs, ["security"], cutoff)
@@ -138,7 +160,7 @@ def summarize_repo(repo: str, per_page: int, since_hours: int) -> dict:
         # conclusion may be None while in progress
         return run.get("conclusion") or run.get("status") or "unknown"
 
-    result = {
+    return {
         "repo": repo,
         "security": {
             "status": status_of(sec),
@@ -153,7 +175,6 @@ def summarize_repo(repo: str, per_page: int, since_hours: int) -> dict:
             "url": sync.get("html_url") if sync else None,
         },
     }
-    return result
 
 
 def write_step_summary(md: str) -> None:
@@ -173,6 +194,7 @@ def write_step_summary(md: str) -> None:
 
 
 def build_markdown(results: list[dict]) -> str:
+    """Render the rollout results as a Markdown summary."""
     lines = ["# Rollout Verification Summary", ""]
     ok_all = True
     for r in results:
@@ -212,8 +234,11 @@ def build_markdown(results: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Monitor rollout across target repositories")
+def main() -> int:
+    """Summarize rollout status for every target repo; return the exit code."""
+    parser = argparse.ArgumentParser(
+        description="Monitor rollout across target repositories"
+    )
     parser.add_argument("--per-page", type=int, default=10)
     parser.add_argument("--since-hours", type=int, default=72)
     parser.add_argument("--repos", type=str, default="")
@@ -224,12 +249,16 @@ def main():
         print("No target repositories found.")
         return 1
     if not get_token():
-        print("Warning: No token provided (JF_CI_GH_PAT/GITHUB_TOKEN). You may hit rate limits.")
+        print(
+            "Warning: No token provided (JF_CI_GH_PAT/GITHUB_TOKEN). You may hit rate limits."
+        )
 
     results: list[dict] = []
     for repo in repos:
         try:
-            results.append(summarize_repo(repo, args.per_page, args.since_hours))
+            results.append(
+                summarize_repo(repo, args.per_page, args.since_hours)
+            )
         except Exception as e:
             results.append(
                 {
@@ -252,13 +281,17 @@ def main():
                 return st in ("success", "completed")
 
             all_ok = all(
-                ok_status(r["security"]["status"]) and ok_status(r["release"]["status"])  # type: ignore[index]
+                ok_status(r["security"]["status"])
+                and ok_status(r["release"]["status"])  # type: ignore[index]
                 for r in results
             )
             with open(github_output, "a", encoding="utf-8") as f:
                 f.write(f"overall={'green' if all_ok else 'needs_attention'}\n")
-        except Exception:
-            pass
+        except Exception as e:
+            print(
+                f"::warning::could not write overall status to GITHUB_OUTPUT: {e}",
+                file=sys.stderr,
+            )
 
     return 0
 

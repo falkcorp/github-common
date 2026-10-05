@@ -1,51 +1,66 @@
 #!/usr/bin/env python3
 # file: .github/scripts/sync-complete-workflow-modernizer.py
-# version: 1.0.0
+# version: 1.0.1
 # guid: a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6
+# last-edited: 2026-10-05
 
 """Complete workflow modernization script.
+
 Converts ALL workflows to use Python scripts and removes inline bash.
 """
 
 import os
+from pathlib import Path
 import re
 import subprocess
 import sys
-from pathlib import Path
 
 
 class WorkflowModernizer:
+    """Rewrite workflow files to call Python scripts instead of inline bash."""
+
     def __init__(self, workflow_dir):
+        """Track the workflow directory and its sibling scripts directory."""
         self.workflow_dir = Path(workflow_dir)
         self.scripts_dir = Path(workflow_dir).parent / "scripts"
         self.modernized_count = 0
 
     def run_command(self, cmd):
         """Run shell command."""
-        result = subprocess.run(cmd, check=False, shell=True, capture_output=True, text=True)
+        result = subprocess.run(
+            cmd, check=False, shell=True, capture_output=True, text=True
+        )
         return result.returncode == 0, result.stdout, result.stderr
 
     def extract_inline_scripts(self, content):
         """Extract inline scripts from workflow and convert to Python calls."""
         # Find all run: | blocks
-        run_blocks = re.findall(r"(\s+)run: \|\s*\n((?:\1  .*\n?)*)", content, re.MULTILINE)
+        run_blocks = re.findall(
+            r"(\s+)run: \|\s*\n((?:\1  .*\n?)*)", content, re.MULTILINE
+        )
 
         script_replacements = []
         for indent, script_content in run_blocks:
             # Clean up the script content
             lines = script_content.split("\n")
             cleaned_lines = [
-                (line[len(indent) + 2 :] if line.startswith(indent + "  ") else line.strip())
+                (
+                    line[len(indent) + 2 :]
+                    if line.startswith(indent + "  ")
+                    else line.strip()
+                )
                 for line in lines
                 if line.strip()
             ]
 
             if cleaned_lines:
-                script_replacements.append((indent, script_content, cleaned_lines))
+                script_replacements.append(
+                    (indent, script_content, cleaned_lines)
+                )
 
         return script_replacements
 
-    def modernize_workflow_content(self, content, workflow_name):
+    def modernize_workflow_content(self, content):
         """Modernize workflow content to use Python scripts."""
         modernized = content
 
@@ -84,7 +99,9 @@ class WorkflowModernizer:
         ]
 
         for pattern, replacement in replacements:
-            modernized = re.sub(pattern, replacement, modernized, flags=re.MULTILINE | re.DOTALL)
+            modernized = re.sub(
+                pattern, replacement, modernized, flags=re.MULTILINE | re.DOTALL
+            )
 
         # Replace GitHub context variables with environment variables for security
         security_replacements = [
@@ -98,7 +115,9 @@ class WorkflowModernizer:
             modernized = re.sub(pattern, replacement, modernized)
 
         # Add environment variables at the job level if not present
-        if "env:" not in modernized and any("${{ env." in modernized for _ in [None]):
+        if "env:" not in modernized and any(
+            "${{ env." in modernized for _ in [None]
+        ):
             # Find the first job and add env section
             job_pattern = r"(jobs:\s*\n\s+\w+:\s*\n)"
             modernized = re.sub(
@@ -120,8 +139,7 @@ class WorkflowModernizer:
                 print(f"  ✓ {workflow_path.name} already modernized")
                 return False
 
-            workflow_name = workflow_path.stem
-            modernized_content = self.modernize_workflow_content(content, workflow_name)
+            modernized_content = self.modernize_workflow_content(content)
 
             # Only write if there were changes
             if modernized_content != content:
@@ -254,7 +272,8 @@ if __name__ == "__main__":
             script_path = self.scripts_dir / script_name
             if not script_path.exists():
                 script_path.write_text(script_content)
-                os.chmod(script_path, 0o755)
+                # Generated scripts are executables invoked by workflows.
+                os.chmod(script_path, 0o755)  # noqa: S103
                 print(f"Created missing script: {script_name}")
 
 
@@ -279,10 +298,14 @@ def main():
 
     # Auto-commit if there were changes
     if modernizer.modernized_count > 0:
-        print(f"\n🚀 Auto-committing {modernizer.modernized_count} modernized workflows...")
+        print(
+            f"\n🚀 Auto-committing {modernizer.modernized_count} modernized workflows..."
+        )
 
         # Add files
-        subprocess.run(["git", "add", "."], check=False, cwd=os.path.dirname(workflow_dir))
+        subprocess.run(
+            ["git", "add", "."], check=False, cwd=os.path.dirname(workflow_dir)
+        )
 
         # Commit
         commit_msg = f"""feat(workflows): complete workflow modernization phase 2
@@ -305,7 +328,9 @@ Part of comprehensive workflow system overhaul."""
             print("✓ Changes committed successfully")
 
             # Push changes
-            result = subprocess.run(["git", "push"], check=False, cwd=os.path.dirname(workflow_dir))
+            result = subprocess.run(
+                ["git", "push"], check=False, cwd=os.path.dirname(workflow_dir)
+            )
             if result.returncode == 0:
                 print("✓ Changes pushed successfully")
             else:
