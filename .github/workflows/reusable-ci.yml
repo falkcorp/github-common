@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-ci.yml
-# version: 1.16.0
+# version: 1.16.1
 # guid: reusable-ci-2025-09-24-core-workflow
 # last-edited: 2026-10-05
 
@@ -494,7 +494,7 @@ jobs:
         run: |
           set -euo pipefail
           python -m pip install --upgrade pip
-          python -m pip install ruff
+          python -m pip install ruff==0.16.10  # pinned: an unpinned ruff adds findings on its own release schedule
           if find .github/scripts -maxdepth 1 -name "*.py" | head -n 1 | grep -q .; then
             ruff check .github/scripts
             ruff format --check .github/scripts
