@@ -1,7 +1,7 @@
 # file: .github/workflows/reusable-ci-minimal.yml
-# version: 1.1.0
+# version: 1.2.0
 # guid: c9d8e7f6-a5b4-3c2d-1e0f-9a8b7c6d5e4f
-# last-edited: 2026-08-12
+# last-edited: 2026-10-09
 
 # Fast parallel CI for PRs and pushes. Runs short tests only.
 # Uses manual actions/cache — NOT setup-go's built-in cache, which is unreliable.
@@ -39,6 +39,11 @@ on:
         default: 'web'
       run-frontend:
         description: 'Whether to run frontend lint/build/test jobs'
+        required: false
+        type: boolean
+        default: true
+      run-go-tests:
+        description: 'Run the built-in Go Tests (short, race) job; set false when the caller runs its own'
         required: false
         type: boolean
         default: true
@@ -118,6 +123,10 @@ jobs:
   # ── Go: short tests (skip property/slow tests via -short) ───────────────────
   go-test-short:
     name: Go Tests (short, race)
+    # Callers that shard the short suite themselves pass run-go-tests: false.
+    # A skipped job is not a failure to ci-minimal-summary, which lists it as
+    # "skipped" and only fails on "failure".
+    if: ${{ inputs.run-go-tests }}
     runs-on: ubuntu-latest
     # 35, not 20. The test step below runs `go test` with `-timeout 30m`, so a
     # job cap of 20 killed the runner TEN MINUTES BEFORE Go's own timeout could

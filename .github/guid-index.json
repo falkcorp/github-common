@@ -115,7 +115,7 @@
     "path": ".github/instructions/go.instructions.md",
     "guid": "4a5b6c7d-8e9f-1a2b-3c4d-5e6f7a8b9c0d",
     "title": "Go Coding Instructions",
-    "version": "1.11.0",
+    "version": "1.13.0",
     "header_path": ".github/instructions/go.instructions.md",
     "path_mismatch": false
   },
@@ -475,7 +475,7 @@
     "path": ".github/scripts/detect-build-matrix.py",
     "guid": "a1b2c3d4-e5f6-7890-1234-56789abcdef0",
     "title": "detect build matrix",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "header_path": ".github/scripts/detect-build-matrix.py",
     "path_mismatch": false
   },
@@ -483,7 +483,7 @@
     "path": ".github/scripts/detect_languages.py",
     "guid": "4f6c9d88-2d4b-4a1e-9c61-3e0b2b9a7f11",
     "title": "detect languages",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "header_path": ".github/scripts/detect_languages.py",
     "path_mismatch": false
   },
@@ -491,7 +491,7 @@
     "path": ".github/scripts/determine-security-languages.py",
     "guid": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
     "title": "determine security languages",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "header_path": ".github/scripts/determine-security-languages.py",
     "path_mismatch": false
   },
@@ -499,7 +499,7 @@
     "path": ".github/scripts/docker-detect.py",
     "guid": "d1e2f3g4-h5i6-j7k8-l9m0-n1o2p3q4r5s6",
     "title": "docker detect",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "header_path": ".github/scripts/docker-detect.py",
     "path_mismatch": false
   },
@@ -507,7 +507,7 @@
     "path": ".github/scripts/docker-security.py",
     "guid": "e2f3g4h5-i6j7-k8l9-m0n1-o2p3q4r5s6t7",
     "title": "docker security",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": ".github/scripts/docker-security.py",
     "path_mismatch": false
   },
@@ -523,7 +523,7 @@
     "path": ".github/scripts/generate-security-summary.py",
     "guid": "sec-sum-gen-2025-12-07",
     "title": "generate security summary",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": ".github/scripts/generate-security-summary.py",
     "path_mismatch": false
   },
@@ -531,7 +531,7 @@
     "path": ".github/scripts/monitor-rollout.py",
     "guid": "7f1a3b2c-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
     "title": "monitor rollout",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "header_path": ".github/scripts/monitor-rollout.py",
     "path_mismatch": false
   },
@@ -539,7 +539,7 @@
     "path": ".github/scripts/parse_config_json.py",
     "guid": "2a1b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
     "title": "parse config json",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": ".github/scripts/parse_config_json.py",
     "path_mismatch": false
   },
@@ -563,7 +563,7 @@
     "path": ".github/scripts/run_buf_generate.py",
     "guid": "8c5b2d4e-3f7a-45d1-9e2f-1b6c7d8e9f01",
     "title": "run buf generate",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": ".github/scripts/run_buf_generate.py",
     "path_mismatch": false
   },
@@ -579,7 +579,7 @@
     "path": ".github/scripts/sync-auto-commit.py",
     "guid": "f7a8b9c0-d1e2-3f4a-5b6c-7d8e9f0a1b2c",
     "title": "sync auto commit",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": ".github/scripts/sync-auto-commit.py",
     "path_mismatch": false
   },
@@ -587,7 +587,7 @@
     "path": ".github/scripts/sync-complete-workflow-modernizer.py",
     "guid": "a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6",
     "title": "sync complete workflow modernizer",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": ".github/scripts/sync-complete-workflow-modernizer.py",
     "path_mismatch": false
   },
@@ -595,7 +595,7 @@
     "path": ".github/scripts/sync-determine-target-repos.py",
     "guid": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
     "title": "sync determine target repos",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "header_path": ".github/scripts/sync-determine-target-repos.py",
     "path_mismatch": false
   },
@@ -603,7 +603,7 @@
     "path": ".github/scripts/sync-dispatch-events.py",
     "guid": "b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e",
     "title": "sync dispatch events",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "header_path": ".github/scripts/sync-dispatch-events.py",
     "path_mismatch": false
   },
@@ -611,7 +611,7 @@
     "path": ".github/scripts/sync-generate-summary.py",
     "guid": "c3d4e5f6-a7b8-9c0d-1e2f-3a4b5c6d7e8f",
     "title": "sync generate summary",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": ".github/scripts/sync-generate-summary.py",
     "path_mismatch": false
   },
@@ -627,7 +627,7 @@
     "path": ".github/scripts/sync-receiver-check-changes.py",
     "guid": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
     "title": "sync receiver check changes",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": ".github/scripts/sync-receiver-check-changes.py",
     "path_mismatch": false
   },
@@ -635,7 +635,7 @@
     "path": ".github/scripts/sync-receiver-commit-push.py",
     "guid": "e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b",
     "title": "sync receiver commit push",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": ".github/scripts/sync-receiver-commit-push.py",
     "path_mismatch": false
   },
@@ -643,7 +643,7 @@
     "path": ".github/scripts/sync-receiver-generate-summary.py",
     "guid": "f6a7b8c9-d0e1-2f3a-4b5c-6d7e8f9a0b1c",
     "title": "sync receiver generate summary",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "header_path": ".github/scripts/sync-receiver-generate-summary.py",
     "path_mismatch": false
   },
@@ -651,7 +651,7 @@
     "path": ".github/scripts/sync-receiver-sync-files.py",
     "guid": "8d9e1f2a-3b4c-5d6e-7f8a-9b0c1d2e3f4a",
     "title": "sync receiver sync files",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "header_path": ".github/scripts/sync-receiver-sync-files.py",
     "path_mismatch": false
   },
@@ -659,7 +659,7 @@
     "path": ".github/scripts/sync-release-build-artifacts.py",
     "guid": "f2a3b4c5-d6e7-8f9a-0b1c-2d3e4f5a6b7c",
     "title": "sync release build artifacts",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": ".github/scripts/sync-release-build-artifacts.py",
     "path_mismatch": false
   },
@@ -667,7 +667,7 @@
     "path": ".github/scripts/sync-release-create-package-json.py",
     "guid": "f6a7b8c9-d0e1-2f3a-4b5c-6d7e8f9a0b1c",
     "title": "sync release create package json",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": ".github/scripts/sync-release-create-package-json.py",
     "path_mismatch": false
   },
@@ -675,7 +675,7 @@
     "path": ".github/scripts/sync-release-create-semantic-config.py",
     "guid": "e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b",
     "title": "sync release create semantic config",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": ".github/scripts/sync-release-create-semantic-config.py",
     "path_mismatch": false
   },
@@ -683,7 +683,7 @@
     "path": ".github/scripts/sync-release-detect-language.py",
     "guid": "a7b8c9d0-e1f2-3a4b-5c6d-7e8f9a0b1c2d",
     "title": "sync release detect language",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "header_path": ".github/scripts/sync-release-detect-language.py",
     "path_mismatch": false
   },
@@ -691,7 +691,7 @@
     "path": ".github/scripts/sync-release-determine-version.py",
     "guid": "f6a7b8c9-d0e1-2f3a-4b5c-6d7e8f9a0b1c",
     "title": "sync release determine version",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": ".github/scripts/sync-release-determine-version.py",
     "path_mismatch": false
   },
@@ -699,7 +699,7 @@
     "path": ".github/scripts/sync-release-handle-manual-release.py",
     "guid": "b8c9d0e1-f2a3-4b5c-6d7e-8f9a0b1c2d3e",
     "title": "sync release handle manual release",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": ".github/scripts/sync-release-handle-manual-release.py",
     "path_mismatch": false
   },
@@ -707,7 +707,7 @@
     "path": ".github/scripts/sync-release-run-semantic-release.py",
     "guid": "b3c4d5e6-f7a8-b9c0-d1e2-f3a4b5c6d7e8",
     "title": "sync release run semantic release",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": ".github/scripts/sync-release-run-semantic-release.py",
     "path_mismatch": false
   },
@@ -715,7 +715,7 @@
     "path": ".github/scripts/sync-release-upload-artifacts.py",
     "guid": "c4d5e6f7-a8b9-c0d1-e2f3-a4b5c6d7e8f9",
     "title": "sync release upload artifacts",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": ".github/scripts/sync-release-upload-artifacts.py",
     "path_mismatch": false
   },
@@ -723,7 +723,7 @@
     "path": ".github/scripts/sync-workflow-modernizer.py",
     "guid": "e1f2a3b4-c5d6-7e8f-9a0b-1c2d3e4f5a6b",
     "title": "sync workflow modernizer",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "header_path": ".github/scripts/sync-workflow-modernizer.py",
     "path_mismatch": false
   },
@@ -947,7 +947,7 @@
     "path": ".github/workflows/pr-automation.yml",
     "guid": "a7b8c9d0-e1f2-3456-a789-0123456789bc",
     "title": "PR Automation",
-    "version": "4.5.7",
+    "version": "4.5.9",
     "header_path": ".github/workflows/pr-automation.yml",
     "path_mismatch": false
   },
@@ -971,7 +971,7 @@
     "path": ".github/workflows/reusable-ci-minimal.yml",
     "guid": "c9d8e7f6-a5b4-3c2d-1e0f-9a8b7c6d5e4f",
     "title": "Reusable CI (Minimal / Fast)",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "header_path": ".github/workflows/reusable-ci-minimal.yml",
     "path_mismatch": false
   },
@@ -979,7 +979,7 @@
     "path": ".github/workflows/reusable-ci.yml",
     "guid": "reusable-ci-2025-09-24-core-workflow",
     "title": "Reusable CI Workflow",
-    "version": "1.14.0",
+    "version": "1.16.1",
     "header_path": ".github/workflows/reusable-ci.yml",
     "path_mismatch": false
   },
@@ -1003,7 +1003,7 @@
     "path": ".github/workflows/reusable-release.yml",
     "guid": "7b8c9d0e-1f2a-3b4c-5d6e-7f8a9b0c1d2e",
     "title": "Reusable Release Coordinator",
-    "version": "2.15.0",
+    "version": "2.15.3",
     "header_path": ".github/workflows/reusable-release.yml",
     "path_mismatch": false
   },
@@ -3011,7 +3011,7 @@
     "path": "ruff.toml",
     "guid": "f1a2b3c4-d5e6-789f-a012-456789abcdef",
     "title": "ruff",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "header_path": "ruff.toml",
     "path_mismatch": false
   },
