@@ -979,7 +979,7 @@
     "path": ".github/workflows/reusable-ci.yml",
     "guid": "reusable-ci-2025-09-24-core-workflow",
     "title": "Reusable CI Workflow",
-    "version": "1.16.1",
+    "version": "1.17.0",
     "header_path": ".github/workflows/reusable-ci.yml",
     "path_mismatch": false
   },
