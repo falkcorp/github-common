@@ -1,7 +1,7 @@
 # file: .github/workflows/reusable-ci.yml
-# version: 1.16.1
+# version: 1.17.0
 # guid: reusable-ci-2025-09-24-core-workflow
-# last-edited: 2026-10-05
+# last-edited: 2026-10-11
 
 name: Reusable CI Workflow
 
@@ -217,9 +217,9 @@ jobs:
     outputs:
       force-all: ${{ steps.mode.outputs.force }}
       go-files: ${{ steps.changes.outputs.go_files || steps.inventory.outputs.go_files }}
-      python-files: ${{ steps.changes.outputs.python_files || steps.inventory.outputs.python_files }}
-      rust-files: ${{ steps.changes.outputs.rust_files || steps.inventory.outputs.rust_files }}
-      frontend-files: ${{ steps.changes.outputs.frontend_files || steps.inventory.outputs.frontend_files }}
+      python-files: ${{ steps.gate.outputs.python_files }}
+      rust-files: ${{ steps.gate.outputs.rust_files }}
+      frontend-files: ${{ steps.gate.outputs.frontend_files }}
       docker-files: ${{ steps.changes.outputs.docker_files || steps.inventory.outputs.docker_files }}
       docs-files: ${{ steps.changes.outputs.docs_files || steps.inventory.outputs.docs_files }}
       workflow-files: ${{ steps.changes.outputs.workflow_yaml || steps.inventory.outputs.workflow_yaml }}
@@ -270,10 +270,9 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           filters: ${{ env.CHANGE_FILTERS }}
 
-      # frontend-ci runs in the directory this action resolves, so a forced
-      # run asks the same question with the same pin and config.
+      # frontend-ci runs in the directory this action resolves, so the entry
+      # point gate below asks the same question with the same pin and config.
       - name: Get frontend working directory
-        if: steps.mode.outputs.force == 'true'
         id: frontend-dir
         uses: falkcorp/gha-get-frontend-config@97f9fea2ba59e35fa23a74f0733b7a07005c5809 # v1.1.3
         with:
@@ -282,24 +281,9 @@ jobs:
       # Forced run: a category counts as changed when the repository tracks any
       # file matching its filter. `:(glob)` pathspec magic gives `**/` the same
       # zero-or-more-directories meaning paths-filter's picomatch gives it.
-      #
-      # Three categories gate on the job's entry point instead, because a
-      # matching file is not a buildable project:
-      #   rust      - rust-ci runs `cargo build` at the repo root.
-      #   frontend  - frontend-ci installs from the resolved frontend directory.
-      #   python    - python-ci treats the repo root as the package (`pip install
-      #               -e .` whenever pyproject.toml exists, then pytest at the
-      #               root). A pyproject.toml holding only tool config (black,
-      #               ruff) is not a package and that install fails.
-      # Measured on forced runs: github-common (testdata/rust/Cargo.toml, a root
-      # package.json with no web/) failed rust-ci and frontend-ci;
-      # audiobook-organizer (config-only pyproject.toml, helper scripts) failed
-      # python-ci at `pip install -e .`.
       - name: Inventory tracked files
         if: steps.mode.outputs.force == 'true'
         id: inventory
-        env:
-          FRONTEND_DIR: ${{ steps.frontend-dir.outputs.dir }}
         run: |
           key_re='^([a-z_]+):[[:space:]]*$'
           pat_re="^[[:space:]]+-[[:space:]]+'([^']+)'[[:space:]]*$"
@@ -330,6 +314,33 @@ jobs:
             echo "::error::CHANGE_FILTERS defined no categories"
             exit 1
           fi
+          for i in "${!keys[@]}"; do
+            echo "${keys[$i]}=${hits[$i]}" >> "$GITHUB_OUTPUT"
+            echo "${keys[$i]}=${hits[$i]}"
+          done
+
+      # Three categories gate on the job's entry point, on diff and forced runs
+      # alike, because a matching file is not a buildable project:
+      #   rust      - rust-ci runs `cargo build` at the repo root.
+      #   frontend  - frontend-ci installs from the resolved frontend directory.
+      #   python    - python-ci treats the repo root as the package (`pip install
+      #               -e .` whenever pyproject.toml exists, then pytest at the
+      #               root). A pyproject.toml holding only tool config (black,
+      #               ruff) is not a package and that install fails.
+      # Measured on forced runs: github-common (testdata/rust/Cargo.toml, a root
+      # package.json with no web/) failed rust-ci and frontend-ci;
+      # audiobook-organizer (config-only pyproject.toml, helper scripts) failed
+      # python-ci at `pip install -e .`. Measured on a diff run:
+      # cockroach-rollout-agent (static app.js/app.css embedded in a Rust
+      # binary, no package.json) failed frontend-ci.
+      - name: Gate categories on their project entry points
+        id: gate
+        env:
+          FRONTEND_DIR: ${{ steps.frontend-dir.outputs.dir }}
+          RUST_HIT: ${{ steps.changes.outputs.rust_files || steps.inventory.outputs.rust_files }}
+          PYTHON_HIT: ${{ steps.changes.outputs.python_files || steps.inventory.outputs.python_files }}
+          FRONTEND_HIT: ${{ steps.changes.outputs.frontend_files || steps.inventory.outputs.frontend_files }}
+        run: |
           tracked() {
             [[ -n "$(git ls-files -- "$1")" ]]
           }
@@ -342,40 +353,36 @@ jobs:
           frontend_manifest="${FRONTEND_DIR:-.}"
           frontend_manifest="${frontend_manifest%/}/package.json"
           frontend_manifest="${frontend_manifest#./}"
-          for i in "${!keys[@]}"; do
-            case "${keys[$i]}" in
-              rust_files)
-                if [[ "${hits[$i]}" == true ]] && ! tracked Cargo.toml; then
-                  echo "rust_files: no root Cargo.toml, not forcing rust-ci"
-                  hits[i]=false
-                fi
-                ;;
-              python_files)
-                if [[ "${hits[$i]}" == true ]] && ! python_project; then
-                  echo "python_files: no root Python package (pyproject.toml with [project]/[build-system], setup.py, setup.cfg or requirements.txt), not forcing python-ci"
-                  hits[i]=false
-                fi
-                ;;
-              frontend_files)
-                if [[ "${hits[$i]}" == true ]] && ! tracked "$frontend_manifest"; then
-                  echo "frontend_files: no $frontend_manifest, not forcing frontend-ci"
-                  hits[i]=false
-                fi
-                ;;
-            esac
-          done
-          for i in "${!keys[@]}"; do
-            echo "${keys[$i]}=${hits[$i]}" >> "$GITHUB_OUTPUT"
-            echo "${keys[$i]}=${hits[$i]}"
-          done
+
+          rust="${RUST_HIT:-false}"
+          if [[ "$rust" == true ]] && ! tracked Cargo.toml; then
+            echo "rust_files: no root Cargo.toml, not running rust-ci"
+            rust=false
+          fi
+          python="${PYTHON_HIT:-false}"
+          if [[ "$python" == true ]] && ! python_project; then
+            echo "python_files: no root Python package (pyproject.toml with [project]/[build-system], setup.py, setup.cfg or requirements.txt), not running python-ci"
+            python=false
+          fi
+          frontend="${FRONTEND_HIT:-false}"
+          if [[ "$frontend" == true ]] && ! tracked "$frontend_manifest"; then
+            echo "frontend_files: no $frontend_manifest, not running frontend-ci"
+            frontend=false
+          fi
+          {
+            echo "rust_files=$rust"
+            echo "python_files=$python"
+            echo "frontend_files=$frontend"
+          } >> "$GITHUB_OUTPUT"
+          echo "rust_files=$rust python_files=$python frontend_files=$frontend"
 
       - name: Debug change outputs
         env:
           CI_FORCE_ALL: ${{ steps.mode.outputs.force }}
           CI_GO_FILES: ${{ steps.changes.outputs.go_files || steps.inventory.outputs.go_files }}
-          CI_PYTHON_FILES: ${{ steps.changes.outputs.python_files || steps.inventory.outputs.python_files }}
-          CI_RUST_FILES: ${{ steps.changes.outputs.rust_files || steps.inventory.outputs.rust_files }}
-          CI_FRONTEND_FILES: ${{ steps.changes.outputs.frontend_files || steps.inventory.outputs.frontend_files }}
+          CI_PYTHON_FILES: ${{ steps.gate.outputs.python_files }}
+          CI_RUST_FILES: ${{ steps.gate.outputs.rust_files }}
+          CI_FRONTEND_FILES: ${{ steps.gate.outputs.frontend_files }}
           CI_DOCKER_FILES: ${{ steps.changes.outputs.docker_files || steps.inventory.outputs.docker_files }}
           CI_DOCS_FILES: ${{ steps.changes.outputs.docs_files || steps.inventory.outputs.docs_files }}
           CI_WORKFLOW_FILES: ${{ steps.changes.outputs.workflow_yaml || steps.inventory.outputs.workflow_yaml }}
