@@ -18,7 +18,6 @@ import subprocess
 
 import requests
 from workflow_common import (
-    append_to_file,
     config_path,
     write_output,
 )
@@ -528,9 +527,10 @@ def generate_changelog(_: argparse.Namespace) -> None:
     # Kept for an older reusable-release.yml paired with this script (the
     # scripts are checked out at the caller's ghcommon-ref, separately from
     # the workflow). Without it that workflow publishes an empty body.
-    append_to_file("GITHUB_OUTPUT", "changelog_content<<EOF\n")
-    append_to_file("GITHUB_OUTPUT", changelog)
-    append_to_file("GITHUB_OUTPUT", "EOF\n")
+    # Capped at the same 110,000-character budget, so even an old workflow
+    # that expands it into env/argv only overflows 128 KiB on mostly-CJK or
+    # emoji subjects.
+    write_output("changelog_content", changelog)
 
 
 def build_parser() -> argparse.ArgumentParser:

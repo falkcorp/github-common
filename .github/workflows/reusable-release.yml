@@ -646,6 +646,28 @@ jobs:
         run: |
           python3 "$GHCOMMON_SCRIPTS_DIR/release_workflow.py" "generate-changelog"
 
+      # The scripts are checked out at the caller's .github/ghcommon-ref.txt
+      # (or the fallback SHA above), separately from this workflow. A script
+      # from before github-common#374 emits only changelog_content, inline.
+      # Only then is it written to a file here. This is a separate step so
+      # that a current script's notes never pass through env at all (one env
+      # string is capped at 128 KiB, the original "Argument list too long").
+      - name: Write legacy inline changelog to a file
+        id: legacy-notes
+        if: steps.changelog.outputs.changelog_file == ''
+        env:
+          CHANGELOG_CONTENT: ${{ steps.changelog.outputs.changelog_content }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CHANGELOG_CONTENT}" ]; then
+            exit 0  # nothing to fall back to; the guard below reports it
+          fi
+          echo "::warning::The ghcommon scripts ref predates github-common#374 (no changelog_file). Using the inline changelog; set .github/ghcommon-ref.txt to a newer github-common SHA."
+          f="${RUNNER_TEMP}/release-notes/legacy-changelog.md"
+          mkdir -p "$(dirname "$f")"
+          printf '%s\n' "$CHANGELOG_CONTENT" > "$f"
+          echo "changelog_file=$f" >> "$GITHUB_OUTPUT"
+
       - name: Download all build artifacts
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
@@ -698,12 +720,12 @@ jobs:
         id: notes
         if: github.event_name != 'pull_request'
         env:
-          CHANGELOG_FILE: ${{ steps.changelog.outputs.changelog_file }}
+          CHANGELOG_FILE: ${{ steps.changelog.outputs.changelog_file || steps.legacy-notes.outputs.changelog_file }}
           COMMIT_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
           if [ ! -s "${CHANGELOG_FILE:-}" ]; then
-            echo "::error::generate-changelog produced no changelog_file. The ghcommon scripts ref (ghcommon-ref.txt or the fallback SHA) predates github-common#374; bump .github/ghcommon-ref.txt (or the fallback pin) to match this workflow."
+            echo "::error::No release notes file: generate-changelog produced neither changelog_file nor changelog_content. Check the Generate changelog step; if the ghcommon scripts ref is very old, set .github/ghcommon-ref.txt to a current github-common SHA."
             exit 1
           fi
           NOTES_FILE="${RUNNER_TEMP}/release-notes/body.md"
@@ -844,7 +866,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FULL_VERSION: ${{ needs.detect-languages.outputs.full-version }}
           RC_TAG: ${{ steps.version.outputs.version }}
-          CHANGELOG_FILE: ${{ steps.changelog.outputs.changelog_file }}
+          CHANGELOG_FILE: ${{ steps.changelog.outputs.changelog_file || steps.legacy-notes.outputs.changelog_file }}
         run: |
           set -euo pipefail
 
@@ -878,7 +900,7 @@ jobs:
           # --notes-file), never argv: one argv string is capped at 128 KiB
           # and a long changelog exceeds it ("Argument list too long").
           if [ ! -s "${CHANGELOG_FILE:-}" ]; then
-            echo "::error::generate-changelog produced no changelog_file. The ghcommon scripts ref (ghcommon-ref.txt or the fallback SHA) predates github-common#374; bump .github/ghcommon-ref.txt (or the fallback pin) to match this workflow."
+            echo "::error::No release notes file: generate-changelog produced neither changelog_file nor changelog_content. Check the Generate changelog step; if the ghcommon scripts ref is very old, set .github/ghcommon-ref.txt to a current github-common SHA."
             exit 1
           fi
           NOTES_FILE="${RUNNER_TEMP}/release-notes/draft-body.md"
