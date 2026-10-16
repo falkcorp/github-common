@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-advanced-cache.yml
-# version: 1.1.5
+# version: 1.1.6
 # guid: e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b
 
 name: Reusable Advanced Caching
@@ -58,7 +58,7 @@ jobs:
           if [ -f .github/ghcommon-ref.txt ]; then
             echo "ref=$(cat .github/ghcommon-ref.txt)" >> "$GITHUB_OUTPUT"
           else
-            echo "ref=e73b80106099118143806b0ce58e0a73cbcfb27c" >> "$GITHUB_OUTPUT"
+            echo "ref=1f0d70e877c89a21a597db5a24e2775d3015ddda" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Checkout ghcommon workflow scripts

@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-maintenance.yml
-# version: 1.0.6
+# version: 1.0.7
 # guid: reusable-maintenance-2025-09-24-core-workflow
 
 name: Reusable Maintenance Workflow
@@ -50,7 +50,7 @@ jobs:
           if [ -f .github/ghcommon-ref.txt ]; then
             echo "ref=$(cat .github/ghcommon-ref.txt)" >> "$GITHUB_OUTPUT"
           else
-            echo "ref=e73b80106099118143806b0ce58e0a73cbcfb27c" >> "$GITHUB_OUTPUT"
+            echo "ref=1f0d70e877c89a21a597db5a24e2775d3015ddda" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Checkout ghcommon workflow scripts

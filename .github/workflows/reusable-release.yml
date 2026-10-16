@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-release.yml
-# version: 2.16.0
+# version: 2.16.1
 # guid: 7b8c9d0e-1f2a-3b4c-5d6e-7f8a9b0c1d2e
 # last-edited: 2026-10-16
 
@@ -608,7 +608,7 @@ jobs:
           if [ -f .github/ghcommon-ref.txt ]; then
             echo "ref=$(cat .github/ghcommon-ref.txt)" >> "$GITHUB_OUTPUT"
           else
-            echo "ref=e73b80106099118143806b0ce58e0a73cbcfb27c" >> "$GITHUB_OUTPUT"
+            echo "ref=1f0d70e877c89a21a597db5a24e2775d3015ddda" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Checkout ghcommon workflow scripts
@@ -1101,7 +1101,7 @@ jobs:
           if [ -f .github/ghcommon-ref.txt ]; then
             echo "ref=$(cat .github/ghcommon-ref.txt)" >> "$GITHUB_OUTPUT"
           else
-            echo "ref=e73b80106099118143806b0ce58e0a73cbcfb27c" >> "$GITHUB_OUTPUT"
+            echo "ref=1f0d70e877c89a21a597db5a24e2775d3015ddda" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Checkout ghcommon workflow scripts
@@ -1272,7 +1272,7 @@ jobs:
           if [ -f .github/ghcommon-ref.txt ]; then
             echo "ref=$(cat .github/ghcommon-ref.txt)" >> "$GITHUB_OUTPUT"
           else
-            echo "ref=e73b80106099118143806b0ce58e0a73cbcfb27c" >> "$GITHUB_OUTPUT"
+            echo "ref=1f0d70e877c89a21a597db5a24e2775d3015ddda" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Checkout ghcommon workflow scripts
