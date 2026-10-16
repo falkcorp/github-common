@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # file: .github/workflows/scripts/release_workflow.py
-# version: 2.2.0
+# version: 2.3.0
 # guid: dc14e86d-ff9a-4317-88de-23e0e48651d2
 # last-edited: 2026-10-16
 """Helper utilities for reusable release workflows."""
@@ -81,6 +81,7 @@ def _docker_matrix_json(platforms: Iterable[str]) -> str:
 
 
 def detect_languages(_: argparse.Namespace) -> None:
+    """Detect project languages and build targets; write them as step outputs."""
     skip_detection = (
         os.environ.get("SKIP_LANGUAGE_DETECTION", "false").lower() == "true"
     )
@@ -219,6 +220,7 @@ def detect_languages(_: argparse.Namespace) -> None:
 
 
 def release_strategy(_: argparse.Namespace) -> None:
+    """Decide the release strategy and prerelease/draft flags from the branch."""
     branch = os.environ.get("BRANCH_NAME", "")
     input_prerelease = (
         os.environ.get("INPUT_PRERELEASE", "false").lower() == "true"
@@ -252,7 +254,7 @@ def _run_git(
     args: list[str], check: bool = False
 ) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
-        ["git"] + args, check=check, capture_output=True, text=True
+        ["git", *args], check=check, capture_output=True, text=True
     )
 
 
@@ -301,6 +303,7 @@ def _latest_tag_from_git() -> str:
 
 
 def generate_version(_: argparse.Namespace) -> None:
+    """Compute the next release tag and write it as the ``tag`` output."""
     release_type = os.environ.get("RELEASE_TYPE", "auto").lower()
     branch_name = os.environ.get("BRANCH_NAME", "")
     auto_prerelease = (
@@ -430,6 +433,7 @@ def _cap_commit_lines(commits: list[str], budget: int) -> list[str]:
 
 
 def generate_changelog(_: argparse.Namespace) -> None:
+    """Write the release notes file (``changelog_file``) and inline copy."""
     branch = os.environ.get("BRANCH_NAME", "")
     primary_language = os.environ.get("PRIMARY_LANGUAGE", "unknown")
     strategy = os.environ.get("RELEASE_STRATEGY", "stable")
@@ -483,7 +487,7 @@ def generate_changelog(_: argparse.Namespace) -> None:
         header = "### 📋 Initial Release Commits:\n"
 
     commits = _run_git(
-        ["log"] + log_args + ["--pretty=%s (%h)"]
+        ["log", *log_args, "--pretty=%s (%h)"]
     ).stdout.splitlines()
     commits = [entry for entry in commits if entry.strip()]
 
@@ -534,6 +538,7 @@ def generate_changelog(_: argparse.Namespace) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
+    """Build the CLI parser with one subcommand per release step."""
     parser = argparse.ArgumentParser(
         description="Release workflow helper commands."
     )
@@ -552,6 +557,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
+    """Run the subcommand named on the command line."""
     parser = build_parser()
     args = parser.parse_args()
     handler = getattr(args, "handler", None)

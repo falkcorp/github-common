@@ -1,7 +1,7 @@
 # file: ruff.toml
-# version: 1.3.0
+# version: 1.4.0
 # guid: f1a2b3c4-d5e6-789f-a012-456789abcdef
-# last-edited: 2026-10-05
+# last-edited: 2026-10-16
 
 # Ruff configuration following Google Python Style Guide
 # https://google.github.io/styleguide/pyguide.html
@@ -77,6 +77,9 @@ ignore = [
 # same status emoji the tests assert on (RUF001), and their only "magic"
 # numbers are argv-length and semver-part counts (PLR2004).
 ".github/scripts/**/*.py" = ["T20", "S602", "S603", "S607", "RUF001", "PLR2004"]
+# Same CLIs, in the directory the reusable workflows check out as
+# GHCOMMON_SCRIPTS_DIR. Keep this list identical to the one above.
+".github/workflows/scripts/**/*.py" = ["T20", "S602", "S603", "S607", "RUF001", "PLR2004"]
 "**/migrations/**/*.py" = ["D100", "D103"]
 
 [lint.isort]
