@@ -86,7 +86,9 @@ def test_generate_version_from_tag(monkeypatch, tmp_path):
     monkeypatch.setenv("GITHUB_EVENT_NAME", "push")
 
     monkeypatch.setattr(release_workflow, "_latest_tag_from_api", lambda: "")
-    monkeypatch.setattr(release_workflow, "_latest_tag_from_git", lambda: "v1.2.3")
+    monkeypatch.setattr(
+        release_workflow, "_latest_tag_from_git", lambda: "v1.2.3"
+    )
 
     def fake_run(args, check=False):
         cmd = tuple(args)
@@ -106,6 +108,7 @@ def test_generate_version_from_tag(monkeypatch, tmp_path):
 def test_generate_changelog(monkeypatch, tmp_path):
     output_file = tmp_path / "outputs.txt"
     monkeypatch.setenv("GITHUB_OUTPUT", str(output_file))
+    monkeypatch.setenv("RUNNER_TEMP", str(tmp_path / "runner-temp"))
     monkeypatch.setenv("BRANCH_NAME", "main")
     monkeypatch.setenv("PRIMARY_LANGUAGE", "go")
     monkeypatch.setenv("RELEASE_STRATEGY", "stable")
@@ -130,6 +133,64 @@ def test_generate_changelog(monkeypatch, tmp_path):
     monkeypatch.setattr(release_workflow, "_run_git", fake_run)
 
     release_workflow.generate_changelog(argparse.Namespace())
-    content = output_file.read_text()
+    outputs = _parse_outputs(output_file)
+    # The notes travel as a file path, never as inline output content.
+    assert "changelog_content" not in output_file.read_text()
+    content = Path(outputs["changelog_file"]).read_text(encoding="utf-8")
     assert "feat: add feature" in content
     assert "Release Type" in content
+
+
+def test_cap_commit_lines_keeps_everything_under_budget():
+    commits = ["feat: a (1)", "fix: b (2)"]
+    assert release_workflow._cap_commit_lines(commits, 1000) == [
+        "- feat: a (1)",
+        "- fix: b (2)",
+    ]
+
+
+def test_cap_commit_lines_drops_oldest_and_says_how_many():
+    commits = [f"fix: change number {i} ({i:07x})" for i in range(5000)]
+    lines = release_workflow._cap_commit_lines(
+        commits, release_workflow.CHANGELOG_COMMITS_BUDGET
+    )
+    body = "\n".join(lines)
+    assert len(body) <= release_workflow.CHANGELOG_COMMITS_BUDGET
+    # Newest first: the first commit survives, the oldest does not.
+    assert lines[0] == f"- {commits[0]}"
+    assert f"- {commits[-1]}" not in lines
+    kept = len(lines) - 1
+    assert lines[-1].startswith(f"- … and {5000 - kept} older commit(s)")
+
+
+def test_generate_changelog_long_history_fits_github_body_limit(
+    monkeypatch, tmp_path
+):
+    output_file = tmp_path / "outputs.txt"
+    monkeypatch.setenv("GITHUB_OUTPUT", str(output_file))
+    monkeypatch.setenv("RUNNER_TEMP", str(tmp_path / "runner-temp"))
+    monkeypatch.setenv("PREVIOUS_VERSION", "v0.1.0")
+
+    import subprocess
+
+    # Multibyte subjects: a ~125 KB body like this is what overflowed the
+    # 128 KiB env/argv string limit when passed as an action input.
+    log = "".join(
+        f"fix(ü): ✓ subject number {i} ({i:09x})\n" for i in range(6000)
+    )
+
+    def fake_run(args, check=False):
+        if args[0] == "log":
+            return subprocess.CompletedProcess(args, 0, log, "")
+        return subprocess.CompletedProcess(args, 0, "", "")
+
+    monkeypatch.setattr(release_workflow, "_run_git", fake_run)
+
+    release_workflow.generate_changelog(argparse.Namespace())
+    content = Path(_parse_outputs(output_file)["changelog_file"]).read_text(
+        encoding="utf-8"
+    )
+    # GitHub's release body limit is 125,000 characters; leave room for the
+    # header/footer the workflow adds around these notes.
+    assert len(content) < 120_000
+    assert "older commit(s) not listed" in content
