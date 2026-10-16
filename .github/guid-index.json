@@ -1168,6 +1168,14 @@
     "path_mismatch": false
   },
   {
+    "path": ".github/workflows/scripts/release_workflow.py",
+    "guid": "dc14e86d-ff9a-4317-88de-23e0e48651d2",
+    "title": "release workflow",
+    "version": "2.2.0",
+    "header_path": ".github/workflows/scripts/release_workflow.py",
+    "path_mismatch": false
+  },
+  {
     "path": ".github/workflows/scripts/test-scripts.sh",
     "guid": "2e3f4a5b-6c7d-8e9f-0a1b-2c3d4e5f6a7b",
     "title": "test scripts",
@@ -1547,7 +1555,7 @@
     "path": "WORKFLOW_SCRIPT_USAGE_MAP.md",
     "guid": "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
     "title": "Workflow Script Usage Mapping",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "header_path": "WORKFLOW_SCRIPT_USAGE_MAP.md",
     "path_mismatch": false
   },
@@ -3685,6 +3693,14 @@
     "title": "test publish to github packages",
     "version": "1.0.0",
     "header_path": "tests/workflow_scripts/test_publish_to_github_packages.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "tests/workflow_scripts/test_release_workflow.py",
+    "guid": "543b49c0-5c64-4cea-a025-76de25f6b324",
+    "title": "test release workflow",
+    "version": "1.1.0",
+    "header_path": "tests/workflow_scripts/test_release_workflow.py",
     "path_mismatch": false
   },
   {

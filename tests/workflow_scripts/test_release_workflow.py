@@ -1,3 +1,8 @@
+# file: tests/workflow_scripts/test_release_workflow.py
+# version: 1.1.0
+# guid: 543b49c0-5c64-4cea-a025-76de25f6b324
+# last-edited: 2026-10-16
+
 import argparse
 import json
 from pathlib import Path
@@ -134,9 +139,10 @@ def test_generate_changelog(monkeypatch, tmp_path):
 
     release_workflow.generate_changelog(argparse.Namespace())
     outputs = _parse_outputs(output_file)
-    # The notes travel as a file path, never as inline output content.
-    assert "changelog_content" not in output_file.read_text()
+    # Workflows read the notes from the file; the inline copy stays only for
+    # an older reusable-release.yml paired with this script.
     content = Path(outputs["changelog_file"]).read_text(encoding="utf-8")
+    assert content in output_file.read_text(encoding="utf-8")
     assert "feat: add feature" in content
     assert "Release Type" in content
 
@@ -194,3 +200,15 @@ def test_generate_changelog_long_history_fits_github_body_limit(
     # header/footer the workflow adds around these notes.
     assert len(content) < 120_000
     assert "older commit(s) not listed" in content
+
+
+def test_cap_commit_lines_exact_fit_is_not_cut():
+    commits = ["abc", "de"]
+    # "- abc\n- de" is exactly 10 characters.
+    assert release_workflow._cap_commit_lines(commits, 10) == ["- abc", "- de"]
+
+
+def test_cap_commit_lines_oversized_newest_is_not_called_older():
+    lines = release_workflow._cap_commit_lines(["x" * 500, "y"], 200)
+    assert lines == [release_workflow._omitted_line(2, newest=True)]
+    assert "older" not in lines[0]
