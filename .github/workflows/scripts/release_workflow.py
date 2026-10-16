@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# file: .github/workflows/scripts/release_workflow.py
+# version: 2.2.0
+# guid: dc14e86d-ff9a-4317-88de-23e0e48651d2
+# last-edited: 2026-10-16
 """Helper utilities for reusable release workflows."""
 
 from __future__ import annotations
@@ -14,6 +18,7 @@ import subprocess
 
 import requests
 from workflow_common import (
+    append_to_file,
     config_path,
     write_output,
 )
@@ -386,9 +391,11 @@ def generate_version(_: argparse.Namespace) -> None:
 CHANGELOG_COMMITS_BUDGET = 110_000
 
 
-def _omitted_line(count: int) -> str:
+def _omitted_line(count: int, *, newest: bool = False) -> str:
+    """Return the closing line that says how many commits were left out."""
+    which = "" if newest else " older"
     return (
-        f"- … and {count} older commit(s) not listed "
+        f"- … and {count}{which} commit(s) not listed "
         "(release notes are capped at GitHub's body limit)"
     )
 
@@ -398,10 +405,15 @@ def _cap_commit_lines(commits: list[str], budget: int) -> list[str]:
 
     Commits are newest first, so the oldest are the ones dropped and a final
     line says how many were left out. The budget counts characters (what
-    GitHub limits), including the newline between lines. A commit is kept
-    only if the omitted-count line for everything after it still fits, so
-    that line always has room when the list is cut.
+    GitHub limits), including the newline between lines. A list that fits
+    whole is returned unchanged. Otherwise a commit is kept only if the
+    omitted-count line for everything after it still fits, so that line
+    always has room when the list is cut. A budget smaller than that line
+    itself (under ~90 characters) cannot be honoured; callers use 110,000.
     """
+    lines = [f"- {commit}" for commit in commits]
+    if len("\n".join(lines)) <= budget:
+        return lines
     kept: list[str] = []
     used = 0
     for index, commit in enumerate(commits):
@@ -411,7 +423,7 @@ def _cap_commit_lines(commits: list[str], budget: int) -> list[str]:
         if after:
             need += 1 + len(_omitted_line(after))
         if used + need > budget:
-            kept.append(_omitted_line(len(commits) - index))
+            kept.append(_omitted_line(len(commits) - index, newest=not kept))
             return kept
         kept.append(line)
         used += len(line) + (1 if len(kept) > 1 else 0)
@@ -513,6 +525,12 @@ def generate_changelog(_: argparse.Namespace) -> None:
     out_file = out_dir / "changelog.md"
     out_file.write_text(changelog, encoding="utf-8")
     write_output("changelog_file", str(out_file))
+    # Kept for an older reusable-release.yml paired with this script (the
+    # scripts are checked out at the caller's ghcommon-ref, separately from
+    # the workflow). Without it that workflow publishes an empty body.
+    append_to_file("GITHUB_OUTPUT", "changelog_content<<EOF\n")
+    append_to_file("GITHUB_OUTPUT", changelog)
+    append_to_file("GITHUB_OUTPUT", "EOF\n")
 
 
 def build_parser() -> argparse.ArgumentParser:

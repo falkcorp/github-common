@@ -1,7 +1,7 @@
 <!-- file: WORKFLOW_SCRIPT_USAGE_MAP.md -->
-<!-- version: 1.0.0 -->
+<!-- version: 1.0.1 -->
 <!-- guid: 2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e -->
-<!-- last-edited: 2026-01-19 -->
+<!-- last-edited: 2026-10-16 -->
 
 # Workflow Script Usage Mapping
 
@@ -353,8 +353,12 @@ branch"
 
 **Outputs:**
 
-- `changelog` - Markdown changelog text
-- `changelog-file` - Path to changelog file
+- `changelog_file` - Path to the release-notes Markdown file (commit list capped
+  at 110,000 characters). Workflows read the notes from this file; never pass
+  them through an action input, env var or argv (128 KiB per-string limit).
+- `changelog_content` - The same notes inline. Kept only for an older
+  `reusable-release.yml` paired with a newer script; new consumers use
+  `changelog_file`.
 
 **Dependencies:**
 

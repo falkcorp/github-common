@@ -702,6 +702,10 @@ jobs:
           COMMIT_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
+          if [ ! -s "${CHANGELOG_FILE:-}" ]; then
+            echo "::error::generate-changelog produced no changelog_file. The ghcommon scripts ref (ghcommon-ref.txt or the fallback SHA) predates github-common#374; bump .github/ghcommon-ref.txt (or the fallback pin) to match this workflow."
+            exit 1
+          fi
           NOTES_FILE="${RUNNER_TEMP}/release-notes/body.md"
           mkdir -p "$(dirname "$NOTES_FILE")"
           {
@@ -873,6 +877,10 @@ jobs:
           # Notes go through a file (gh api -F body=@file, gh release
           # --notes-file), never argv: one argv string is capped at 128 KiB
           # and a long changelog exceeds it ("Argument list too long").
+          if [ ! -s "${CHANGELOG_FILE:-}" ]; then
+            echo "::error::generate-changelog produced no changelog_file. The ghcommon scripts ref (ghcommon-ref.txt or the fallback SHA) predates github-common#374; bump .github/ghcommon-ref.txt (or the fallback pin) to match this workflow."
+            exit 1
+          fi
           NOTES_FILE="${RUNNER_TEMP}/release-notes/draft-body.md"
           mkdir -p "$(dirname "$NOTES_FILE")"
           {

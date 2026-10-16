@@ -15,3 +15,11 @@ changelog fragment collection, the draft cleanup and the GitHub Packages publish
 first, ending with "… and N older commit(s) not listed". GitHub rejects release
 bodies over 125,000 characters. The release step reads the notes with
 `body_path:`, and the draft step uses `-F body=@file` / `--notes-file`.
+
+`create-release` fetches the workflow scripts at the caller's
+`.github/ghcommon-ref.txt`, or at the fallback SHA, separately from the
+workflow, so the two can be at different versions. The script still emits
+`changelog_content`, so an older workflow paired with this script keeps
+publishing notes. In the other direction, both new steps stop with an
+`::error::` naming the ref to bump instead of a bare `cat` failure. Callers
+that set `ghcommon-ref.txt` must bump it together with the `uses:` pin.
