@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-ci.yml
-# version: 1.17.1
+# version: 1.18.0
 # guid: reusable-ci-2025-09-24-core-workflow
 # last-edited: 2026-10-16
 
@@ -55,6 +55,15 @@ on:
         default: false
       go-experiment:
         description: 'Value for GOEXPERIMENT environment variable (e.g. jsonv2)'
+        required: false
+        type: string
+        default: ''
+      go-test-timeout:
+        description: >-
+          Per-test-binary timeout for the Go test steps, as a Go duration (e.g.
+          25m). Empty (default) keeps Go's own 10m. Passed as GOFLAGS=-timeout=...
+          because the go-test helper action has no timeout input. Values above
+          30m need go-ci's timeout-minutes raised; see the comment there.
         required: false
         type: string
         default: ''
@@ -569,12 +578,11 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.load-config.outputs.go-matrix) }}
     runs-on: ${{ matrix.os }}
-    # 40, not 30: the go-test helper runs `go test -race` with no -timeout, so
-    # a hung test binary is killed by Go's default 10m. The cap must exceed
-    # setup (~4.5m) + the slowest measured suite (~20.5m) + that 10m, or the
-    # runner cancels the job before Go prints the goroutine dump naming the
-    # stuck test.
-    timeout-minutes: 40
+    # The cap must exceed setup (~4.5m) + the slowest measured suite (~20.5m) +
+    # the per-binary test timeout (Go's default 10m, or the go-test-timeout
+    # input, supported up to 30m), or the runner cancels the job before Go
+    # prints the goroutine dump naming the stuck test.
+    timeout-minutes: 60
     permissions:
       contents: read
     env:
@@ -639,9 +647,13 @@ jobs:
         with:
           command: go-setup
 
+      # go test reads test flags such as -timeout from GOFLAGS; go build and
+      # go tool cover ignore flags they do not know, so this only reaches tests.
       - name: Test Go project
         if: ${{ !inputs.skip-tests }}
         uses: falkcorp/gha-ci-workflow-helpers@4b5f4d45d42c99d98ccf731624f2f4b91d849561 # v1.1.4
+        env:
+          GOFLAGS: ${{ inputs.go-test-timeout != '' && format('-timeout={0}', inputs.go-test-timeout) || '' }}
         with:
           command: go-test
           coverage-threshold: ${{ inputs.coverage-threshold || needs.load-config.outputs.coverage-threshold }}
@@ -651,6 +663,8 @@ jobs:
       - name: Generate Go coverage profile
         if: ${{ !inputs.skip-tests && hashFiles('.testcoverage.yml') != '' }}
         continue-on-error: true
+        env:
+          GOFLAGS: ${{ inputs.go-test-timeout != '' && format('-timeout={0}', inputs.go-test-timeout) || '' }}
         run: go test ./... -coverprofile=./cover.out -covermode=atomic -coverpkg=./...
 
       - name: Check Go test coverage
