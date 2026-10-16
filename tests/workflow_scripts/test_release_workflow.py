@@ -212,3 +212,41 @@ def test_cap_commit_lines_oversized_newest_is_not_called_older():
     lines = release_workflow._cap_commit_lines(["x" * 500, "y"], 200)
     assert lines == [release_workflow._omitted_line(2, newest=True)]
     assert "older" not in lines[0]
+
+
+def _parse_heredoc_output(path: Path, name: str) -> str:
+    """Return a ``name<<DELIM`` block from a GITHUB_OUTPUT file as the runner reads it."""
+    lines = path.read_text(encoding="utf-8").split("\n")
+    for i, line in enumerate(lines):
+        if line.startswith(f"{name}<<"):
+            delim = line.split("<<", 1)[1]
+            end = lines.index(delim, i + 1)
+            return "\n".join(lines[i + 1 : end])
+    raise AssertionError(f"{name} not found")
+
+
+def test_changelog_content_round_trips_to_file_contents(monkeypatch, tmp_path):
+    output_file = tmp_path / "outputs.txt"
+    monkeypatch.setenv("GITHUB_OUTPUT", str(output_file))
+    monkeypatch.setenv("RUNNER_TEMP", str(tmp_path / "runner-temp"))
+    monkeypatch.setenv("PREVIOUS_VERSION", "v0.1.0")
+
+    import subprocess
+
+    def fake_run(args, check=False):
+        if args[0] == "log":
+            return subprocess.CompletedProcess(
+                args, 0, "EOF\nfix: y (b2)\n", ""
+            )
+        return subprocess.CompletedProcess(args, 0, "", "")
+
+    monkeypatch.setattr(release_workflow, "_run_git", fake_run)
+    release_workflow.generate_changelog(argparse.Namespace())
+
+    file_text = Path(_parse_outputs(output_file)["changelog_file"]).read_text(
+        encoding="utf-8"
+    )
+    inline = _parse_heredoc_output(output_file, "changelog_content")
+    # The runner drops only the newline write_output adds before the
+    # delimiter, so an old workflow sees exactly the file's notes.
+    assert inline == file_text

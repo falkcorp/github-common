@@ -27,3 +27,10 @@ workflow, so the two can be at different versions. Both pairings keep working:
 
 If neither output is present, the release stops with an `::error::` before
 anything is published.
+
+The legacy path still passes the notes through env, so the "Argument list
+too long" fix only fully applies once the scripts are current too. An old,
+uncapped script with notes near 128 KiB still fails, though now before
+publishing. Callers that set `.github/ghcommon-ref.txt` must bump it together
+with the `uses:` pin. The fallback scripts SHA in this workflow is bumped
+right after this change merges.

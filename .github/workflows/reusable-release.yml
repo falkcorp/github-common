@@ -659,7 +659,7 @@ jobs:
           CHANGELOG_CONTENT: ${{ steps.changelog.outputs.changelog_content }}
         run: |
           set -euo pipefail
-          if [ -z "${CHANGELOG_CONTENT}" ]; then
+          if [ -z "${CHANGELOG_CONTENT:-}" ]; then
             exit 0  # nothing to fall back to; the guard below reports it
           fi
           echo "::warning::The ghcommon scripts ref predates github-common#374 (no changelog_file). Using the inline changelog; set .github/ghcommon-ref.txt to a newer github-common SHA."
@@ -725,7 +725,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ ! -s "${CHANGELOG_FILE:-}" ]; then
-            echo "::error::No release notes file: generate-changelog produced neither changelog_file nor changelog_content. Check the Generate changelog step; if the ghcommon scripts ref is very old, set .github/ghcommon-ref.txt to a current github-common SHA."
+            echo "::error::No non-empty release notes file (changelog_file, or the legacy changelog_content). Check the Generate changelog step; if the ghcommon scripts ref is old, set .github/ghcommon-ref.txt to a current github-common SHA."
             exit 1
           fi
           NOTES_FILE="${RUNNER_TEMP}/release-notes/body.md"
@@ -900,7 +900,7 @@ jobs:
           # --notes-file), never argv: one argv string is capped at 128 KiB
           # and a long changelog exceeds it ("Argument list too long").
           if [ ! -s "${CHANGELOG_FILE:-}" ]; then
-            echo "::error::No release notes file: generate-changelog produced neither changelog_file nor changelog_content. Check the Generate changelog step; if the ghcommon scripts ref is very old, set .github/ghcommon-ref.txt to a current github-common SHA."
+            echo "::error::No non-empty release notes file (changelog_file, or the legacy changelog_content). Check the Generate changelog step; if the ghcommon scripts ref is old, set .github/ghcommon-ref.txt to a current github-common SHA."
             exit 1
           fi
           NOTES_FILE="${RUNNER_TEMP}/release-notes/draft-body.md"
