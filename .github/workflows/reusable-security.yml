@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-security.yml
-# version: 1.3.4
+# version: 1.3.5
 # guid: reusable-security-2025-09-24-core-workflow
 
 name: Reusable Security Workflow
@@ -278,7 +278,7 @@ jobs:
         with:
           submodules: recursive
           repository: falkcorp/github-common
-          ref: e73b80106099118143806b0ce58e0a73cbcfb27c # v1.10.3+
+          ref: 1f0d70e877c89a21a597db5a24e2775d3015ddda # main 2026-10-16 (github-common#374)
           path: .ghcommon
           sparse-checkout: |
             .github/scripts
