@@ -1171,7 +1171,7 @@
     "path": ".github/workflows/scripts/release_workflow.py",
     "guid": "dc14e86d-ff9a-4317-88de-23e0e48651d2",
     "title": "release workflow",
-    "version": "2.2.0",
+    "version": "2.3.0",
     "header_path": ".github/workflows/scripts/release_workflow.py",
     "path_mismatch": false
   },
@@ -3019,7 +3019,7 @@
     "path": "ruff.toml",
     "guid": "f1a2b3c4-d5e6-789f-a012-456789abcdef",
     "title": "ruff",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "header_path": "ruff.toml",
     "path_mismatch": false
   },
