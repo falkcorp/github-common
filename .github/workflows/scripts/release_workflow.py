@@ -4,17 +4,16 @@
 from __future__ import annotations
 
 import argparse
-import json
-import os
-import re
-import subprocess
 from collections.abc import Iterable
 from datetime import datetime
+import json
+import os
 from pathlib import Path
+import re
+import subprocess
 
 import requests
 from workflow_common import (
-    append_to_file,
     config_path,
     write_output,
 )
@@ -32,10 +31,16 @@ def _normalize_override(value: str | None) -> str:
 def _build_target_set(build_target: str) -> set[str]:
     if not build_target or build_target == "all":
         return {"go", "python", "rust", "frontend", "docker", "protobuf"}
-    return {entry.strip().lower() for entry in build_target.split(",") if entry.strip()}
+    return {
+        entry.strip().lower()
+        for entry in build_target.split(",")
+        if entry.strip()
+    }
 
 
-def _derive_flag(override: str, key: str, targets: set[str], default: bool) -> bool:
+def _derive_flag(
+    override: str, key: str, targets: set[str], default: bool
+) -> bool:
     if override == "true":
         return True
     if override == "false":
@@ -56,7 +61,9 @@ def _any_proto_files(limit: int = 20) -> bool:
     return count > 0
 
 
-def _matrix_json(version_key: str, versions: Iterable[str], oses: Iterable[str]) -> str:
+def _matrix_json(
+    version_key: str, versions: Iterable[str], oses: Iterable[str]
+) -> str:
     matrix = {
         version_key: list(dict.fromkeys(versions)),
         "os": list(dict.fromkeys(oses)),
@@ -70,7 +77,9 @@ def _docker_matrix_json(platforms: Iterable[str]) -> str:
 
 
 def detect_languages(_: argparse.Namespace) -> None:
-    skip_detection = os.environ.get("SKIP_LANGUAGE_DETECTION", "false").lower() == "true"
+    skip_detection = (
+        os.environ.get("SKIP_LANGUAGE_DETECTION", "false").lower() == "true"
+    )
     targets = _build_target_set(os.environ.get("BUILD_TARGET", "all").lower())
 
     overrides = {
@@ -86,9 +95,13 @@ def detect_languages(_: argparse.Namespace) -> None:
         has_go = _derive_flag(overrides["go"], "go", targets, False)
         has_python = _derive_flag(overrides["python"], "python", targets, False)
         has_rust = _derive_flag(overrides["rust"], "rust", targets, False)
-        has_frontend = _derive_flag(overrides["frontend"], "frontend", targets, False)
+        has_frontend = _derive_flag(
+            overrides["frontend"], "frontend", targets, False
+        )
         has_docker = _derive_flag(overrides["docker"], "docker", targets, False)
-        protobuf_needed = _derive_flag(overrides["protobuf"], "protobuf", targets, False)
+        protobuf_needed = _derive_flag(
+            overrides["protobuf"], "protobuf", targets, False
+        )
     else:
         has_go = (
             Path("go.mod").is_file()
@@ -118,7 +131,9 @@ def detect_languages(_: argparse.Namespace) -> None:
             or Path("docker-compose.yaml").is_file()
         )
         protobuf_needed = (
-            Path("buf.yaml").is_file() or Path("buf.gen.yaml").is_file() or _any_proto_files()
+            Path("buf.yaml").is_file()
+            or Path("buf.gen.yaml").is_file()
+            or _any_proto_files()
         )
 
         for key, override in overrides.items():
@@ -180,14 +195,18 @@ def detect_languages(_: argparse.Namespace) -> None:
     python_versions = versions.get("python") or ["3.11", "3.12", "3.13"]
     rust_versions = versions.get("rust") or ["stable", "beta"]
     node_versions = versions.get("node") or ["18", "20", "22"]
-    docker_platforms = config_path(["linux/amd64", "linux/arm64"], "build", "docker", "platforms")
+    docker_platforms = config_path(
+        ["linux/amd64", "linux/arm64"], "build", "docker", "platforms"
+    )
 
     write_output("go-matrix", _matrix_json("go-version", go_versions, os_list))
     write_output(
         "python-matrix",
         _matrix_json("python-version", python_versions, os_list),
     )
-    write_output("rust-matrix", _matrix_json("rust-version", rust_versions, os_list))
+    write_output(
+        "rust-matrix", _matrix_json("rust-version", rust_versions, os_list)
+    )
     write_output(
         "frontend-matrix",
         _matrix_json("node-version", node_versions, ["ubuntu-latest"]),
@@ -197,7 +216,9 @@ def detect_languages(_: argparse.Namespace) -> None:
 
 def release_strategy(_: argparse.Namespace) -> None:
     branch = os.environ.get("BRANCH_NAME", "")
-    input_prerelease = os.environ.get("INPUT_PRERELEASE", "false").lower() == "true"
+    input_prerelease = (
+        os.environ.get("INPUT_PRERELEASE", "false").lower() == "true"
+    )
     input_draft = os.environ.get("INPUT_DRAFT", "false").lower() == "true"
 
     if branch == "main":
@@ -223,8 +244,12 @@ def release_strategy(_: argparse.Namespace) -> None:
     print(f"📋 Auto-draft: {auto_draft}")
 
 
-def _run_git(args: list[str], check: bool = False) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(["git"] + args, check=check, capture_output=True, text=True)
+def _run_git(
+    args: list[str], check: bool = False
+) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["git"] + args, check=check, capture_output=True, text=True
+    )
 
 
 def _latest_tag_from_api() -> str:
@@ -274,7 +299,9 @@ def _latest_tag_from_git() -> str:
 def generate_version(_: argparse.Namespace) -> None:
     release_type = os.environ.get("RELEASE_TYPE", "auto").lower()
     branch_name = os.environ.get("BRANCH_NAME", "")
-    auto_prerelease = os.environ.get("AUTO_PRERELEASE", "false").lower() == "true"
+    auto_prerelease = (
+        os.environ.get("AUTO_PRERELEASE", "false").lower() == "true"
+    )
 
     print("🔍 Detecting latest version...")
     latest_tag = _latest_tag_from_api()
@@ -305,7 +332,9 @@ def generate_version(_: argparse.Namespace) -> None:
     timestamp = datetime.utcnow().strftime("%Y%m%d%H%M")
     if auto_prerelease:
         suffix = "dev" if branch_name == "develop" else "alpha"
-        version_tag = f"v{new_major}.{new_minor}.{new_patch}-{suffix}.{timestamp}"
+        version_tag = (
+            f"v{new_major}.{new_minor}.{new_patch}-{suffix}.{timestamp}"
+        )
     else:
         version_tag = f"v{new_major}.{new_minor}.{new_patch}"
 
@@ -342,18 +371,60 @@ def generate_version(_: argparse.Namespace) -> None:
             new_patch += 1
             version_tag = f"v{new_major}.{new_minor}.{new_patch}"
         if new_patch - patch > 10:
-            version_tag = f"v{new_major}.{new_minor}.{new_patch}-build.{timestamp}"
+            version_tag = (
+                f"v{new_major}.{new_minor}.{new_patch}-build.{timestamp}"
+            )
             break
 
     print(f"✅ Final version tag: {version_tag}")
     write_output("tag", version_tag)
 
 
+# GitHub rejects a release body over 125,000 characters. The release and
+# draft steps add their own header/footer (~1.5 KB) around these notes, so
+# the commit list gets a budget well under that.
+CHANGELOG_COMMITS_BUDGET = 110_000
+
+
+def _omitted_line(count: int) -> str:
+    return (
+        f"- … and {count} older commit(s) not listed "
+        "(release notes are capped at GitHub's body limit)"
+    )
+
+
+def _cap_commit_lines(commits: list[str], budget: int) -> list[str]:
+    """Return "- commit" lines whose joined length fits budget characters.
+
+    Commits are newest first, so the oldest are the ones dropped and a final
+    line says how many were left out. The budget counts characters (what
+    GitHub limits), including the newline between lines. A commit is kept
+    only if the omitted-count line for everything after it still fits, so
+    that line always has room when the list is cut.
+    """
+    kept: list[str] = []
+    used = 0
+    for index, commit in enumerate(commits):
+        line = f"- {commit}"
+        after = len(commits) - index - 1
+        need = len(line) + (1 if kept else 0)
+        if after:
+            need += 1 + len(_omitted_line(after))
+        if used + need > budget:
+            kept.append(_omitted_line(len(commits) - index))
+            return kept
+        kept.append(line)
+        used += len(line) + (1 if len(kept) > 1 else 0)
+    return kept
+
+
 def generate_changelog(_: argparse.Namespace) -> None:
     branch = os.environ.get("BRANCH_NAME", "")
     primary_language = os.environ.get("PRIMARY_LANGUAGE", "unknown")
     strategy = os.environ.get("RELEASE_STRATEGY", "stable")
-    auto_prerelease = os.environ.get("AUTO_PRERELEASE", "false").lower() == "true"
+    auto_prerelease = (
+        os.environ.get("AUTO_PRERELEASE", "false").lower() == "true"
+    )
     auto_draft = os.environ.get("AUTO_DRAFT", "false").lower() == "true"
 
     # Find the previous STABLE release tag for changelog diffing.
@@ -379,7 +450,10 @@ def generate_changelog(_: argparse.Namespace) -> None:
         stable_tags = [
             t
             for t in tag_list.stdout.strip().splitlines()
-            if t.strip() and "-rc" not in t and "-alpha" not in t and "-beta" not in t
+            if t.strip()
+            and "-rc" not in t
+            and "-alpha" not in t
+            and "-beta" not in t
         ]
         # The first entry is the tag we just created (or the latest stable);
         # the second is the "previous release" we want the diff from.
@@ -397,12 +471,14 @@ def generate_changelog(_: argparse.Namespace) -> None:
         log_args = []
         header = "### 📋 Initial Release Commits:\n"
 
-    commits = _run_git(["log"] + log_args + ["--pretty=%s (%h)"]).stdout.splitlines()
+    commits = _run_git(
+        ["log"] + log_args + ["--pretty=%s (%h)"]
+    ).stdout.splitlines()
     commits = [entry for entry in commits if entry.strip()]
 
     lines = ["## 🚀 What's Changed", "", header]
     if commits:
-        lines.extend(f"- {commit}" for commit in commits)
+        lines.extend(_cap_commit_lines(commits, CHANGELOG_COMMITS_BUDGET))
     else:
         lines.append("- No commits available")
 
@@ -417,18 +493,32 @@ def generate_changelog(_: argparse.Namespace) -> None:
     )
 
     if auto_prerelease:
-        lines.append("\n⚠️ **This is a pre-release version** - use for testing purposes.")
+        lines.append(
+            "\n⚠️ **This is a pre-release version** - use for testing purposes."
+        )
     if auto_draft:
-        lines.append("\n📝 **This is a draft release** - review before making public.")
+        lines.append(
+            "\n📝 **This is a draft release** - review before making public."
+        )
 
     changelog = "\n".join(lines) + "\n"
-    append_to_file("GITHUB_OUTPUT", "changelog_content<<EOF\n")
-    append_to_file("GITHUB_OUTPUT", changelog)
-    append_to_file("GITHUB_OUTPUT", "EOF\n")
+    # Hand the notes to later steps as a FILE, never as a step output that
+    # gets expanded into an action input, env var or argv. A long release
+    # (hundreds of commits) produced ~125 KB of notes, and Linux caps any
+    # single env/argv string at 128 KiB (MAX_ARG_STRLEN), so the release
+    # action died with "Argument list too long" after the release existed,
+    # skipping changelog collection and draft cleanup.
+    out_dir = Path(os.environ.get("RUNNER_TEMP") or ".") / "release-notes"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_file = out_dir / "changelog.md"
+    out_file.write_text(changelog, encoding="utf-8")
+    write_output("changelog_file", str(out_file))
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Release workflow helper commands.")
+    parser = argparse.ArgumentParser(
+        description="Release workflow helper commands."
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     commands = {

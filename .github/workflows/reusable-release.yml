@@ -1,7 +1,7 @@
 # file: .github/workflows/reusable-release.yml
-# version: 2.15.3
+# version: 2.16.0
 # guid: 7b8c9d0e-1f2a-3b4c-5d6e-7f8a9b0c1d2e
-# last-edited: 2026-08-30
+# last-edited: 2026-10-16
 
 name: Reusable Release Coordinator
 
@@ -690,6 +690,52 @@ jobs:
           echo "Remaining artifacts:"
           find ./artifacts -type f 2>/dev/null | sort || true
 
+      # The notes go to the release through body_path, never `body:`. An
+      # action input is passed as an INPUT_* env var, and Linux caps one env
+      # string at 128 KiB; a ~125 KB changelog failed the release step with
+      # "Argument list too long" (audiobook-organizer v0.222.2, 2026-10-16).
+      - name: Compose release notes
+        id: notes
+        if: github.event_name != 'pull_request'
+        env:
+          CHANGELOG_FILE: ${{ steps.changelog.outputs.changelog_file }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          NOTES_FILE="${RUNNER_TEMP}/release-notes/body.md"
+          mkdir -p "$(dirname "$NOTES_FILE")"
+          {
+            cat "$CHANGELOG_FILE"
+            echo
+            cat <<'FOOTER_EOF'
+
+          ## Release Assets
+
+          This release includes organized packages for easy consumption:
+
+          ### Binaries
+          Pre-built binaries for multiple platforms with SHA256 checksums:
+          - **Linux**: `*-linux-amd64`, `*-linux-arm64`
+          - **macOS**: `*-darwin-amd64`, `*-darwin-arm64`
+
+          Each binary includes a `.sha256` checksum file for verification.
+
+          ### SDKs
+          - **Go SDK**: `*-go-sdk.tar.gz` / `*-go-sdk.zip`
+          - **Python SDK**: `*-python-sdk.tar.gz` / `*-python-sdk.zip`
+
+          ### Documentation
+          - **API Documentation**: `*-docs.tar.gz` / `*-docs.zip`
+
+          See `MANIFEST.md` in the release assets for a complete list of all files and their sizes.
+
+          ---
+          FOOTER_EOF
+            printf '*Generated automatically from commit %s*\n' "$COMMIT_SHA"
+          } > "$NOTES_FILE"
+          echo "body-file=$NOTES_FILE" >> "$GITHUB_OUTPUT"
+          echo "Release notes: $(wc -c < "$NOTES_FILE") bytes"
+
       - name: Create GitHub Release
         id: release
         uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
@@ -697,31 +743,7 @@ jobs:
         with:
           tag_name: ${{ steps.version.outputs.version }}
           name: ${{ steps.version.outputs.version }}
-          body: |
-            ${{ steps.changelog.outputs.changelog_content }}
-
-            ## Release Assets
-
-            This release includes organized packages for easy consumption:
-
-            ### Binaries
-            Pre-built binaries for multiple platforms with SHA256 checksums:
-            - **Linux**: `*-linux-amd64`, `*-linux-arm64`
-            - **macOS**: `*-darwin-amd64`, `*-darwin-arm64`
-
-            Each binary includes a `.sha256` checksum file for verification.
-
-            ### SDKs
-            - **Go SDK**: `*-go-sdk.tar.gz` / `*-go-sdk.zip`
-            - **Python SDK**: `*-python-sdk.tar.gz` / `*-python-sdk.zip`
-
-            ### Documentation
-            - **API Documentation**: `*-docs.tar.gz` / `*-docs.zip`
-
-            See `MANIFEST.md` in the release assets for a complete list of all files and their sizes.
-
-            ---
-            *Generated automatically from commit ${{ github.sha }}*
+          body_path: ${{ steps.notes.outputs.body-file }}
           draft: ${{ needs.detect-languages.outputs.auto-draft }}
           prerelease: ${{ needs.detect-languages.outputs.auto-prerelease }}
           files: |
@@ -818,7 +840,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FULL_VERSION: ${{ needs.detect-languages.outputs.full-version }}
           RC_TAG: ${{ steps.version.outputs.version }}
-          CHANGELOG: ${{ steps.changelog.outputs.changelog_content }}
+          CHANGELOG_FILE: ${{ steps.changelog.outputs.changelog_file }}
         run: |
           set -euo pipefail
 
@@ -848,14 +870,16 @@ jobs:
             '[.[] | select(.tagName == $v) | .id] | .[]')
           EXISTING_ID=${MATCHING_IDS%%$'\n'*}
 
-          NOTES=$(cat <<NOTES_EOF
-          Draft release for $FULL_VERSION — will be published when ready.
-
-          Latest RC: $RC_TAG
-
-          $CHANGELOG
-          NOTES_EOF
-          )
+          # Notes go through a file (gh api -F body=@file, gh release
+          # --notes-file), never argv: one argv string is capped at 128 KiB
+          # and a long changelog exceeds it ("Argument list too long").
+          NOTES_FILE="${RUNNER_TEMP}/release-notes/draft-body.md"
+          mkdir -p "$(dirname "$NOTES_FILE")"
+          {
+            printf 'Draft release for %s — will be published when ready.\n\n' "$FULL_VERSION"
+            printf 'Latest RC: %s\n\n' "$RC_TAG"
+            cat "$CHANGELOG_FILE"
+          } > "$NOTES_FILE"
 
           if [ -n "$EXISTING_ID" ]; then
             echo "Updating existing draft release $FULL_VERSION (id=$EXISTING_ID)"
@@ -863,7 +887,7 @@ jobs:
               -f tag_name="$FULL_VERSION" \
               -f target_commitish="$GITHUB_SHA" \
               -f name="$FULL_VERSION" \
-              -f body="$NOTES" \
+              -F body=@"$NOTES_FILE" \
               -F draft=true >/dev/null
 
             # Any further drafts on this same version are duplicates minted by
@@ -879,7 +903,7 @@ jobs:
             gh release create "$FULL_VERSION" \
               --target "$GITHUB_SHA" \
               --title "$FULL_VERSION" \
-              --notes "$NOTES" \
+              --notes-file "$NOTES_FILE" \
               --draft
           fi
 
