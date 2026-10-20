@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 # file: .github/workflows/scripts/ci_workflow.py
-# version: 1.3.0
+# version: 1.3.1
 # guid: d9c2b3a4-5e6f-47a8-9b0c-1d2e3f4a5b6c
+# last-edited: 2026-10-20
 """Helper utilities invoked from GitHub Actions CI workflows."""
 
 from __future__ import annotations
 
 import argparse
 from collections.abc import Iterable
+import functools
 import json
 import os
 from pathlib import Path
@@ -25,7 +27,7 @@ except (
     ModuleNotFoundError
 ):  # pragma: no cover - fallback when requests unavailable
     requests = None
-    from urllib.parse import urlencode
+    from urllib.parse import urlencode, urlparse
     from urllib.request import Request, urlopen
 
     class _HTTPResponse:
@@ -47,8 +49,10 @@ except (
         if params:
             query = urlencode(params)
             url = f"{url}?{query}"
-        req = Request(url, headers=headers or {})
-        with urlopen(req, timeout=timeout) as resp:
+        if urlparse(url).scheme != "https":
+            raise ValueError(f"Refusing to fetch non-https URL: {url}")
+        req = Request(url, headers=headers or {})  # noqa: S310 - https only, checked above
+        with urlopen(req, timeout=timeout) as resp:  # noqa: S310 - https only, checked above
             status_code = resp.getcode()
             body = resp.read().decode("utf-8")
         try:
@@ -70,9 +74,6 @@ else:  # pragma: no cover - exercised in runtime environments with requests inst
         )
 
 
-_CONFIG_CACHE: dict[str, Any] | None = None
-
-
 def append_to_file(path_env: str, content: str) -> None:
     """Append content to the file referenced by a GitHub Actions environment variable."""
     file_path = os.environ.get(path_env)
@@ -84,35 +85,34 @@ def append_to_file(path_env: str, content: str) -> None:
 
 
 def write_output(name: str, value: str) -> None:
+    """Write a step output (name=value) to the GITHUB_OUTPUT file."""
     append_to_file("GITHUB_OUTPUT", f"{name}={value}\n")
 
 
 def append_env(name: str, value: str) -> None:
+    """Export an environment variable to later steps via GITHUB_ENV."""
     append_to_file("GITHUB_ENV", f"{name}={value}\n")
 
 
 def append_summary(text: str) -> None:
+    """Append Markdown text to the GitHub step summary."""
     append_to_file("GITHUB_STEP_SUMMARY", text)
 
 
+@functools.lru_cache(maxsize=1)
 def get_repository_config() -> dict[str, Any]:
-    global _CONFIG_CACHE
-    if _CONFIG_CACHE is not None:
-        return _CONFIG_CACHE
-
+    """Return the parsed REPOSITORY_CONFIG JSON, cached after the first call."""
     raw = os.environ.get("REPOSITORY_CONFIG")
     if not raw:
-        _CONFIG_CACHE = {}
-        return _CONFIG_CACHE
+        return {}
 
     try:
-        _CONFIG_CACHE = json.loads(raw)
+        return json.loads(raw)
     except json.JSONDecodeError:
         print(
             "::warning::Unable to parse REPOSITORY_CONFIG JSON; falling back to defaults"
         )
-        _CONFIG_CACHE = {}
-    return _CONFIG_CACHE
+        return {}
 
 
 def _config_path(default: Any, *path: str) -> Any:
@@ -125,6 +125,7 @@ def _config_path(default: Any, *path: str) -> Any:
 
 
 def debug_filter(_: argparse.Namespace) -> None:
+    """Print which path-filter categories reported changed files."""
     mapping = {
         "Go files changed": os.environ.get("CI_GO_FILES", ""),
         "Frontend files changed": os.environ.get("CI_FRONTEND_FILES", ""),
@@ -146,6 +147,7 @@ def debug_filter(_: argparse.Namespace) -> None:
 
 
 def determine_execution(_: argparse.Namespace) -> None:
+    """Decide whether CI runs, honouring [skip ci] markers, and write outputs."""
     commit_message = os.environ.get("GITHUB_HEAD_COMMIT_MESSAGE", "")
     skip_ci = bool(
         re.search(r"\[(skip ci|ci skip)\]", commit_message, flags=re.IGNORECASE)
@@ -171,6 +173,7 @@ def determine_execution(_: argparse.Namespace) -> None:
 
 
 def wait_for_pr_automation(_: argparse.Namespace) -> None:
+    """Poll until the PR Automation workflow has finished for the target SHA."""
     repo = os.environ.get("GITHUB_REPOSITORY")
     token = os.environ.get("GITHUB_TOKEN")
     target_sha = os.environ.get("TARGET_SHA")
@@ -246,6 +249,7 @@ def _export_env_from_file(file_path: Path) -> None:
 
 
 def load_super_linter_config(_: argparse.Namespace) -> None:
+    """Pick the PR or CI super-linter env file and export its settings."""
     event_name = os.environ.get("EVENT_NAME", "")
     pr_env = Path(os.environ.get("PR_ENV_FILE", "super-linter-pr.env"))
     ci_env = Path(os.environ.get("CI_ENV_FILE", "super-linter-ci.env"))
@@ -272,6 +276,7 @@ def load_super_linter_config(_: argparse.Namespace) -> None:
 
 
 def write_validation_summary(_: argparse.Namespace) -> None:
+    """Write the CI validation results header to the step summary."""
     event_name = os.environ.get("EVENT_NAME", "unknown")
     config_name = os.environ.get("SUMMARY_CONFIG", "super-linter-ci.env")
     append_summary(
@@ -299,6 +304,7 @@ def _ensure_go_context() -> bool:
 
 
 def go_setup(_: argparse.Namespace) -> None:
+    """Download Go modules and build every package."""
     if not _ensure_go_context():
         return
     subprocess.run(["go", "mod", "download"], check=True)
@@ -314,6 +320,7 @@ def _parse_go_coverage(total_line: str) -> float:
 
 
 def go_test(_: argparse.Namespace) -> None:
+    """Run Go tests with the race detector and enforce the coverage threshold."""
     if not _ensure_go_context():
         return
 
@@ -377,6 +384,7 @@ def go_test(_: argparse.Namespace) -> None:
 
 
 def check_go_coverage(_: argparse.Namespace) -> None:
+    """Fail when Go coverage is below the configured threshold."""
     coverage_file = Path(os.environ.get("COVERAGE_FILE", "coverage.out"))
     html_output = Path(os.environ.get("COVERAGE_HTML", "coverage.html"))
     threshold = float(os.environ.get("COVERAGE_THRESHOLD", "0"))
@@ -429,6 +437,7 @@ def _run_command(
 
 
 def frontend_install(_: argparse.Namespace) -> None:
+    """Install frontend dependencies with the detected package manager."""
     working_dir = os.environ.get("FRONTEND_WORKING_DIR", ".")
     original_dir = Path.cwd()
 
@@ -456,6 +465,7 @@ def frontend_install(_: argparse.Namespace) -> None:
 
 
 def frontend_run(_: argparse.Namespace) -> None:
+    """Run a frontend package script (lint, test or build)."""
     script_name = os.environ.get("FRONTEND_SCRIPT", "")
     success_message = os.environ.get(
         "FRONTEND_SUCCESS_MESSAGE", "Command succeeded"
@@ -494,6 +504,7 @@ def frontend_run(_: argparse.Namespace) -> None:
 
 
 def python_install(_: argparse.Namespace) -> None:
+    """Install Python dependencies for the repository."""
     python = sys.executable
     subprocess.run(
         [python, "-m", "pip", "install", "--upgrade", "pip"], check=True
@@ -514,6 +525,8 @@ def python_install(_: argparse.Namespace) -> None:
 
 
 def python_run_tests(_: argparse.Namespace) -> None:
+    """Run the Python test suite with pytest."""
+
     def has_tests() -> bool:
         return any(
             any(Path(".").rglob(pattern))
@@ -719,6 +732,7 @@ def rust_test(_: argparse.Namespace) -> None:
 
 
 def ensure_cargo_llvm_cov(_: argparse.Namespace) -> None:
+    """Install cargo-llvm-cov when it is not already available."""
     if shutil.which("cargo-llvm-cov"):
         print("cargo-llvm-cov already installed")
         return
@@ -728,6 +742,7 @@ def ensure_cargo_llvm_cov(_: argparse.Namespace) -> None:
 
 
 def generate_rust_lcov(_: argparse.Namespace) -> None:
+    """Generate an LCOV coverage report for Rust code."""
     output_path = Path(os.environ.get("LCOV_OUTPUT", "lcov.info"))
     subprocess.run(
         [
@@ -744,6 +759,7 @@ def generate_rust_lcov(_: argparse.Namespace) -> None:
 
 
 def generate_rust_html(_: argparse.Namespace) -> None:
+    """Generate an HTML coverage report for Rust code."""
     output_dir = Path(os.environ.get("HTML_OUTPUT_DIR", "htmlcov"))
     output_dir.mkdir(parents=True, exist_ok=True)
     subprocess.run(
@@ -761,6 +777,7 @@ def generate_rust_html(_: argparse.Namespace) -> None:
 
 
 def compute_rust_coverage(_: argparse.Namespace) -> None:
+    """Compute the Rust line-coverage percentage and expose it as an output."""
     path = Path(os.environ.get("LCOV_FILE", "lcov.info"))
     if not path.is_file():
         raise FileNotFoundError(f"{path} not found")
@@ -782,6 +799,7 @@ def compute_rust_coverage(_: argparse.Namespace) -> None:
 
 
 def enforce_coverage_threshold(_: argparse.Namespace) -> None:
+    """Fail when COVERAGE_PERCENT is below COVERAGE_THRESHOLD."""
     threshold = float(os.environ.get("COVERAGE_THRESHOLD", "0"))
     percent_str = os.environ.get("COVERAGE_PERCENT")
     if percent_str is None:
@@ -795,6 +813,7 @@ def enforce_coverage_threshold(_: argparse.Namespace) -> None:
 
 
 def docker_build(_: argparse.Namespace) -> None:
+    """Build the repository's Docker image."""
     dockerfile = Path(os.environ.get("DOCKERFILE_PATH", "Dockerfile"))
     image_name = os.environ.get("DOCKER_IMAGE", "test-image")
     if not dockerfile.is_file():
@@ -808,6 +827,7 @@ def docker_build(_: argparse.Namespace) -> None:
 
 
 def docker_test_compose(_: argparse.Namespace) -> None:
+    """Validate the docker compose configuration."""
     if (
         Path("docker-compose.yml").is_file()
         or Path("docker-compose.yaml").is_file()
@@ -818,14 +838,17 @@ def docker_test_compose(_: argparse.Namespace) -> None:
 
 
 def docs_check_links(_: argparse.Namespace) -> None:
+    """Placeholder for documentation link checking."""
     print("ℹ️ Link checking would go here")
 
 
 def docs_validate_structure(_: argparse.Namespace) -> None:
+    """Placeholder for documentation structure validation."""
     print("ℹ️ Documentation structure validation would go here")
 
 
 def run_benchmarks(_: argparse.Namespace) -> None:
+    """Run Go benchmarks when the repository contains any."""
     has_benchmarks = False
     for path in Path(".").rglob("*_test.go"):
         try:
@@ -859,6 +882,7 @@ def _matrix_entries(
 
 
 def generate_matrices(_: argparse.Namespace) -> None:
+    """Build the language version matrices and coverage threshold outputs."""
     fallback_go = os.environ.get("FALLBACK_GO_VERSION", "1.24")
     fallback_python = os.environ.get("FALLBACK_PYTHON_VERSION", "3.13")
     fallback_rust = os.environ.get("FALLBACK_RUST_VERSION", "stable")
@@ -902,6 +926,7 @@ def generate_matrices(_: argparse.Namespace) -> None:
 
 
 def generate_ci_summary(_: argparse.Namespace) -> None:
+    """Write the per-job CI results table to the step summary."""
     primary_language = os.environ.get("PRIMARY_LANGUAGE", "unknown")
     steps = [
         ("Detect Changes", os.environ.get("JOB_DETECT_CHANGES", "skipped")),
@@ -971,6 +996,7 @@ def generate_ci_summary(_: argparse.Namespace) -> None:
 
 
 def check_ci_status(_: argparse.Namespace) -> None:
+    """Exit non-zero when any required CI job did not succeed."""
     job_envs = {
         "Workflow Lint": os.environ.get("JOB_WORKFLOW_LINT"),
         "Workflow Scripts": os.environ.get("JOB_WORKFLOW_SCRIPTS"),
@@ -994,6 +1020,7 @@ def check_ci_status(_: argparse.Namespace) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
+    """Build the argument parser mapping each subcommand to its handler."""
     parser = argparse.ArgumentParser(description="CI workflow helper commands.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -1036,6 +1063,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
+    """Parse the command line and run the selected subcommand."""
     parser = build_parser()
     args = parser.parse_args()
     handler = getattr(args, "handler", None)

@@ -1,3 +1,8 @@
+# file: tests/workflow_scripts/test_ci_workflow.py
+# version: 1.0.0
+# guid: be8f15eb-d640-417d-8c19-bb923f338f54
+# last-edited: 2026-10-20
+
 import argparse
 import json
 import subprocess
@@ -9,7 +14,7 @@ import pytest
 
 @pytest.fixture(autouse=True)
 def reset_config_cache():
-    ci_workflow._CONFIG_CACHE = None  # type: ignore[attr-defined]
+    ci_workflow.get_repository_config.cache_clear()
 
 
 def test_debug_filter_outputs(monkeypatch, capsys):
@@ -131,7 +136,7 @@ def test_go_test_runs_commands(tmp_path, monkeypatch):
 
     monkeypatch.setenv("COVERAGE_THRESHOLD", "70")
     monkeypatch.delenv("REPOSITORY_CONFIG", raising=False)
-    ci_workflow._CONFIG_CACHE = None  # type: ignore[attr-defined]
+    ci_workflow.get_repository_config.cache_clear()
     monkeypatch.setattr(ci_workflow.subprocess, "run", fake_run)
     monkeypatch.setattr(ci_workflow.shutil, "which", lambda name: "go")
 
@@ -247,7 +252,7 @@ def test_go_test_uses_config_threshold(tmp_path, monkeypatch):
 
     config = {"testing": {"coverage": {"threshold": 90}}}
     monkeypatch.setenv("REPOSITORY_CONFIG", json.dumps(config))
-    ci_workflow._CONFIG_CACHE = None  # type: ignore[attr-defined]
+    ci_workflow.get_repository_config.cache_clear()
 
     commands = []
 
@@ -287,7 +292,7 @@ def test_generate_matrices_uses_repository_config(tmp_path, monkeypatch):
     monkeypatch.setenv("FALLBACK_RUST_VERSION", "stable")
     monkeypatch.setenv("FALLBACK_NODE_VERSION", "22")
     monkeypatch.setenv("FALLBACK_COVERAGE_THRESHOLD", "80")
-    ci_workflow._CONFIG_CACHE = None  # type: ignore[attr-defined]
+    ci_workflow.get_repository_config.cache_clear()
 
     ci_workflow.generate_matrices(argparse.Namespace())
 

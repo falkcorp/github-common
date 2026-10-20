@@ -1051,7 +1051,7 @@
     "path": ".github/workflows/scripts/ci_workflow.py",
     "guid": "d9c2b3a4-5e6f-47a8-9b0c-1d2e3f4a5b6c",
     "title": "ci workflow",
-    "version": "1.3.0",
+    "version": "1.3.1",
     "header_path": ".github/workflows/scripts/ci_workflow.py",
     "path_mismatch": false
   },
@@ -3661,6 +3661,14 @@
     "title": "test automation workflow",
     "version": "1.2.0",
     "header_path": "tests/workflow_scripts/test_automation_workflow.py",
+    "path_mismatch": false
+  },
+  {
+    "path": "tests/workflow_scripts/test_ci_workflow.py",
+    "guid": "be8f15eb-d640-417d-8c19-bb923f338f54",
+    "title": "test ci workflow",
+    "version": "1.0.0",
+    "header_path": "tests/workflow_scripts/test_ci_workflow.py",
     "path_mismatch": false
   },
   {
