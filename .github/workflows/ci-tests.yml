@@ -1,5 +1,5 @@
 # file: .github/workflows/ci-tests.yml
-# version: 1.2.0
+# version: 1.2.1
 # guid: ci-tests-workflow-2025-automation
 
 name: CI Self Tests
@@ -143,11 +143,9 @@ jobs:
 
       - name: Lint scripts
         run: |
-          if command -v ruff >/dev/null 2>&1; then
-            ruff --version
-          else
-            pip install ruff
-          fi
+          # pinned: an unpinned ruff adds findings on its own release schedule
+          python -m pip install ruff==0.17.0
+          python -m ruff --version
           if command -v black >/dev/null 2>&1; then
             black --version
           else
@@ -155,7 +153,7 @@ jobs:
           fi
           if find scripts -name "*.py" -o -path "tests/*.py" | head -1 | grep -q .; then
             black --check scripts tests || true
-            ruff check scripts tests || true
+            python -m ruff check scripts tests || true
           else
             echo "No Python sources detected for linting."
           fi

@@ -1,7 +1,7 @@
 # file: .github/workflows/reusable-ci.yml
-# version: 1.18.0
+# version: 1.19.0
 # guid: reusable-ci-2025-09-24-core-workflow
-# last-edited: 2026-10-16
+# last-edited: 2026-10-20
 
 name: Reusable CI Workflow
 
@@ -64,6 +64,13 @@ on:
           25m). Empty (default) keeps Go's own 10m. Passed as GOFLAGS=-timeout=...
           because the go-test helper action has no timeout input. Values above
           30m need go-ci's timeout-minutes raised; see the comment there.
+        required: false
+        type: string
+        default: ''
+      ruff-version:
+        description: >-
+          Exact ruff version for the Python lint step. Empty (default) uses the
+          version pinned in ci_workflow.py (RUFF_VERSION, currently 0.17.0).
         required: false
         type: string
         default: ''
@@ -751,6 +758,8 @@ jobs:
 
       - name: Lint Python code
         if: ${{ !inputs.skip-linting }}
+        env:
+          RUFF_VERSION: ${{ inputs.ruff-version }}
         run: |
           python "$GHCOMMON_SCRIPTS_DIR/ci_workflow.py" python-lint
 
