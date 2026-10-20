@@ -350,3 +350,101 @@ def test_check_ci_status_failure(monkeypatch):
     monkeypatch.setenv("JOB_DOCS", "skipped")
     with pytest.raises(SystemExit):
         ci_workflow.check_ci_status(argparse.Namespace())
+
+
+def _lint_repo(tmp_path, monkeypatch):
+    """A git repo whose last commit touched one Python file."""
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "ok.py").write_text('"""Doc."""\n', encoding="utf-8")
+    for cmd in (
+        ["git", "init", "-q"],
+        ["git", "add", "ok.py"],
+        [
+            "git",
+            "-c",
+            "user.name=t",
+            "-c",
+            "user.email=t@t",
+            "commit",
+            "-qm",
+            "x",
+        ],
+    ):
+        subprocess.run(cmd, check=True)  # noqa: S603
+
+
+def test_python_lint_installs_pinned_ruff_and_runs_via_interpreter(
+    tmp_path, monkeypatch
+):
+    """A mismatched ruff is replaced by ruff==RUFF_VERSION and run as python -m ruff."""
+    _lint_repo(tmp_path, monkeypatch)
+    monkeypatch.delenv("RUFF_VERSION", raising=False)
+    monkeypatch.delenv("GITHUB_EVENT_PATH", raising=False)
+    state = {"installed": "0.0.1"}
+    commands: list[list[str]] = []
+    real_run = subprocess.run
+
+    def fake_run(cmd, *args, **kwargs):
+        if cmd[:3] == [ci_workflow.sys.executable, "-m", "ruff"]:
+            commands.append(list(cmd))
+            if cmd[3] == "--version":
+                return subprocess.CompletedProcess(
+                    cmd, 0, stdout=f"ruff {state['installed']}\n"
+                )
+            return subprocess.CompletedProcess(cmd, 0)
+        if "pip" in cmd:
+            commands.append(list(cmd))
+            state["installed"] = cmd[-1].split("==")[1]
+            return subprocess.CompletedProcess(cmd, 0)
+        return real_run(cmd, *args, **kwargs)
+
+    monkeypatch.setattr(ci_workflow.subprocess, "run", fake_run)
+    ci_workflow.python_lint(argparse.Namespace())
+
+    installs = [c for c in commands if "pip" in c]
+    assert installs == [
+        [
+            ci_workflow.sys.executable,
+            "-m",
+            "pip",
+            "install",
+            f"ruff=={ci_workflow.RUFF_VERSION}",
+        ]
+    ]
+    assert ci_workflow.RUFF_VERSION == "0.17.0"
+    ran = [c[3] for c in commands if c[3] in ("format", "check")]
+    assert ran == ["format", "check"]
+
+
+def test_python_lint_honors_ruff_version_override(tmp_path, monkeypatch):
+    _lint_repo(tmp_path, monkeypatch)
+    monkeypatch.setenv("RUFF_VERSION", "0.16.10")
+    monkeypatch.delenv("GITHUB_EVENT_PATH", raising=False)
+    installs: list[str] = []
+    real_run = subprocess.run
+
+    def fake_run(cmd, *args, **kwargs):
+        if "pip" in cmd:
+            installs.append(cmd[-1])
+            return subprocess.CompletedProcess(cmd, 0)
+        if cmd[:3] == [ci_workflow.sys.executable, "-m", "ruff"]:
+            if cmd[3] == "--version":
+                version = "0.16.10" if installs else "0.0.1"
+                return subprocess.CompletedProcess(
+                    cmd, 0, stdout=f"ruff {version}\n"
+                )
+            return subprocess.CompletedProcess(cmd, 0)
+        return real_run(cmd, *args, **kwargs)
+
+    monkeypatch.setattr(ci_workflow.subprocess, "run", fake_run)
+    ci_workflow.python_lint(argparse.Namespace())
+    assert installs == ["ruff==0.16.10"]
+
+
+def test_ensure_ruff_fails_loudly_on_version_mismatch(monkeypatch):
+    def fake_run(cmd, *args, **kwargs):
+        return subprocess.CompletedProcess(cmd, 0, stdout="ruff 9.9.9\n")
+
+    monkeypatch.setattr(ci_workflow.subprocess, "run", fake_run)
+    with pytest.raises(RuntimeError, match=r"expected ruff 0\.17\.0"):
+        ci_workflow._ensure_ruff("0.17.0")

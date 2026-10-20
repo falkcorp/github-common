@@ -875,7 +875,7 @@
     "path": ".github/workflows/ci-tests.yml",
     "guid": "ci-tests-workflow-2025-automation",
     "title": "CI Self Tests",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "header_path": ".github/workflows/ci-tests.yml",
     "path_mismatch": false
   },
@@ -979,7 +979,7 @@
     "path": ".github/workflows/reusable-ci.yml",
     "guid": "reusable-ci-2025-09-24-core-workflow",
     "title": "Reusable CI Workflow",
-    "version": "1.17.1",
+    "version": "1.19.0",
     "header_path": ".github/workflows/reusable-ci.yml",
     "path_mismatch": false
   },
@@ -1051,7 +1051,7 @@
     "path": ".github/workflows/scripts/ci_workflow.py",
     "guid": "d9c2b3a4-5e6f-47a8-9b0c-1d2e3f4a5b6c",
     "title": "ci workflow",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "header_path": ".github/workflows/scripts/ci_workflow.py",
     "path_mismatch": false
   },

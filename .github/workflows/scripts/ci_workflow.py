@@ -1,27 +1,29 @@
 #!/usr/bin/env python3
 # file: .github/workflows/scripts/ci_workflow.py
-# version: 1.2.0
+# version: 1.3.0
 # guid: d9c2b3a4-5e6f-47a8-9b0c-1d2e3f4a5b6c
 """Helper utilities invoked from GitHub Actions CI workflows."""
 
 from __future__ import annotations
 
 import argparse
+from collections.abc import Iterable
 import json
 import os
+from pathlib import Path
 import re
 import shutil
 import subprocess
 import sys
 import textwrap
 import time
-from collections.abc import Iterable
-from pathlib import Path
 from typing import Any
 
 try:
     import requests  # type: ignore[import-untyped]
-except ModuleNotFoundError:  # pragma: no cover - fallback when requests unavailable
+except (
+    ModuleNotFoundError
+):  # pragma: no cover - fallback when requests unavailable
     requests = None
     from urllib.parse import urlencode
     from urllib.request import Request, urlopen
@@ -63,7 +65,9 @@ else:  # pragma: no cover - exercised in runtime environments with requests inst
         params: dict[str, Any] | None = None,
         timeout: int = 30,
     ):
-        return requests.get(url, headers=headers, params=params, timeout=timeout)
+        return requests.get(
+            url, headers=headers, params=params, timeout=timeout
+        )
 
 
 _CONFIG_CACHE: dict[str, Any] | None = None
@@ -104,7 +108,9 @@ def get_repository_config() -> dict[str, Any]:
     try:
         _CONFIG_CACHE = json.loads(raw)
     except json.JSONDecodeError:
-        print("::warning::Unable to parse REPOSITORY_CONFIG JSON; falling back to defaults")
+        print(
+            "::warning::Unable to parse REPOSITORY_CONFIG JSON; falling back to defaults"
+        )
         _CONFIG_CACHE = {}
     return _CONFIG_CACHE
 
@@ -127,8 +133,12 @@ def debug_filter(_: argparse.Namespace) -> None:
         "Docker files changed": os.environ.get("CI_DOCKER_FILES", ""),
         "Docs files changed": os.environ.get("CI_DOCS_FILES", ""),
         "Workflow files changed": os.environ.get("CI_WORKFLOW_FILES", ""),
-        "Workflow YAML files changed": os.environ.get("CI_WORKFLOW_YAML_FILES", ""),
-        "Workflow scripts changed": os.environ.get("CI_WORKFLOW_SCRIPT_FILES", ""),
+        "Workflow YAML files changed": os.environ.get(
+            "CI_WORKFLOW_YAML_FILES", ""
+        ),
+        "Workflow scripts changed": os.environ.get(
+            "CI_WORKFLOW_SCRIPT_FILES", ""
+        ),
         "Linter config files changed": os.environ.get("CI_LINT_FILES", ""),
     }
     for label, value in mapping.items():
@@ -137,7 +147,9 @@ def debug_filter(_: argparse.Namespace) -> None:
 
 def determine_execution(_: argparse.Namespace) -> None:
     commit_message = os.environ.get("GITHUB_HEAD_COMMIT_MESSAGE", "")
-    skip_ci = bool(re.search(r"\[(skip ci|ci skip)\]", commit_message, flags=re.IGNORECASE))
+    skip_ci = bool(
+        re.search(r"\[(skip ci|ci skip)\]", commit_message, flags=re.IGNORECASE)
+    )
     write_output("skip_ci", "true" if skip_ci else "false")
     if skip_ci:
         print("Skipping CI due to commit message")
@@ -146,10 +158,16 @@ def determine_execution(_: argparse.Namespace) -> None:
 
     write_output("should_lint", "true")
     write_output("should_test_go", os.environ.get("CI_GO_FILES", "false"))
-    write_output("should_test_frontend", os.environ.get("CI_FRONTEND_FILES", "false"))
-    write_output("should_test_python", os.environ.get("CI_PYTHON_FILES", "false"))
+    write_output(
+        "should_test_frontend", os.environ.get("CI_FRONTEND_FILES", "false")
+    )
+    write_output(
+        "should_test_python", os.environ.get("CI_PYTHON_FILES", "false")
+    )
     write_output("should_test_rust", os.environ.get("CI_RUST_FILES", "false"))
-    write_output("should_test_docker", os.environ.get("CI_DOCKER_FILES", "false"))
+    write_output(
+        "should_test_docker", os.environ.get("CI_DOCKER_FILES", "false")
+    )
 
 
 def wait_for_pr_automation(_: argparse.Namespace) -> None:
@@ -161,7 +179,9 @@ def wait_for_pr_automation(_: argparse.Namespace) -> None:
     sleep_seconds = int(os.environ.get("SLEEP_SECONDS", "10"))
 
     if not (repo and token and target_sha):
-        print("Missing required environment values; skipping PR automation wait")
+        print(
+            "Missing required environment values; skipping PR automation wait"
+        )
         return
 
     headers = {
@@ -172,15 +192,21 @@ def wait_for_pr_automation(_: argparse.Namespace) -> None:
 
     print("🔄 Waiting for PR automation to complete...")
     for attempt in range(max_attempts):
-        print(f"Checking for PR automation completion (attempt {attempt + 1}/{max_attempts})...")
+        print(
+            f"Checking for PR automation completion (attempt {attempt + 1}/{max_attempts})..."
+        )
         try:
-            response = _http_get(url, headers=headers, params={"per_page": 100}, timeout=30)
+            response = _http_get(
+                url, headers=headers, params={"per_page": 100}, timeout=30
+            )
         except Exception as exc:  # pragma: no cover - network issues during CI
             print(f"::warning::Unable to query workflow runs: {exc}")
             time.sleep(sleep_seconds)
             continue
         if response.status_code != 200:
-            print(f"::warning::Unable to query workflow runs: {response.status_code}")
+            print(
+                f"::warning::Unable to query workflow runs: {response.status_code}"
+            )
             time.sleep(sleep_seconds)
             continue
 
@@ -188,7 +214,8 @@ def wait_for_pr_automation(_: argparse.Namespace) -> None:
         matching_runs = [
             run
             for run in runs
-            if run.get("head_sha") == target_sha and run.get("name") == workflow_name
+            if run.get("head_sha") == target_sha
+            and run.get("name") == workflow_name
         ]
 
         if not matching_runs:
@@ -296,7 +323,9 @@ def go_test(_: argparse.Namespace) -> None:
     if threshold_env:
         threshold = float(threshold_env)
     else:
-        threshold = float(_config_path(0, "testing", "coverage", "threshold") or 0)
+        threshold = float(
+            _config_path(0, "testing", "coverage", "threshold") or 0
+        )
 
     subprocess.run(
         [
@@ -341,7 +370,9 @@ def go_test(_: argparse.Namespace) -> None:
     coverage = _parse_go_coverage(total_line)
     print(f"Coverage: {coverage}%")
     if coverage < threshold:
-        raise SystemExit(f"Coverage {coverage}% is below threshold {threshold}%")
+        raise SystemExit(
+            f"Coverage {coverage}% is below threshold {threshold}%"
+        )
     print(f"✅ Coverage {coverage}% meets threshold {threshold}%")
 
 
@@ -385,11 +416,15 @@ def check_go_coverage(_: argparse.Namespace) -> None:
     coverage = _parse_go_coverage(total_line)
     print(f"Coverage: {coverage}%")
     if coverage < threshold:
-        raise SystemExit(f"Coverage {coverage}% is below threshold {threshold}%")
+        raise SystemExit(
+            f"Coverage {coverage}% is below threshold {threshold}%"
+        )
     print(f"✅ Coverage {coverage}% meets threshold {threshold}%")
 
 
-def _run_command(command: Iterable[str], check: bool = True) -> subprocess.CompletedProcess[str]:
+def _run_command(
+    command: Iterable[str], check: bool = True
+) -> subprocess.CompletedProcess[str]:
     return subprocess.run(list(command), check=check)
 
 
@@ -401,7 +436,9 @@ def frontend_install(_: argparse.Namespace) -> None:
         if working_dir != ".":
             target_dir = Path(working_dir)
             if not target_dir.exists():
-                raise FileNotFoundError(f"Frontend working directory not found: {working_dir}")
+                raise FileNotFoundError(
+                    f"Frontend working directory not found: {working_dir}"
+                )
             os.chdir(target_dir)
             print(f"Changed to frontend working directory: {working_dir}")
 
@@ -420,8 +457,12 @@ def frontend_install(_: argparse.Namespace) -> None:
 
 def frontend_run(_: argparse.Namespace) -> None:
     script_name = os.environ.get("FRONTEND_SCRIPT", "")
-    success_message = os.environ.get("FRONTEND_SUCCESS_MESSAGE", "Command succeeded")
-    failure_message = os.environ.get("FRONTEND_FAILURE_MESSAGE", "Command failed")
+    success_message = os.environ.get(
+        "FRONTEND_SUCCESS_MESSAGE", "Command succeeded"
+    )
+    failure_message = os.environ.get(
+        "FRONTEND_FAILURE_MESSAGE", "Command failed"
+    )
     working_dir = os.environ.get("FRONTEND_WORKING_DIR", ".")
 
     if not script_name:
@@ -433,11 +474,15 @@ def frontend_run(_: argparse.Namespace) -> None:
         if working_dir != ".":
             target_dir = Path(working_dir)
             if not target_dir.exists():
-                raise FileNotFoundError(f"Frontend working directory not found: {working_dir}")
+                raise FileNotFoundError(
+                    f"Frontend working directory not found: {working_dir}"
+                )
             os.chdir(target_dir)
             print(f"Changed to frontend working directory: {working_dir}")
 
-        result = subprocess.run(["npm", "run", script_name, "--if-present"], check=False)
+        result = subprocess.run(
+            ["npm", "run", script_name, "--if-present"], check=False
+        )
         if result.returncode == 0:
             print(success_message)
         else:
@@ -450,7 +495,9 @@ def frontend_run(_: argparse.Namespace) -> None:
 
 def python_install(_: argparse.Namespace) -> None:
     python = sys.executable
-    subprocess.run([python, "-m", "pip", "install", "--upgrade", "pip"], check=True)
+    subprocess.run(
+        [python, "-m", "pip", "install", "--upgrade", "pip"], check=True
+    )
 
     if Path("requirements.txt").is_file():
         subprocess.run(
@@ -461,12 +508,17 @@ def python_install(_: argparse.Namespace) -> None:
     if Path("pyproject.toml").is_file():
         subprocess.run([python, "-m", "pip", "install", "-e", "."], check=True)
 
-    subprocess.run([python, "-m", "pip", "install", "pytest", "pytest-cov"], check=True)
+    subprocess.run(
+        [python, "-m", "pip", "install", "pytest", "pytest-cov"], check=True
+    )
 
 
 def python_run_tests(_: argparse.Namespace) -> None:
     def has_tests() -> bool:
-        return any(any(Path(".").rglob(pattern)) for pattern in ("test_*.py", "*_test.py"))
+        return any(
+            any(Path(".").rglob(pattern))
+            for pattern in ("test_*.py", "*_test.py")
+        )
 
     if not has_tests():
         print("ℹ️ No Python tests found")
@@ -484,6 +536,41 @@ def python_run_tests(_: argparse.Namespace) -> None:
         ],
         check=True,
     )
+
+
+# Pinned ruff for the shared Python lint. Consumers format against this exact
+# version; an unpinned install lets a new ruff release break every consumer's CI
+# overnight. Override per repo with the reusable-ci `ruff-version` input
+# (exported as RUFF_VERSION).
+RUFF_VERSION = "0.17.0"
+
+
+def _installed_ruff_version() -> str | None:
+    """Return the version of ruff importable by this interpreter, or None."""
+    result = subprocess.run(
+        [sys.executable, "-m", "ruff", "--version"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return None
+    # Output is "ruff 0.17.0".
+    parts = result.stdout.split()
+    return parts[-1] if parts else None
+
+
+def _ensure_ruff(version: str) -> None:
+    """Install ruff==version for this interpreter and verify it is what runs."""
+    if _installed_ruff_version() != version:
+        subprocess.run(
+            [sys.executable, "-m", "pip", "install", f"ruff=={version}"],
+            check=True,
+        )
+    found = _installed_ruff_version()
+    if found != version:
+        msg = f"expected ruff {version} but `python -m ruff` reports {found!r}"
+        raise RuntimeError(msg)
 
 
 def python_lint(_: argparse.Namespace) -> None:
@@ -531,7 +618,9 @@ def python_lint(_: argparse.Namespace) -> None:
             if line.strip().endswith(".py")
         ]
     if not changed_python:
-        print("ℹ️ No Python changes detected for linting; skipping format/lint checks.")
+        print(
+            "ℹ️ No Python changes detected for linting; skipping format/lint checks."
+        )
         return
 
     python_sources = [
@@ -560,17 +649,19 @@ def python_lint(_: argparse.Namespace) -> None:
     if not lint_targets:
         lint_targets = ["."]
 
-    required_tools = ["ruff"]
-    missing_tools = [tool for tool in required_tools if shutil.which(tool) is None]
-    if missing_tools:
-        python = sys.executable
-        subprocess.run(
-            [python, "-m", "pip", "install", "--upgrade", *missing_tools],
-            check=True,
-        )
+    ruff_version = os.environ.get("RUFF_VERSION", "").strip() or RUFF_VERSION
+    _ensure_ruff(ruff_version)
 
-    subprocess.run(["ruff", "format", "--check", *lint_targets], check=True)
-    subprocess.run(["ruff", "check", *lint_targets], check=True)
+    # Run ruff as `python -m ruff` so the interpreter that just verified the
+    # version is the one that lints; a different ruff on PATH (pipx, the runner
+    # image) is never used.
+    subprocess.run(
+        [sys.executable, "-m", "ruff", "format", "--check", *lint_targets],
+        check=True,
+    )
+    subprocess.run(
+        [sys.executable, "-m", "ruff", "check", *lint_targets], check=True
+    )
 
 
 def rust_format(_: argparse.Namespace) -> None:
@@ -631,7 +722,9 @@ def ensure_cargo_llvm_cov(_: argparse.Namespace) -> None:
     if shutil.which("cargo-llvm-cov"):
         print("cargo-llvm-cov already installed")
         return
-    subprocess.run(["cargo", "install", "cargo-llvm-cov", "--locked"], check=True)
+    subprocess.run(
+        ["cargo", "install", "cargo-llvm-cov", "--locked"], check=True
+    )
 
 
 def generate_rust_lcov(_: argparse.Namespace) -> None:
@@ -715,7 +808,10 @@ def docker_build(_: argparse.Namespace) -> None:
 
 
 def docker_test_compose(_: argparse.Namespace) -> None:
-    if Path("docker-compose.yml").is_file() or Path("docker-compose.yaml").is_file():
+    if (
+        Path("docker-compose.yml").is_file()
+        or Path("docker-compose.yaml").is_file()
+    ):
         subprocess.run(["docker-compose", "config"], check=True)
     else:
         print("ℹ️ No docker-compose file found")
@@ -746,7 +842,9 @@ def run_benchmarks(_: argparse.Namespace) -> None:
     subprocess.run(["go", "test", "-bench=.", "-benchmem", "./..."], check=True)
 
 
-def _matrix_entries(versions: list[str], oses: list[str], version_key: str) -> list[dict[str, Any]]:
+def _matrix_entries(
+    versions: list[str], oses: list[str], version_key: str
+) -> list[dict[str, Any]]:
     matrix: list[dict[str, Any]] = []
     for os_index, runner in enumerate(oses):
         for ver_index, version in enumerate(versions):
@@ -781,7 +879,9 @@ def generate_matrices(_: argparse.Namespace) -> None:
     rust_matrix = _matrix_entries(rust_versions, os_list, "rust-version")
     frontend_matrix = _matrix_entries(node_versions, os_list, "node-version")
 
-    write_output("go-matrix", json.dumps({"include": go_matrix}, separators=(",", ":")))
+    write_output(
+        "go-matrix", json.dumps({"include": go_matrix}, separators=(",", ":"))
+    )
     write_output(
         "python-matrix",
         json.dumps({"include": python_matrix}, separators=(",", ":")),
@@ -795,7 +895,9 @@ def generate_matrices(_: argparse.Namespace) -> None:
         json.dumps({"include": frontend_matrix}, separators=(",", ":")),
     )
 
-    coverage_threshold = _config_path(fallback_threshold, "testing", "coverage", "threshold")
+    coverage_threshold = _config_path(
+        fallback_threshold, "testing", "coverage", "threshold"
+    )
     write_output("coverage-threshold", str(coverage_threshold))
 
 
@@ -842,7 +944,9 @@ def generate_ci_summary(_: argparse.Namespace) -> None:
         "## 🧭 Detection",
         f"- Primary language: {primary_language}",
     ]
-    summary_lines.extend(f"- {label}: {value}" for label, value in languages.items())
+    summary_lines.extend(
+        f"- {label}: {value}" for label, value in languages.items()
+    )
     summary_lines.extend(
         [
             "",
@@ -858,7 +962,9 @@ def generate_ci_summary(_: argparse.Namespace) -> None:
             "## 📁 Changed Files",
         ]
     )
-    summary_lines.extend(f"- {label}: {value}" for label, value in files_changed.items())
+    summary_lines.extend(
+        f"- {label}: {value}" for label, value in files_changed.items()
+    )
     summary_lines.append("")
 
     append_summary("\n".join(summary_lines) + "\n")
@@ -876,7 +982,11 @@ def check_ci_status(_: argparse.Namespace) -> None:
         "Docs CI": os.environ.get("JOB_DOCS"),
     }
 
-    failures = [job for job, status in job_envs.items() if status in {"failure", "cancelled"}]
+    failures = [
+        job
+        for job, status in job_envs.items()
+        if status in {"failure", "cancelled"}
+    ]
     if failures:
         print(f"❌ CI Pipeline failed: {', '.join(failures)}")
         raise SystemExit(1)
