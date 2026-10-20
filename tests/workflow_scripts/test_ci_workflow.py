@@ -1,5 +1,5 @@
 # file: tests/workflow_scripts/test_ci_workflow.py
-# version: 1.0.0
+# version: 1.0.1
 # guid: be8f15eb-d640-417d-8c19-bb923f338f54
 # last-edited: 2026-10-20
 
@@ -421,9 +421,13 @@ def test_python_lint_installs_pinned_ruff_and_runs_via_interpreter(
     assert ran == ["format", "check"]
 
 
-def test_python_lint_honors_ruff_version_override(tmp_path, monkeypatch):
+@pytest.mark.parametrize("override", ["0.16.10", "v0.16.10", " v0.16.10 "])
+def test_python_lint_honors_ruff_version_override(
+    tmp_path, monkeypatch, override
+):
+    """A RUFF_VERSION override, with or without a leading v, is what gets installed."""
     _lint_repo(tmp_path, monkeypatch)
-    monkeypatch.setenv("RUFF_VERSION", "0.16.10")
+    monkeypatch.setenv("RUFF_VERSION", override)
     monkeypatch.delenv("GITHUB_EVENT_PATH", raising=False)
     installs: list[str] = []
     real_run = subprocess.run

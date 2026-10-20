@@ -1,6 +1,7 @@
 # file: .github/workflows/ci-tests.yml
-# version: 1.2.1
+# version: 1.2.2
 # guid: ci-tests-workflow-2025-automation
+# last-edited: 2026-10-20
 
 name: CI Self Tests
 

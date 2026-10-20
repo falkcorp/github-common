@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # file: .github/workflows/scripts/ci_workflow.py
-# version: 1.3.1
+# version: 1.3.2
 # guid: d9c2b3a4-5e6f-47a8-9b0c-1d2e3f4a5b6c
 # last-edited: 2026-10-20
 """Helper utilities invoked from GitHub Actions CI workflows."""
@@ -662,7 +662,8 @@ def python_lint(_: argparse.Namespace) -> None:
     if not lint_targets:
         lint_targets = ["."]
 
-    ruff_version = os.environ.get("RUFF_VERSION", "").strip() or RUFF_VERSION
+    override = os.environ.get("RUFF_VERSION", "").strip().removeprefix("v")
+    ruff_version = override or RUFF_VERSION
     _ensure_ruff(ruff_version)
 
     # Run ruff as `python -m ruff` so the interpreter that just verified the

@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-ci.yml
-# version: 1.19.0
+# version: 1.19.1
 # guid: reusable-ci-2025-09-24-core-workflow
 # last-edited: 2026-10-20
 
@@ -23,6 +23,17 @@ on:
         required: false
         type: string
         default: '3.13'
+      ruff-version:
+        description: >-
+          Bare ruff version for the Python lint step, e.g. 0.17.0 (a leading v
+          is tolerated). Empty (default) uses RUFF_VERSION in ci_workflow.py.
+          Escape hatch for repos that format with a newer ruff. Takes effect
+          once the script ref this workflow checks out (ghcommon-ref.txt, or the
+          fallback pin) includes the commit that added the input; on an older
+          ref the value is ignored.
+        required: false
+        type: string
+        default: ''
       rust-version:
         description: 'Rust version to use'
         required: false
@@ -64,13 +75,6 @@ on:
           25m). Empty (default) keeps Go's own 10m. Passed as GOFLAGS=-timeout=...
           because the go-test helper action has no timeout input. Values above
           30m need go-ci's timeout-minutes raised; see the comment there.
-        required: false
-        type: string
-        default: ''
-      ruff-version:
-        description: >-
-          Exact ruff version for the Python lint step. Empty (default) uses the
-          version pinned in ci_workflow.py (RUFF_VERSION, currently 0.17.0).
         required: false
         type: string
         default: ''
@@ -514,6 +518,9 @@ jobs:
           python-version: ${{ inputs.python-version }}
 
       - name: Lint Python workflow scripts
+        # TODO: this job pins ruff==0.16.10 separately from RUFF_VERSION in
+        # ci_workflow.py (0.17.0, used by the consumer Python lint). Unify the two
+        # pins so one bump moves both.
         run: |
           set -euo pipefail
           python -m pip install --upgrade pip
