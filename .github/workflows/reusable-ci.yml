@@ -513,7 +513,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: ${{ inputs.python-version }}
 
@@ -684,7 +684,7 @@ jobs:
       - name: Check Go test coverage
         if: ${{ !inputs.skip-tests && hashFiles('.testcoverage.yml') != '' }}
         continue-on-error: true
-        uses: vladopajic/go-test-coverage@f484eec846448c97c777a26f8b58c5a69a327e12 # v2.20.0
+        uses: vladopajic/go-test-coverage@239670d50ed072bfce8b9ab1765227a53429d664 # v2.20.1
         with:
           config: ./.testcoverage.yml
 
@@ -728,7 +728,7 @@ jobs:
           fi
 
       - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: ${{ matrix.python-version }}
           cache: ${{ steps.py-manifest.outputs.cache }}
