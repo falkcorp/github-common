@@ -1,7 +1,7 @@
 # file: .github/workflows/reusable-ci.yml
-# version: 1.19.2
+# version: 1.19.3
 # guid: reusable-ci-2025-09-24-core-workflow
-# last-edited: 2026-10-21
+# last-edited: 2026-10-27
 
 name: Reusable CI Workflow
 
@@ -975,7 +975,13 @@ jobs:
           dir="${FRONTEND_DIR//\'/}"
           dir="${dir//\"/}"
           cd "${dir:-.}"
-          sudo npx playwright install --with-deps chromium webkit
+          # System libraries need root; the browser binaries must NOT be installed
+          # with sudo. `sudo npx playwright install` writes to /root/.cache/ms-playwright
+          # (sudo resets HOME), but the E2E step below runs as the runner user and
+          # looks in ~/.cache/ms-playwright, so every test failed with
+          # "Executable doesn't exist". Install deps as root, browsers as the runner.
+          sudo env "PATH=$PATH" npx playwright install-deps chromium webkit
+          npx playwright install chromium webkit
         shell: bash
 
       - name: Run E2E tests
