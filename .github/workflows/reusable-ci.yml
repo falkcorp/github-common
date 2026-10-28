@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-ci.yml
-# version: 1.19.3
+# version: 1.19.4
 # guid: reusable-ci-2025-09-24-core-workflow
 # last-edited: 2026-10-27
 
@@ -657,7 +657,7 @@ jobs:
           sudo apt-get install -y $PACKAGES
 
       - name: Build Go project
-        uses: falkcorp/gha-ci-workflow-helpers@4b5f4d45d42c99d98ccf731624f2f4b91d849561 # v1.1.4
+        uses: falkcorp/gha-ci-workflow-helpers@ca7caa4172a20983df0f93c16e4637669fa002f4 # v1.1.7-rc.8
         with:
           command: go-setup
 
@@ -665,7 +665,7 @@ jobs:
       # go tool cover ignore flags they do not know, so this only reaches tests.
       - name: Test Go project
         if: ${{ !inputs.skip-tests }}
-        uses: falkcorp/gha-ci-workflow-helpers@4b5f4d45d42c99d98ccf731624f2f4b91d849561 # v1.1.4
+        uses: falkcorp/gha-ci-workflow-helpers@ca7caa4172a20983df0f93c16e4637669fa002f4 # v1.1.7-rc.8
         env:
           GOFLAGS: ${{ inputs.go-test-timeout != '' && format('-timeout={0}', inputs.go-test-timeout) || '' }}
         with:
@@ -759,7 +759,7 @@ jobs:
           echo "GHCOMMON_SCRIPTS_DIR=$PWD/ghcommon-workflow-scripts/.github/workflows/scripts" >> "$GITHUB_ENV"
 
       - name: Install Python dependencies
-        uses: falkcorp/gha-ci-workflow-helpers@4b5f4d45d42c99d98ccf731624f2f4b91d849561 # v1.1.4
+        uses: falkcorp/gha-ci-workflow-helpers@ca7caa4172a20983df0f93c16e4637669fa002f4 # v1.1.7-rc.8
         with:
           command: python-install
 
@@ -772,7 +772,7 @@ jobs:
 
       - name: Test Python code
         if: ${{ !inputs.skip-tests }}
-        uses: falkcorp/gha-ci-workflow-helpers@4b5f4d45d42c99d98ccf731624f2f4b91d849561 # v1.1.4
+        uses: falkcorp/gha-ci-workflow-helpers@ca7caa4172a20983df0f93c16e4637669fa002f4 # v1.1.7-rc.8
         with:
           command: python-run-tests
 
@@ -839,13 +839,13 @@ jobs:
 
       - name: Format Rust code
         if: ${{ !inputs.skip-linting }}
-        uses: falkcorp/gha-ci-workflow-helpers@4b5f4d45d42c99d98ccf731624f2f4b91d849561 # v1.1.4
+        uses: falkcorp/gha-ci-workflow-helpers@ca7caa4172a20983df0f93c16e4637669fa002f4 # v1.1.7-rc.8
         with:
           command: rust-format
 
       - name: Lint Rust code
         if: ${{ !inputs.skip-linting }}
-        uses: falkcorp/gha-ci-workflow-helpers@4b5f4d45d42c99d98ccf731624f2f4b91d849561 # v1.1.4
+        uses: falkcorp/gha-ci-workflow-helpers@ca7caa4172a20983df0f93c16e4637669fa002f4 # v1.1.7-rc.8
         with:
           command: rust-clippy
 
@@ -931,14 +931,14 @@ jobs:
       # No additional cache setup needed here.
 
       - name: Install dependencies
-        uses: falkcorp/gha-ci-workflow-helpers@4b5f4d45d42c99d98ccf731624f2f4b91d849561 # v1.1.4
+        uses: falkcorp/gha-ci-workflow-helpers@ca7caa4172a20983df0f93c16e4637669fa002f4 # v1.1.7-rc.8
         with:
           command: frontend-install
           frontend-working-dir: ${{ steps.frontend-dir.outputs.dir }}
 
       - name: Lint frontend code
         if: ${{ !inputs.skip-linting }}
-        uses: falkcorp/gha-ci-workflow-helpers@4b5f4d45d42c99d98ccf731624f2f4b91d849561 # v1.1.4
+        uses: falkcorp/gha-ci-workflow-helpers@ca7caa4172a20983df0f93c16e4637669fa002f4 # v1.1.7-rc.8
         with:
           command: frontend-run
           frontend-working-dir: ${{ steps.frontend-dir.outputs.dir }}
@@ -947,7 +947,7 @@ jobs:
           frontend-failure-message: '❌ Linting failed or not configured'
 
       - name: Build frontend
-        uses: falkcorp/gha-ci-workflow-helpers@4b5f4d45d42c99d98ccf731624f2f4b91d849561 # v1.1.4
+        uses: falkcorp/gha-ci-workflow-helpers@ca7caa4172a20983df0f93c16e4637669fa002f4 # v1.1.7-rc.8
         with:
           command: frontend-run
           frontend-working-dir: ${{ steps.frontend-dir.outputs.dir }}
@@ -957,7 +957,7 @@ jobs:
 
       - name: Test frontend
         if: ${{ !inputs.skip-tests }}
-        uses: falkcorp/gha-ci-workflow-helpers@4b5f4d45d42c99d98ccf731624f2f4b91d849561 # v1.1.4
+        uses: falkcorp/gha-ci-workflow-helpers@ca7caa4172a20983df0f93c16e4637669fa002f4 # v1.1.7-rc.8
         with:
           command: frontend-run
           frontend-working-dir: ${{ steps.frontend-dir.outputs.dir }}
@@ -986,7 +986,7 @@ jobs:
 
       - name: Run E2E tests
         if: ${{ !inputs.skip-tests && !inputs.skip-e2e-tests }}
-        uses: falkcorp/gha-ci-workflow-helpers@4b5f4d45d42c99d98ccf731624f2f4b91d849561 # v1.1.4
+        uses: falkcorp/gha-ci-workflow-helpers@ca7caa4172a20983df0f93c16e4637669fa002f4 # v1.1.7-rc.8
         with:
           command: frontend-run
           frontend-working-dir: ${{ steps.frontend-dir.outputs.dir }}
@@ -1149,7 +1149,7 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: Generate summary
-        uses: falkcorp/gha-ci-workflow-helpers@4b5f4d45d42c99d98ccf731624f2f4b91d849561 # v1.1.4
+        uses: falkcorp/gha-ci-workflow-helpers@ca7caa4172a20983df0f93c16e4637669fa002f4 # v1.1.7-rc.8
         with:
           command: generate-ci-summary
         env:
@@ -1164,7 +1164,7 @@ jobs:
           JOB_DOCS: skipped
 
       - name: Check overall status
-        uses: falkcorp/gha-ci-workflow-helpers@4b5f4d45d42c99d98ccf731624f2f4b91d849561 # v1.1.4
+        uses: falkcorp/gha-ci-workflow-helpers@ca7caa4172a20983df0f93c16e4637669fa002f4 # v1.1.7-rc.8
         with:
           command: check-ci-status
         env:
