@@ -1,7 +1,7 @@
 # file: .github/workflows/reusable-ci.yml
-# version: 1.19.4
+# version: 1.20.0
 # guid: reusable-ci-2025-09-24-core-workflow
-# last-edited: 2026-10-27
+# last-edited: 2026-11-04
 
 name: Reusable CI Workflow
 
@@ -83,6 +83,17 @@ on:
         required: false
         type: string
         default: ''
+      free-runner-disk:
+        description: >-
+          Before Go CI restores its cache, remove the preinstalled .NET, Android,
+          GHC and CodeQL toolchains from Linux runners. This frees about 25 GB.
+          A hosted ubuntu runner leaves about 14 GB free, and a large Go cache
+          plus -race test binaries can fill it ("final link failed: No space
+          left on device"). Off by default, because a caller may need one of
+          those toolchains.
+        required: false
+        type: boolean
+        default: false
       force-all:
         description: >-
           Run every CI job whose language the repository contains, instead of only
@@ -639,6 +650,15 @@ jobs:
       - name: Configure workflow script path
         run: |
           echo "GHCOMMON_SCRIPTS_DIR=$PWD/ghcommon-workflow-scripts/.github/workflows/scripts" >> "$GITHUB_ENV"
+
+      # Must run before setup-go restores the cache: a runner that fills up
+      # mid-restore cannot even write its own diagnostic log.
+      - name: Free runner disk
+        if: inputs.free-runner-disk && runner.os == 'Linux'
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          df -h /
 
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
