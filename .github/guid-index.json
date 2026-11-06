@@ -875,7 +875,7 @@
     "path": ".github/workflows/ci-tests.yml",
     "guid": "ci-tests-workflow-2025-automation",
     "title": "CI Self Tests",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "header_path": ".github/workflows/ci-tests.yml",
     "path_mismatch": false
   },
@@ -939,7 +939,7 @@
     "path": ".github/workflows/performance-monitoring.yml",
     "guid": "performance-monitoring-workflow-2025",
     "title": "Performance Monitoring",
-    "version": "1.1.4",
+    "version": "1.1.5",
     "header_path": ".github/workflows/performance-monitoring.yml",
     "path_mismatch": false
   },
@@ -947,7 +947,7 @@
     "path": ".github/workflows/pr-automation.yml",
     "guid": "a7b8c9d0-e1f2-3456-a789-0123456789bc",
     "title": "PR Automation",
-    "version": "4.5.9",
+    "version": "4.5.10",
     "header_path": ".github/workflows/pr-automation.yml",
     "path_mismatch": false
   },
@@ -979,7 +979,7 @@
     "path": ".github/workflows/reusable-ci.yml",
     "guid": "reusable-ci-2025-09-24-core-workflow",
     "title": "Reusable CI Workflow",
-    "version": "1.20.0",
+    "version": "1.20.1",
     "header_path": ".github/workflows/reusable-ci.yml",
     "path_mismatch": false
   },

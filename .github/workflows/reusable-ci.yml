@@ -1,7 +1,7 @@
 # file: .github/workflows/reusable-ci.yml
-# version: 1.20.0
+# version: 1.20.1
 # guid: reusable-ci-2025-09-24-core-workflow
-# last-edited: 2026-11-04
+# last-edited: 2026-11-06
 
 name: Reusable CI Workflow
 
@@ -816,7 +816,7 @@ jobs:
           submodules: recursive
 
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # stable
+        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # master
         with:
           toolchain: ${{ matrix.rust-version }}
           components: rustfmt, clippy

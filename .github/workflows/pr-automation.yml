@@ -1,5 +1,5 @@
 # file: .github/workflows/pr-automation.yml
-# version: 4.5.9
+# version: 4.5.10
 # guid: a7b8c9d0-e1f2-3456-a789-0123456789bc
 # NOTE: This file should be updated in ghcommon repository first, then copied to other repositories.
 # To update: Edit in https://github.com/falkcorp/github-common/.github/workflows/pr-automation.yml then copy to other repos
@@ -95,7 +95,7 @@ jobs:
 
       - name: Setup Rust (if Cargo.toml present)
         if: steps.detect_langs.outputs.rust_present == 'true'
-        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # stable
+        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # master
         with:
           toolchain: stable
           components: rustfmt, clippy
