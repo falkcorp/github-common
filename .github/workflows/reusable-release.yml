@@ -1084,11 +1084,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [detect-languages, create-release]
-    # `!cancelled()`: without a status function GitHub adds an implicit
-    # `success()`, and the often-skipped build-* jobs upstream skipped this job
-    # on every release, even successful ones (audiobook-organizer 2026-09-26).
     if: |
-      !cancelled() &&
       needs.create-release.outputs.release-created == 'true' &&
       needs.detect-languages.outputs.release-branch-strategy == 'stable' &&
       !inputs.prerelease &&
@@ -1200,17 +1196,19 @@ jobs:
         env:
           VERSION: ${{ needs.create-release.outputs.version }}
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-          REF_NAME: ${{ github.ref_name }}
         run: |
           set -euo pipefail
           collect=false
           if [ -z "${VERSION:-}" ]; then
             echo "::warning::No version resolved; skipping changelog collect."
-          elif [ "$REF_NAME" != "$DEFAULT_BRANCH" ]; then
-            # The commit is cherry-picked onto the default branch below, so a
-            # release cut from another branch would carry nothing else across,
-            # but its fragments are not the default branch's to collect.
-            echo "::warning::Released from '${REF_NAME}', not '${DEFAULT_BRANCH}'; skipping changelog collect."
+          # Only the default branch's fragments belong in its CHANGELOG.md. Test
+          # ancestry, not github.ref_name: a tag-push release has the tag as its
+          # ref name, and a tag on the default branch must still collect. (Only
+          # the changelog commit is ever cherry-picked across, so a release cut
+          # elsewhere could not carry other commits; it simply has nothing to
+          # collect here.)
+          elif ! git merge-base --is-ancestor "$GITHUB_SHA" "origin/${DEFAULT_BRANCH}"; then
+            echo "::warning::${GITHUB_SHA} is not on ${DEFAULT_BRANCH}; skipping changelog collect."
           elif [ ! -f changelog.d/scriv.ini ]; then
             echo "::notice::No changelog.d/scriv.ini; nothing to collect."
           elif [ ! -f CHANGELOG.md ] || ! grep -q 'scriv-insert-here' CHANGELOG.md; then
@@ -1269,11 +1267,17 @@ jobs:
           # leaves its fragments in this checkout; collecting now would file
           # them under this version too. Refuse instead (needs a token that can
           # read pull requests; GITHUB_TOKEN usually cannot, so skip if absent).
+          # This version's own branch is excluded: a re-run reuses its PR.
           LIST_TOKEN="${APP_TOKEN:-${CHANGELOG_PAT:-}}"
           if [ -n "$LIST_TOKEN" ]; then
-            pending="$(GH_TOKEN="$LIST_TOKEN" gh pr list --repo "$GITHUB_REPOSITORY" --state open \
+            if ! pending="$(GH_TOKEN="$LIST_TOKEN" gh pr list --repo "$GITHUB_REPOSITORY" --state open --limit 1000 \
               --json headRefName,isCrossRepository \
-              --jq '[.[] | select(.isCrossRepository == false and (.headRefName | startswith("changelog/collect-"))) | .headRefName] | join(" ")')"
+              --jq "[.[] | select(.isCrossRepository == false and (.headRefName | startswith(\"changelog/collect-\")) and .headRefName != \"${BRANCH}\") | .headRefName] | join(\" \")")"; then
+              # Repos that push directly never have such a PR; do not fail
+              # their release because this token cannot read pull requests.
+              echo "::warning::Could not list open pull requests; not checking for an earlier unmerged changelog PR."
+              pending=""
+            fi
             if [ -n "$pending" ]; then
               echo "::error::Changelog pull request(s) still open: ${pending}. Merge or close them, then re-run this job; collecting now would file their fragments under ${VERSION} as well."
               exit 1
