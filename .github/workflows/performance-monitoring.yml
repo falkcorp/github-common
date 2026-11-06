@@ -1,6 +1,7 @@
 # file: .github/workflows/performance-monitoring.yml
-# version: 1.1.4
+# version: 1.1.5
 # guid: performance-monitoring-workflow-2025
+# last-edited: 2026-11-06
 
 name: Performance Monitoring
 
@@ -33,7 +34,11 @@ jobs:
           submodules: recursive
 
       - name: Install toolchain
-        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # stable
+        # This SHA is the action's master branch, which has no default toolchain:
+        # without `toolchain` the step fails with "'toolchain' is a required input".
+        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # master
+        with:
+          toolchain: stable
 
       - name: Restore cache
         uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
