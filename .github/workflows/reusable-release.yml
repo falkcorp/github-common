@@ -776,10 +776,6 @@ jobs:
             ./artifacts/**/*
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Assemble CHANGELOG.md from changelog.d/ fragments (scriv) and commit it
-      # back to the default branch. Opt-in by presence: only runs when the
-      # calling repo has changelog.d/scriv.ini (see changelog.d/README.md in
-      # falkcorp/github-common). No-op for every repo without that file.
       - name: Create or update draft full release
         if: needs.detect-languages.outputs.auto-prerelease == 'true' && github.event_name != 'pull_request'
         env:
@@ -1088,7 +1084,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [detect-languages, create-release]
+    # `!cancelled()`: without a status function GitHub adds an implicit
+    # `success()`, and the often-skipped build-* jobs upstream skipped this job
+    # on every release, even successful ones (audiobook-organizer 2026-09-26).
     if: |
+      !cancelled() &&
       needs.create-release.outputs.release-created == 'true' &&
       needs.detect-languages.outputs.release-branch-strategy == 'stable' &&
       !inputs.prerelease &&
@@ -1161,36 +1161,77 @@ jobs:
 
           echo "🎉 Floating tags updated successfully"
 
-  # Final status check
   # Changelog collection runs in its own job, after the release exists, so a
   # failure here can never stop publish-github-packages or update-floating-tags.
   # Until 2026-11-06 it was the last step of create-release, ahead of
   # check-release: a rejected push failed the job before `release-created` was
   # written, and both publish jobs skipped (audiobook-organizer v0.223.0).
+  #
+  # Opt-in by presence: only collects when the calling repo has
+  # changelog.d/scriv.ini (see changelog.d/README.md in falkcorp/github-common).
+  #
+  # `!cancelled()`, not `always()`: the upstream build-* jobs are often skipped,
+  # and a job-level `if:` without a status function gets an implicit
+  # `success()` that would skip this job too; `!cancelled()` avoids that and
+  # still honours a cancelled run.
   collect-changelog:
     name: Collect Changelog Fragments
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [detect-languages, create-release]
     if: >-
-      always() &&
+      !cancelled() &&
       needs.create-release.outputs.release-created == 'true' &&
       github.event_name != 'pull_request' &&
       inputs.changelog-collect != 'false' &&
       needs.detect-languages.outputs.auto-prerelease != 'true'
     steps:
-      # The released commit, not the branch tip: collect exactly the fragments
-      # that shipped in this version. Fragments merged after it stay pending.
+      # The released commit (github.sha), so exactly the fragments that shipped
+      # in this version are collected; fragments merged after it stay pending.
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
 
+      # Every cheap reason to skip, before a token is minted or anything pushed.
+      - name: Decide whether to collect
+        id: plan
+        env:
+          VERSION: ${{ needs.create-release.outputs.version }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          collect=false
+          if [ -z "${VERSION:-}" ]; then
+            echo "::warning::No version resolved; skipping changelog collect."
+          elif [ "$REF_NAME" != "$DEFAULT_BRANCH" ]; then
+            # The commit is cherry-picked onto the default branch below, so a
+            # release cut from another branch would carry nothing else across,
+            # but its fragments are not the default branch's to collect.
+            echo "::warning::Released from '${REF_NAME}', not '${DEFAULT_BRANCH}'; skipping changelog collect."
+          elif [ ! -f changelog.d/scriv.ini ]; then
+            echo "::notice::No changelog.d/scriv.ini; nothing to collect."
+          elif [ ! -f CHANGELOG.md ] || ! grep -q 'scriv-insert-here' CHANGELOG.md; then
+            echo "::warning::changelog.d/scriv.ini present but CHANGELOG.md lacks the scriv-insert-here marker; skipping collect."
+          # Only real fragments count -- README.md, templates/ and scriv.ini don't.
+          # Never `find ... | grep -q .`: grep exits on the first match, find dies
+          # on EPIPE, and pipefail reports failure exactly when there are MANY
+          # fragments (audiobook-organizer silently skipped six releases at 675).
+          # `-print -quit` stops at the first hit and needs no pipeline.
+          elif [ -z "$(find changelog.d -maxdepth 1 -name '*.md' ! -name 'README.md' -print -quit)" ]; then
+            echo "::notice::No changelog fragments to collect for ${VERSION}."
+          else
+            collect=true
+          fi
+          echo "collect=${collect}" >> "$GITHUB_OUTPUT"
+
       # Same guard as build-go: `if:` cannot read secrets.* in a workflow_call
       # workflow, so materialise CI_APP_ID through env first.
       - name: Check for App credentials
         id: check-app
+        if: steps.plan.outputs.collect == 'true'
         env:
           CI_APP_ID: ${{ secrets.CI_APP_ID }}
         run: |
@@ -1200,19 +1241,20 @@ jobs:
             echo "have-app=false" >> "$GITHUB_OUTPUT"
           fi
 
-      # Only used if the default branch refuses a direct push (a ruleset or
+      # Used only if the default branch refuses a direct push (a ruleset or a
       # merge queue with no bypass). A pull request opened with GITHUB_TOKEN
       # starts no pull_request workflows, so its required checks would never
-      # report and it could never merge; one opened with an App token does.
+      # report; one opened with an App token (or a user PAT) does.
       - name: Mint App token for the changelog pull request
         id: app-token
-        if: steps.check-app.outputs.have-app == 'true'
+        if: steps.plan.outputs.collect == 'true' && steps.check-app.outputs.have-app == 'true'
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
           app-id: ${{ secrets.CI_APP_ID }}
           private-key: ${{ secrets.CI_APP_PRIVATE_KEY }}
 
       - name: Collect changelog fragments
+        if: steps.plan.outputs.collect == 'true'
         env:
           VERSION: ${{ needs.create-release.outputs.version }}
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
@@ -1221,44 +1263,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
+          BRANCH="changelog/collect-${VERSION}"
 
-          if [ -z "${VERSION:-}" ]; then
-            echo "::warning::No version resolved; skipping changelog collect."
-            exit 0
-          fi
-
-          if [ ! -f changelog.d/scriv.ini ]; then
-            echo "::notice::No changelog.d/scriv.ini; nothing to collect."
-            exit 0
-          fi
-
-          # Defensive: scriv needs a CHANGELOG.md carrying the insert marker.
-          # Skip cleanly if the repo has scriv.ini but no marker-bearing changelog.
-          if [ ! -f CHANGELOG.md ] || ! grep -q 'scriv-insert-here' CHANGELOG.md; then
-            echo "::warning::changelog.d/scriv.ini present but CHANGELOG.md lacks the scriv-insert-here marker; skipping collect."
-            exit 0
-          fi
-
-          # Only real fragments count — README.md, templates/ and scriv.ini don't.
-          #
-          # Do NOT write this as `find ... | grep -q .`. `grep -q` exits on the
-          # first match, closing the pipe; `find` then dies on EPIPE, and under
-          # `set -o pipefail` the pipeline reports FAILURE even though grep
-          # succeeded. The leading `!` therefore fires this "no fragments"
-          # branch precisely when there are MANY fragments — and it exit 0s, so
-          # the release stays green while collection is silently skipped.
-          #
-          # The trigger is a RACE, not a size threshold: `find` loses only if it
-          # is still writing when `grep` exits. A handful of fragments fit in a
-          # single write() that lands before grep is scheduled, so nothing goes
-          # wrong; hundreds mean many writes and grep almost always wins first.
-          # Note 36 KB is well under the 64 KB pipe buffer — a FULL buffer is
-          # not what breaks this. audiobook-organizer collected fine at 131
-          # fragments, then silently skipped six releases at 675.
-          # `-print -quit` stops at the first hit and needs no pipeline at all.
-          if [ -z "$(find changelog.d -maxdepth 1 -name '*.md' ! -name 'README.md' -print -quit)" ]; then
-            echo "::notice::No changelog fragments to collect for ${VERSION}."
-            exit 0
+          # An earlier release's changelog PR that has not merged yet still
+          # leaves its fragments in this checkout; collecting now would file
+          # them under this version too. Refuse instead (needs a token that can
+          # read pull requests; GITHUB_TOKEN usually cannot, so skip if absent).
+          LIST_TOKEN="${APP_TOKEN:-${CHANGELOG_PAT:-}}"
+          if [ -n "$LIST_TOKEN" ]; then
+            pending="$(GH_TOKEN="$LIST_TOKEN" gh pr list --repo "$GITHUB_REPOSITORY" --state open \
+              --json headRefName --jq '[.[] | select(.headRefName | startswith("changelog/collect-")) | .headRefName] | join(" ")')"
+            if [ -n "$pending" ]; then
+              echo "::error::Changelog pull request(s) still open: ${pending}. Merge or close them, then re-run this job; collecting now would file their fragments under ${VERSION} as well."
+              exit 1
+            fi
           fi
 
           python3 -m pip install --quiet scriv
@@ -1274,25 +1292,42 @@ jobs:
           fi
 
           git add -A CHANGELOG.md changelog.d
-          # [skip ci] stops this changelog commit from retriggering release CI.
+          # [skip ci] stops a directly pushed changelog commit from retriggering
+          # release CI. The pull-request path below removes it.
           git commit -m "docs(changelog): collect fragments for ${VERSION} [skip ci]"
+          COMMIT="$(git rev-parse HEAD)"
+
+          # Only the changelog may travel. Anything else means scriv or the
+          # checkout did something unexpected; never push it.
+          other="$(git diff --name-only "${COMMIT}^" "${COMMIT}" | grep -vE '^(CHANGELOG\.md|changelog\.d/)' || true)"
+          if [ -n "$other" ]; then
+            echo "::error::The changelog commit touches files outside CHANGELOG.md and changelog.d/: ${other}"
+            exit 1
+          fi
+
+          # Put the one changelog commit on a fresh copy of the default branch's
+          # tip. Never push the checkout's own history.
+          land_on_tip() {
+            git fetch --quiet "https://x-access-token:${1}@github.com/${GITHUB_REPOSITORY}.git" "${DEFAULT_BRANCH}"
+            git checkout --quiet --detach FETCH_HEAD
+            git cherry-pick "${COMMIT}"
+          }
 
           # 1. Direct push, as before, for repositories that allow it. Prefer the
-          #    PAT, fall back to the workflow token. Push to an explicit
-          #    authenticated URL; the checkout persists no credentials.
+          #    PAT, fall back to the workflow token.
           PUSH_TOKEN="${CHANGELOG_PAT:-$GITHUB_TOKEN}"
-          REMOTE="https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           ERR="$(mktemp)"
           n=0
           while :; do
-            if git push "${REMOTE}" "HEAD:${DEFAULT_BRANCH}" 2>"$ERR"; then
+            land_on_tip "$PUSH_TOKEN"
+            if git push "https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:${DEFAULT_BRANCH}" 2>"$ERR"; then
               cat "$ERR"
               echo "CHANGELOG.md updated for ${VERSION}"
               exit 0
             fi
             cat "$ERR" >&2
-            # A ruleset or protection refusal is permanent; retrying cannot help.
-            if grep -qE 'GH013|GH006|protected branch|Repository rule violations' "$ERR"; then
+            # A protection or ruleset refusal is permanent; retrying cannot help.
+            if grep -qiE 'GH013|GH006|protected branch|Repository rule violations' "$ERR"; then
               break
             fi
             n=$((n + 1))
@@ -1302,55 +1337,62 @@ jobs:
             fi
             echo "Retry $n/4 for changelog push..."
             sleep $((2 ** n))
-            git pull --rebase "${REMOTE}" "${DEFAULT_BRANCH}"
           done
 
           # 2. The default branch refuses direct pushes: land the same commit
-          #    through a pull request set to auto-merge, which a merge queue
-          #    then takes. No [skip ci] here: the PR's required checks must run.
-          #    "[skip changelog]" in the title exempts it from fragment checks.
+          #    through a pull request, set to merge as soon as its required checks
+          #    pass (a merge queue then takes it). No [skip ci]: the PR's checks
+          #    must run. "[skip changelog]" in the title exempts it from
+          #    fragment-required checks. Only the App token or the PAT can open
+          #    it: a GITHUB_TOKEN-opened PR starts no checks and could not merge.
           echo "::notice::${DEFAULT_BRANCH} refuses direct pushes; opening a pull request instead."
           TITLE="docs(changelog): collect fragments for ${VERSION} [skip changelog]"
-          git commit --amend -m "docs(changelog): collect fragments for ${VERSION}"
-          git fetch "${REMOTE}" "${DEFAULT_BRANCH}"
-          git rebase FETCH_HEAD
-          BRANCH="changelog/collect-${VERSION}"
+          BODY="Folds the changelog.d fragments released in ${VERSION} into CHANGELOG.md. Opened by the release workflow because ${DEFAULT_BRANCH} refuses direct pushes."
 
-          if [ -z "${APP_TOKEN:-}" ]; then
-            echo "::warning::CI_APP_ID is not configured. The changelog pull request is opened with a fallback token; if that is GITHUB_TOKEN, its pull_request checks will not start and it cannot merge until someone pushes to ${BRANCH}."
-          fi
-
-          opened=false
-          for TOKEN in "${APP_TOKEN:-}" "${CHANGELOG_PAT:-}" "${GITHUB_TOKEN}"; do
-            [ -n "$TOKEN" ] || continue
-            export GH_TOKEN="$TOKEN"
-            if ! git push --force "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/${BRANCH}"; then
-              echo "::warning::Could not push ${BRANCH} with this token; trying the next one."
+          opened=""
+          for kind in app pat; do
+            if [ "$kind" = app ]; then TOKEN="${APP_TOKEN:-}"; else TOKEN="${CHANGELOG_PAT:-}"; fi
+            if [ -z "$TOKEN" ]; then
+              echo "::notice::No ${kind} token configured."
               continue
             fi
-            number="$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --state open --json number --jq '.[0].number // empty' || true)"
-            if [ -z "$number" ]; then
+            land_on_tip "$TOKEN"
+            git commit --quiet --amend -m "docs(changelog): collect fragments for ${VERSION}"
+            if ! git push --force "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/${BRANCH}"; then
+              echo "::warning::Could not push ${BRANCH} with the ${kind} token; trying the next one."
+              continue
+            fi
+            export GH_TOKEN="$TOKEN"
+            if [ -z "$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --state open --json number --jq '.[0].number // empty' || true)" ]; then
               if ! gh pr create --repo "$GITHUB_REPOSITORY" --base "$DEFAULT_BRANCH" --head "$BRANCH" \
-                   --title "$TITLE" \
-                   --body "Folds the changelog.d fragments released in ${VERSION} into CHANGELOG.md. Opened by the release workflow because ${DEFAULT_BRANCH} refuses direct pushes."; then
-                echo "::warning::Could not open the pull request with this token; trying the next one."
+                   --title "$TITLE" --body "$BODY"; then
+                echo "::warning::Could not open the pull request with the ${kind} token; trying the next one."
                 continue
               fi
             fi
-            opened=true
+            opened="$kind"
             break
           done
-          if [ "$opened" != true ]; then
-            echo "::error::Could not open the changelog pull request for ${VERSION} with any token."
+          if [ -z "$opened" ]; then
+            echo "::error::Could not open the changelog pull request for ${VERSION}: set CI_APP_ID/CI_APP_PRIVATE_KEY (App with contents and pull-requests write) or JF_CI_GH_PAT."
+            exit 1
+          fi
+          if [ "$opened" = pat ] && [ -n "${APP_TOKEN:-}" ]; then
+            echo "::warning::The App token could not open the pull request (does the App have pull-requests write?); it was opened with JF_CI_GH_PAT."
+          fi
+
+          # Auto-merge needs allow_auto_merge and something still pending. If it
+          # cannot be enabled, merge now: on a merge-queue branch that enqueues.
+          if gh pr merge --repo "$GITHUB_REPOSITORY" "$BRANCH" --rebase --auto; then
+            echo "::notice::Changelog pull request for ${VERSION} will merge once its required checks pass."
+          elif gh pr merge --repo "$GITHUB_REPOSITORY" "$BRANCH" --rebase; then
+            echo "::notice::Changelog pull request for ${VERSION} merged (or entered the merge queue)."
+          else
+            echo "::error::Opened the changelog pull request for ${VERSION} (${BRANCH}) but could neither enable auto-merge nor merge it; merge it by hand."
             exit 1
           fi
 
-          if ! gh pr merge --repo "$GITHUB_REPOSITORY" "$BRANCH" --rebase --auto; then
-            echo "::error::Opened the changelog pull request for ${VERSION} but could not enable auto-merge; merge it by hand."
-            exit 1
-          fi
-          echo "Changelog pull request for ${VERSION} is set to auto-merge."
-
+  # Final status check
   build-status:
     name: Release Status Summary
     runs-on: ubuntu-latest
@@ -1365,6 +1407,7 @@ jobs:
         create-release,
         publish-github-packages,
         update-floating-tags,
+        collect-changelog,
       ]
     if: always()
     outputs:
