@@ -1,7 +1,7 @@
 # file: .github/workflows/reusable-ci-minimal.yml
-# version: 1.2.0
+# version: 1.3.0
 # guid: c9d8e7f6-a5b4-3c2d-1e0f-9a8b7c6d5e4f
-# last-edited: 2026-10-09
+# last-edited: 2026-11-06
 
 # Fast parallel CI for PRs and pushes. Runs short tests only.
 # Uses manual actions/cache — NOT setup-go's built-in cache, which is unreliable.
@@ -42,6 +42,11 @@ on:
         required: false
         type: boolean
         default: true
+      run-go-vet-build:
+        description: 'Run the Go Vet & Build job; set false in a repo with no Go module (e.g. docs-only), where `go vet ./...` fails'
+        required: false
+        type: boolean
+        default: true
       run-go-tests:
         description: 'Run the built-in Go Tests (short, race) job; set false when the caller runs its own'
         required: false
@@ -63,7 +68,12 @@ on:
         type: string
         default: ''
       super-linter:
-        description: 'Run Super Linter in ADVISORY mode (reports, never fails the build). Opt-in.'
+        description: 'Run Super Linter. Opt-in. ADVISORY (reports, never fails the build) unless super-linter-blocking is also true.'
+        required: false
+        type: boolean
+        default: false
+      super-linter-blocking:
+        description: 'Make the super-linter job a gate: findings fail the job and ci-minimal-summary. Opt-in (default false) for repos whose super-linter-*.env scopes VALIDATE_* to linters they have cleaned up; no effect unless super-linter is true.'
         required: false
         type: boolean
         default: false
@@ -79,6 +89,7 @@ jobs:
   # ── Go: vet + build ─────────────────────────────────────────────────────────
   go-vet-build:
     name: Go Vet & Build
+    if: ${{ inputs.run-go-vet-build }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -234,9 +245,9 @@ jobs:
           # shellcheck disable=SC2086
           golangci-lint run $EXTRA_ARGS ./...
 
-  # ── Super Linter (opt-in, ADVISORY) ─────────────────────────────────────────
+  # ── Super Linter (opt-in, ADVISORY unless super-linter-blocking) ────────────
   super-linter:
-    name: Super Linter (advisory)
+    name: ${{ inputs.super-linter-blocking && 'Super Linter' || 'Super Linter (advisory)' }}
     if: inputs.super-linter
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -266,7 +277,7 @@ jobs:
             grep -E '^[A-Za-z_][A-Za-z0-9_]*=' "$cfg" >> "$GITHUB_ENV"
           fi
 
-      # ADVISORY BY DESIGN. Two independent mechanisms, deliberately both:
+      # ADVISORY BY DEFAULT. Two independent mechanisms, deliberately both:
       #   DISABLE_ERRORS=true  - Super Linter's own switch; it still reports every
       #                          finding but exits 0. This is the intent.
       #   continue-on-error    - the belt. DISABLE_ERRORS is set by the repo's env
@@ -276,12 +287,14 @@ jobs:
       #                          loaded file, but continue-on-error means a future
       #                          rename or removal of the flag upstream still cannot
       #                          block anyone.
+      # Only an explicit super-linter-blocking: true flips BOTH, so the caller's
+      # env file still cannot turn blocking on (or off) by itself.
       - name: Run Super Linter
-        continue-on-error: true
+        continue-on-error: ${{ !inputs.super-linter-blocking }}
         uses: super-linter/super-linter@2da136927bd4a73596db63044b504547c62cb854 # v9.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DISABLE_ERRORS: 'true'
+          DISABLE_ERRORS: ${{ inputs.super-linter-blocking && 'false' || 'true' }}
 
   # ── Frontend: lint + build ───────────────────────────────────────────────────
   frontend-lint-build:
@@ -379,6 +392,7 @@ jobs:
           TEST_SHORT: ${{ needs.go-test-short.result }}
           GO_LINT: ${{ needs.go-lint.result }}
           SUPER_LINTER: ${{ needs.super-linter.result }}
+          SUPER_LINTER_BLOCKING: ${{ inputs.super-linter-blocking }}
           FE_LINT_BUILD: ${{ needs.frontend-lint-build.result }}
           FE_TEST: ${{ needs.frontend-test.result }}
         run: |
@@ -388,23 +402,32 @@ jobs:
             printf '| Go Vet & Build | %s |\n' "$VET_BUILD"
             printf '| Go Tests (short) | %s |\n' "$TEST_SHORT"
             printf '| Go Lint | %s |\n' "$GO_LINT"
-            printf '| Super Linter (advisory) | %s |\n' "$SUPER_LINTER"
+            if [ "$SUPER_LINTER_BLOCKING" = "true" ]; then
+              printf '| Super Linter | %s |\n' "$SUPER_LINTER"
+            else
+              printf '| Super Linter (advisory) | %s |\n' "$SUPER_LINTER"
+            fi
             printf '| Frontend Lint & Build | %s |\n' "$FE_LINT_BUILD"
             printf '| Frontend Unit Tests | %s |\n' "$FE_TEST"
           } >> "$GITHUB_STEP_SUMMARY"
 
           # go-lint IS a gate when opted in: it must reach this aggregator or a
           # lint failure would be invisible to a caller whose required check is
-          # this summary job. super-linter is deliberately NOT in this list - it
-          # is advisory and reports into the table only.
+          # this summary job. super-linter is NOT in this list by default - it
+          # is advisory and reports into the table only - and joins it only when
+          # the caller opts into super-linter-blocking.
           failed=0
           for result in "$VET_BUILD" "$TEST_SHORT" "$GO_LINT"; do
             if [ "$result" = "failure" ]; then
               failed=1
             fi
           done
-          # Frontend jobs may be skipped if run-frontend=false, and go-lint /
-          # super-linter are skipped when not opted in; skip != failure.
+          if [ "$SUPER_LINTER_BLOCKING" = "true" ] && [ "$SUPER_LINTER" = "failure" ]; then
+            failed=1
+          fi
+          # Frontend jobs may be skipped if run-frontend=false, Go Vet & Build if
+          # run-go-vet-build=false, and go-lint / super-linter when not opted in;
+          # skip != failure.
           for result in "$FE_LINT_BUILD" "$FE_TEST"; do
             if [ "$result" = "failure" ]; then
               failed=1
