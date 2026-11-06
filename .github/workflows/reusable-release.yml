@@ -1272,7 +1272,8 @@ jobs:
           LIST_TOKEN="${APP_TOKEN:-${CHANGELOG_PAT:-}}"
           if [ -n "$LIST_TOKEN" ]; then
             pending="$(GH_TOKEN="$LIST_TOKEN" gh pr list --repo "$GITHUB_REPOSITORY" --state open \
-              --json headRefName --jq '[.[] | select(.headRefName | startswith("changelog/collect-")) | .headRefName] | join(" ")')"
+              --json headRefName,isCrossRepository \
+              --jq '[.[] | select(.isCrossRepository == false and (.headRefName | startswith("changelog/collect-"))) | .headRefName] | join(" ")')"
             if [ -n "$pending" ]; then
               echo "::error::Changelog pull request(s) still open: ${pending}. Merge or close them, then re-run this job; collecting now would file their fragments under ${VERSION} as well."
               exit 1
@@ -1350,6 +1351,15 @@ jobs:
           BODY="Folds the changelog.d fragments released in ${VERSION} into CHANGELOG.md. Opened by the release workflow because ${DEFAULT_BRANCH} refuses direct pushes."
 
           opened=""
+          PR=""
+          HEAD_SHA=""
+          # The same-repository PR for BRANCH, by number. Never resolve a PR by
+          # branch name alone: a fork can open one with the same head name.
+          own_pr() {
+            gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --state open \
+              --json number,isCrossRepository \
+              --jq '[.[] | select(.isCrossRepository == false)][0].number // empty' || true
+          }
           for kind in app pat; do
             if [ "$kind" = app ]; then TOKEN="${APP_TOKEN:-}"; else TOKEN="${CHANGELOG_PAT:-}"; fi
             if [ -z "$TOKEN" ]; then
@@ -1358,17 +1368,24 @@ jobs:
             fi
             land_on_tip "$TOKEN"
             git commit --quiet --amend -m "docs(changelog): collect fragments for ${VERSION}"
+            HEAD_SHA="$(git rev-parse HEAD)"
             if ! git push --force "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/${BRANCH}"; then
               echo "::warning::Could not push ${BRANCH} with the ${kind} token; trying the next one."
               continue
             fi
             export GH_TOKEN="$TOKEN"
-            if [ -z "$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --state open --json number --jq '.[0].number // empty' || true)" ]; then
+            PR="$(own_pr)"
+            if [ -z "$PR" ]; then
               if ! gh pr create --repo "$GITHUB_REPOSITORY" --base "$DEFAULT_BRANCH" --head "$BRANCH" \
                    --title "$TITLE" --body "$BODY"; then
                 echo "::warning::Could not open the pull request with the ${kind} token; trying the next one."
                 continue
               fi
+              PR="$(own_pr)"
+            fi
+            if [ -z "$PR" ]; then
+              echo "::warning::Opened ${BRANCH} but cannot find its pull request with the ${kind} token; trying the next one."
+              continue
             fi
             opened="$kind"
             break
@@ -1381,14 +1398,17 @@ jobs:
             echo "::warning::The App token could not open the pull request (does the App have pull-requests write?); it was opened with JF_CI_GH_PAT."
           fi
 
-          # Auto-merge needs allow_auto_merge and something still pending. If it
-          # cannot be enabled, merge now: on a merge-queue branch that enqueues.
-          if gh pr merge --repo "$GITHUB_REPOSITORY" "$BRANCH" --rebase --auto; then
-            echo "::notice::Changelog pull request for ${VERSION} will merge once its required checks pass."
-          elif gh pr merge --repo "$GITHUB_REPOSITORY" "$BRANCH" --rebase; then
-            echo "::notice::Changelog pull request for ${VERSION} merged (or entered the merge queue)."
+          # Merge by number, pinned to the commit pushed above. Auto-merge needs
+          # allow_auto_merge and something still pending; if it cannot be
+          # enabled, merge now (on a merge-queue branch that enqueues). Never
+          # --admin: required checks, reviews and the queue still apply, and the
+          # commit was checked above to touch only the changelog.
+          if gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --rebase --auto --match-head-commit "$HEAD_SHA"; then
+            echo "::notice::Changelog pull request #${PR} for ${VERSION} will merge once its required checks pass."
+          elif gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --rebase --match-head-commit "$HEAD_SHA"; then
+            echo "::notice::Changelog pull request #${PR} for ${VERSION} merged (or entered the merge queue)."
           else
-            echo "::error::Opened the changelog pull request for ${VERSION} (${BRANCH}) but could neither enable auto-merge nor merge it; merge it by hand."
+            echo "::error::Opened changelog pull request #${PR} for ${VERSION} but could neither enable auto-merge nor merge it; merge it by hand."
             exit 1
           fi
 
