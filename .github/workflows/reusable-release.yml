@@ -1,5 +1,5 @@
 # file: .github/workflows/reusable-release.yml
-# version: 2.18.0
+# version: 2.18.1
 # guid: 7b8c9d0e-1f2a-3b4c-5d6e-7f8a9b0c1d2e
 # last-edited: 2026-11-06
 
@@ -110,19 +110,24 @@ on:
         type: string
         default: ''
       ci-bot-app-client-id:
-        description: "Client ID of the CI bot GitHub App (not secret). Empty falls back to the caller's CI_BOT_APP_CLIENT_ID variable. Used with the CI_BOT_APP_PRIVATE_KEY secret to mint the token that pushes release tags and the changelog commit; when neither is configured the legacy CI_APP_ID / CI_APP_PRIVATE_KEY pair is used."
+        description: "Client ID of the CI bot GitHub App (not secret). Empty falls back to the caller's CI_BOT_APP_CLIENT_ID variable. Only the changelog commit uses the bot app; it needs this and the CI_BOT_APP_PRIVATE_KEY secret."
+        required: false
+        type: string
+        default: ''
+      bot-environment:
+        description: "Name of the caller's GitHub Environment that holds CI_BOT_APP_PRIVATE_KEY (for example ci-bot). Empty (the default) runs the changelog job outside any environment, so the bot app is not used. Only a repository that owns the app key and a ruleset bypass for it should set this."
         required: false
         type: string
         default: ''
     secrets:
       CI_BOT_APP_PRIVATE_KEY:
-        description: 'Private key of the CI bot GitHub App named by ci-bot-app-client-id. Optional; callers using `secrets: inherit` get it automatically.'
+        description: 'Private key of the CI bot GitHub App named by ci-bot-app-client-id. Optional. Lives in the environment named by bot-environment; environment secrets are not carried by `secrets: inherit`.'
         required: false
       CI_APP_ID:
-        description: 'Legacy CI GitHub App id. Optional; used only when the CI bot app is not configured.'
+        description: 'Legacy CI GitHub App id. Optional; used by the changelog job only when the CI bot app is not configured.'
         required: false
       CI_APP_PRIVATE_KEY:
-        description: 'Legacy CI GitHub App private key. Optional; used only when the CI bot app is not configured.'
+        description: 'Legacy CI GitHub App private key. Optional; used by the changelog job only when the CI bot app is not configured.'
         required: false
       JF_CI_GH_PAT:
         description: 'Personal access token fallback for the changelog push and pull request. Optional; used only when no app credentials are configured.'
@@ -423,104 +428,39 @@ jobs:
       always() &&
       needs.detect-languages.outputs.has-go == 'true' &&
       (inputs.build-target == 'all' || inputs.build-target == 'go')
-    # The CI bot app key lives in this environment (the caller limits it to its
-    # default branch), so a workflow on another branch cannot mint a token that
-    # bypasses the default branch's ruleset. Environment secrets reach only jobs
-    # that name the environment, and `secrets: inherit` does not carry them, so
-    # the job must declare it here. A caller without the environment gets one
-    # created empty on first use; it then keeps using its repository secrets.
-    environment: ci-bot
     steps:
-      # The app credentials are resolved and minted BEFORE checkout so checkout
-      # can take the app token.
-      #
-      # Which GitHub App credentials this job has. `if:` cannot read secrets.* in
-      # a workflow_call workflow ("Unrecognized named-value: 'secrets'"), so the
-      # presence of each is materialised through env first and the mint steps
-      # below are gated on this step's `mode` output:
-      #   bot     CI bot app (client id + CI_BOT_APP_PRIVATE_KEY). Preferred: the
-      #           main-branch ruleset's merge-queue bypass names this app.
-      #   legacy  CI_APP_ID + CI_APP_PRIVATE_KEY, kept for consumers that have
-      #           not moved to the bot app.
-      #   none    no app; callers without one keep working on their other tokens.
-      # A half-configured pair is an error, not "none": silently dropping to a
-      # token that cannot push hides the misconfiguration until a push fails.
-      # (The one exception is a pull_request run, where secrets are withheld.)
-      - name: Resolve CI app credentials
-        id: app-creds
-        env:
-          BOT_CLIENT_ID: ${{ inputs.ci-bot-app-client-id || vars.CI_BOT_APP_CLIENT_ID }}
-          BOT_HAS_KEY: ${{ secrets.CI_BOT_APP_PRIVATE_KEY != '' }}
-          LEGACY_HAS_ID: ${{ secrets.CI_APP_ID != '' }}
-          LEGACY_HAS_KEY: ${{ secrets.CI_APP_PRIVATE_KEY != '' }}
-          EVENT_NAME: ${{ github.event_name }}
-        run: |
-          set -euo pipefail
-          mode=none
-          if [ -n "$BOT_CLIENT_ID" ] && [ "$BOT_HAS_KEY" = true ]; then
-            mode=bot
-          elif [ "$BOT_HAS_KEY" = true ]; then
-            echo "::error::CI bot app is half-configured: CI_BOT_APP_PRIVATE_KEY is set but the client id (input ci-bot-app-client-id or variable CI_BOT_APP_CLIENT_ID) is empty."
-            exit 1
-          elif [ -n "$BOT_CLIENT_ID" ]; then
-            # Repository variables reach every run but secrets are withheld from
-            # fork and Dependabot pull requests, so a missing key there is
-            # expected, not a misconfiguration.
-            case "$EVENT_NAME" in
-              pull_request|pull_request_target)
-                echo "::notice::CI bot app secret is not available to this pull request run; continuing without app credentials." ;;
-              *)
-                echo "::error::CI bot app is half-configured: the client id is set but the CI_BOT_APP_PRIVATE_KEY secret is empty."
-                exit 1 ;;
-            esac
-          fi
-          if [ "$mode" = none ]; then
-            if [ "$LEGACY_HAS_ID" = true ] && [ "$LEGACY_HAS_KEY" = true ]; then
-              mode=legacy
-            elif [ "$LEGACY_HAS_ID" = true ] || [ "$LEGACY_HAS_KEY" = true ]; then
-              echo "::error::Legacy CI app is half-configured: CI_APP_ID and CI_APP_PRIVATE_KEY must both be set."
-              exit 1
-            fi
-          fi
-          echo "mode=${mode}" >> "$GITHUB_OUTPUT"
-
-      - name: Mint CI app token for the tag push
-        id: app-token-bot
-        if: steps.app-creds.outputs.mode == 'bot'
-        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
-        with:
-          client-id: ${{ inputs.ci-bot-app-client-id || vars.CI_BOT_APP_CLIENT_ID }}
-          private-key: ${{ secrets.CI_BOT_APP_PRIVATE_KEY }}
-          permission-contents: write
-          # The release tag points at a commit whose history can include
-          # .github/workflows/ changes; a push of such a ref is refused without it.
-          permission-workflows: write
-
-      - name: Mint legacy CI app token for the tag push
-        id: app-token-legacy
-        if: steps.app-creds.outputs.mode == 'legacy'
-        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
-        with:
-          app-id: ${{ secrets.CI_APP_ID }}
-          private-key: ${{ secrets.CI_APP_PRIVATE_KEY }}
-          permission-contents: write
-          # The release tag points at a commit whose history can include
-          # .github/workflows/ changes; a push of such a ref is refused without it.
-          permission-workflows: write
-
-      # token: the app token when there is one (else GITHUB_TOKEN, as before).
-      # Checkout persists it as http.extraheader, and git sends that header in
-      # preference to credentials embedded in a push URL. gha-release-go pushes
-      # the tag to a URL carrying its github-token input (the same app token), so
-      # the two now agree and the tag really is pushed by the app. With
-      # the default checkout the persisted GITHUB_TOKEN won and the minted app
-      # token was never used.
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
           fetch-depth: 0
-          token: ${{ steps.app-token-bot.outputs.token || steps.app-token-legacy.outputs.token || github.token }}
+
+      # Mint a short-lived GitHub App installation token so the tag-push
+      # step inside release-go-action can push refs whose reachable
+      # commits touch .github/workflows/ — the default GITHUB_TOKEN
+      # can't. Skipped entirely when CI_APP_ID isn't configured so the
+      # job doesn't emit a noisy error; falls back to GITHUB_TOKEN.
+      # `if:` cannot reference secrets.* directly in a workflow_call workflow
+      # ("Unrecognized named-value: 'secrets'"). Materialize CI_APP_ID through
+      # env in a guard step, then gate the mint step on that step's output.
+      - name: Check for App credentials
+        id: check-app
+        env:
+          CI_APP_ID: ${{ secrets.CI_APP_ID }}
+        run: |
+          if [ -n "$CI_APP_ID" ]; then
+            echo "have-app=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "have-app=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Mint App token for tag push
+        id: app-token
+        if: steps.check-app.outputs.have-app == 'true'
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ secrets.CI_APP_ID }}
+          private-key: ${{ secrets.CI_APP_PRIVATE_KEY }}
 
       # goreleaser's `{{ .PreviousTag }}` walks back exactly one tag. On a repo
       # that cuts an RC per merge, that tag is almost always an RC, so release
@@ -577,7 +517,7 @@ jobs:
           pre-build-script: ${{ inputs.pre-build-script }}
           go-experiment: ${{ inputs.go-experiment }}
           run-linters: ${{ inputs.go-run-linters }}
-          github-token: ${{ steps.app-token-bot.outputs.token || steps.app-token-legacy.outputs.token || secrets.GITHUB_TOKEN }}
+          github-token: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
 
   # Python Build
   build-python:
@@ -1264,13 +1204,13 @@ jobs:
       github.event_name != 'pull_request' &&
       inputs.changelog-collect != 'false' &&
       needs.detect-languages.outputs.auto-prerelease != 'true'
-    # The CI bot app key lives in this environment (the caller limits it to its
-    # default branch), so a workflow on another branch cannot mint a token that
-    # bypasses the default branch's ruleset. Environment secrets reach only jobs
-    # that name the environment, and `secrets: inherit` does not carry them, so
-    # the job must declare it here. A caller without the environment gets one
-    # created empty on first use; it then keeps using its repository secrets.
-    environment: ci-bot
+    # Opt-in. A caller that owns the CI bot app key passes bot-environment (for
+    # example ci-bot) and holds the key as that environment's secret, limited to
+    # its default branch, so a workflow on another branch cannot mint a token that
+    # bypasses the ruleset. Environment secrets are not carried by
+    # `secrets: inherit`; the job must name the environment. Empty means no
+    # environment, which is every other consumer.
+    environment: ${{ inputs.bot-environment }}
     steps:
       # The released commit (github.sha), so exactly the fragments that shipped
       # in this version are collected; fragments merged after it stay pending.
@@ -1325,23 +1265,23 @@ jobs:
       # a workflow_call workflow ("Unrecognized named-value: 'secrets'"), so the
       # presence of each is materialised through env first and the mint steps
       # below are gated on this step's `mode` output:
-      #   bot     CI bot app (client id + CI_BOT_APP_PRIVATE_KEY). Preferred: the
-      #           main-branch ruleset's merge-queue bypass names this app.
+      #   bot     CI bot app (client id + CI_BOT_APP_PRIVATE_KEY, from the
+      #           environment named by bot-environment).
       #   legacy  CI_APP_ID + CI_APP_PRIVATE_KEY, kept for consumers that have
       #           not moved to the bot app.
       #   none    no app; callers without one keep working on their other tokens.
-      # A half-configured pair is an error, not "none": silently dropping to a
-      # token that cannot push hides the misconfiguration until a push fails.
-      # (The one exception is a pull_request run, where secrets are withheld.)
+      # Outside a bot-environment the key is never visible, so a client id that
+      # is set without one (an org or repository variable reaches every repo) is
+      # just "none", with a warning. Inside one, a missing key is a mistake.
       - name: Resolve CI app credentials
         id: app-creds
         if: steps.plan.outputs.collect == 'true'
         env:
           BOT_CLIENT_ID: ${{ inputs.ci-bot-app-client-id || vars.CI_BOT_APP_CLIENT_ID }}
           BOT_HAS_KEY: ${{ secrets.CI_BOT_APP_PRIVATE_KEY != '' }}
+          BOT_ENV: ${{ inputs.bot-environment }}
           LEGACY_HAS_ID: ${{ secrets.CI_APP_ID != '' }}
           LEGACY_HAS_KEY: ${{ secrets.CI_APP_PRIVATE_KEY != '' }}
-          EVENT_NAME: ${{ github.event_name }}
         run: |
           set -euo pipefail
           mode=none
@@ -1351,16 +1291,11 @@ jobs:
             echo "::error::CI bot app is half-configured: CI_BOT_APP_PRIVATE_KEY is set but the client id (input ci-bot-app-client-id or variable CI_BOT_APP_CLIENT_ID) is empty."
             exit 1
           elif [ -n "$BOT_CLIENT_ID" ]; then
-            # Repository variables reach every run but secrets are withheld from
-            # fork and Dependabot pull requests, so a missing key there is
-            # expected, not a misconfiguration.
-            case "$EVENT_NAME" in
-              pull_request|pull_request_target)
-                echo "::notice::CI bot app secret is not available to this pull request run; continuing without app credentials." ;;
-              *)
-                echo "::error::CI bot app is half-configured: the client id is set but the CI_BOT_APP_PRIVATE_KEY secret is empty."
-                exit 1 ;;
-            esac
+            if [ -n "$BOT_ENV" ]; then
+              echo "::error::bot-environment is '${BOT_ENV}' and the client id is set, but the CI_BOT_APP_PRIVATE_KEY secret is empty (is it an environment secret of '${BOT_ENV}'?)."
+              exit 1
+            fi
+            echo "::warning::CI bot app client id is set but no CI_BOT_APP_PRIVATE_KEY is visible (no bot-environment given); not using the bot app."
           fi
           if [ "$mode" = none ]; then
             if [ "$LEGACY_HAS_ID" = true ] && [ "$LEGACY_HAS_KEY" = true ]; then
@@ -1392,15 +1327,14 @@ jobs:
           permission-contents: write
           permission-pull-requests: write
 
-      - name: Collect changelog fragments
+      # Needs a token only to list pull requests, and runs nothing but `gh`. The
+      # step that installs and runs scriv (below) gets no token at all.
+      - name: Refuse while an earlier changelog pull request is open
         if: steps.plan.outputs.collect == 'true'
         env:
           VERSION: ${{ needs.create-release.outputs.version }}
-          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           CHANGELOG_PAT: ${{ secrets.JF_CI_GH_PAT }}
           APP_TOKEN: ${{ steps.app-token-bot.outputs.token || steps.app-token-legacy.outputs.token }}
-          APP_SLUG: ${{ steps.app-token-bot.outputs.app-slug || steps.app-token-legacy.outputs.app-slug }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           BRANCH="changelog/collect-${VERSION}"
@@ -1426,23 +1360,29 @@ jobs:
             fi
           fi
 
-          python3 -m pip install --quiet scriv
+      # NO credentials in this step's environment, on purpose: it installs a
+      # package from PyPI and runs scriv, which executes code from outside this
+      # repository. The tokens are only given to the publish step below, which
+      # runs nothing but git and gh. The step's output is a local commit that the
+      # publish step verifies before pushing.
+      #
+      # scriv is pinned to an exact version. Its transitive dependencies are not
+      # hash-pinned: that needs about 375 lines of hashes inline in this file for
+      # 13 packages, and the step holds no token to steal.
+      - name: Collect changelog fragments
+        id: collect
+        if: steps.plan.outputs.collect == 'true'
+        env:
+          VERSION: ${{ needs.create-release.outputs.version }}
+        run: |
+          set -euo pipefail
 
-          # Commit as the app's bot account when there is one; the user id is
-          # looked up, never hard-coded, so renaming the app needs no edit here.
-          # The identity is cosmetic: the token that pushes decides who bypasses.
-          GIT_NAME="github-actions[bot]"
-          GIT_EMAIL="github-actions[bot]@users.noreply.github.com"
-          if [ -n "${APP_TOKEN:-}" ] && [ -n "${APP_SLUG:-}" ]; then
-            if bot_id="$(GH_TOKEN="$APP_TOKEN" gh api "users/${APP_SLUG}%5Bbot%5D" --jq .id)" && [[ "$bot_id" =~ ^[0-9]+$ ]]; then
-              GIT_NAME="${APP_SLUG}[bot]"
-              GIT_EMAIL="${bot_id}+${APP_SLUG}[bot]@users.noreply.github.com"
-            else
-              echo "::warning::Could not resolve the user id of ${APP_SLUG}[bot]; committing as github-actions[bot]."
-            fi
-          fi
-          git config user.name "$GIT_NAME"
-          git config user.email "$GIT_EMAIL"
+          python3 -m pip install --quiet 'scriv==1.8.0'
+
+          # Placeholder identity; the publish step rewrites the author to the
+          # app's bot account when there is one.
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
           python3 -m scriv collect --version "${VERSION}"
 
@@ -1464,6 +1404,50 @@ jobs:
             echo "::error::The changelog commit touches files outside CHANGELOG.md and changelog.d/: ${other}"
             exit 1
           fi
+          echo "commit=${COMMIT}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish changelog commit
+        if: steps.plan.outputs.collect == 'true' && steps.collect.outputs.commit != ''
+        env:
+          VERSION: ${{ needs.create-release.outputs.version }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          COMMIT: ${{ steps.collect.outputs.commit }}
+          CHANGELOG_PAT: ${{ secrets.JF_CI_GH_PAT }}
+          APP_TOKEN: ${{ steps.app-token-bot.outputs.token || steps.app-token-legacy.outputs.token }}
+          APP_SLUG: ${{ steps.app-token-bot.outputs.app-slug || steps.app-token-legacy.outputs.app-slug }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          BRANCH="changelog/collect-${VERSION}"
+
+          # Re-check what is about to travel: it must still be exactly the one
+          # commit made above, touching only the changelog.
+          if [ "$(git rev-parse HEAD)" != "$COMMIT" ]; then
+            echo "::error::HEAD is not the changelog commit made by the previous step."
+            exit 1
+          fi
+          other="$(git diff --name-only "${COMMIT}^" "${COMMIT}" | grep -vE '^(CHANGELOG\.md|changelog\.d/)' || true)"
+          if [ -n "$other" ]; then
+            echo "::error::The changelog commit touches files outside CHANGELOG.md and changelog.d/: ${other}"
+            exit 1
+          fi
+
+          # Author the commit as the app's bot account when there is one; the
+          # user id is looked up, never hard-coded, so renaming the app needs no
+          # edit here. The identity is cosmetic: the token that pushes decides who
+          # bypasses. A failed lookup only costs the nicer attribution.
+          GIT_NAME="github-actions[bot]"
+          GIT_EMAIL="github-actions[bot]@users.noreply.github.com"
+          if [ -n "${APP_TOKEN:-}" ] && [ -n "${APP_SLUG:-}" ]; then
+            if bot_id="$(GH_TOKEN="$APP_TOKEN" gh api "users/${APP_SLUG}%5Bbot%5D" --jq .id)" && [[ "$bot_id" =~ ^[0-9]+$ ]]; then
+              GIT_NAME="${APP_SLUG}[bot]"
+              GIT_EMAIL="${bot_id}+${APP_SLUG}[bot]@users.noreply.github.com"
+            else
+              echo "::warning::Could not resolve the user id of ${APP_SLUG}[bot]; committing as github-actions[bot]."
+            fi
+          fi
+          git config user.name "$GIT_NAME"
+          git config user.email "$GIT_EMAIL"
 
           # Put the one changelog commit on a fresh copy of the default branch's
           # tip. Never push the checkout's own history.
@@ -1471,6 +1455,8 @@ jobs:
             git fetch --quiet "https://x-access-token:${1}@github.com/${GITHUB_REPOSITORY}.git" "${DEFAULT_BRANCH}"
             git checkout --quiet --detach FETCH_HEAD
             git cherry-pick "${COMMIT}"
+            # cherry-pick keeps the original author; take the identity set above.
+            git commit --quiet --amend --reset-author --no-edit
           }
 
           # 1. Direct push, for repositories that allow it. Prefer the app: its
