@@ -1,7 +1,7 @@
 # file: .github/workflows/reusable-ci.yml
-# version: 1.20.1
+# version: 1.21.0
 # guid: reusable-ci-2025-09-24-core-workflow
-# last-edited: 2026-11-06
+# last-edited: 2026-11-07
 
 name: Reusable CI Workflow
 
@@ -59,6 +59,16 @@ on:
         required: false
         type: boolean
         default: false
+      run-frontend:
+        description: >-
+          Run the frontend jobs (frontend-npm-cache and frontend-ci). Set false
+          when the caller installs, builds and tests its frontend itself, e.g.
+          through its own script, so this workflow's own `npm ci` never runs.
+          Forces the `frontend-files` output to false. Same name and meaning
+          as reusable-ci-minimal.yml's run-frontend.
+        required: false
+        type: boolean
+        default: true
       skip-linting:
         description: 'Skip linting'
         required: false
@@ -371,6 +381,7 @@ jobs:
           RUST_HIT: ${{ steps.changes.outputs.rust_files || steps.inventory.outputs.rust_files }}
           PYTHON_HIT: ${{ steps.changes.outputs.python_files || steps.inventory.outputs.python_files }}
           FRONTEND_HIT: ${{ steps.changes.outputs.frontend_files || steps.inventory.outputs.frontend_files }}
+          RUN_FRONTEND: ${{ inputs.run-frontend }}
         run: |
           tracked() {
             [[ -n "$(git ls-files -- "$1")" ]]
@@ -396,6 +407,10 @@ jobs:
             python=false
           fi
           frontend="${FRONTEND_HIT:-false}"
+          if [[ "$frontend" == true && "$RUN_FRONTEND" != true ]]; then
+            echo "frontend_files: run-frontend is false, not running frontend-ci"
+            frontend=false
+          fi
           if [[ "$frontend" == true ]] && ! tracked "$frontend_manifest"; then
             echo "frontend_files: no $frontend_manifest, not running frontend-ci"
             frontend=false
