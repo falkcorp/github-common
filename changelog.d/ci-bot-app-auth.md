@@ -1,29 +1,32 @@
 ### Changed
 
-#### `reusable-release.yml` — release tag push and changelog commit can run as the CI bot GitHub App
+#### `reusable-release.yml` `collect-changelog` — direct push tries the CI bot app first
 
-`build-go` (release tag push) and `collect-changelog` (changelog commit) now
-authenticate as the CI bot GitHub App when the caller provides one. A new
+The changelog commit can now be pushed as the CI bot GitHub App. The direct push
+to the default branch prefers the app token, then the PAT, then `GITHUB_TOKEN`.
+Previously the app was used only for the fallback pull request, so a ruleset
+bypass naming the app never helped and every collect fell through to the pull
+request. The commit carries the app's bot identity, resolved at runtime. New
 optional input `ci-bot-app-client-id` (falling back to the caller's
 `CI_BOT_APP_CLIENT_ID` variable) and optional secret `CI_BOT_APP_PRIVATE_KEY`
-select it; the legacy `CI_APP_ID` / `CI_APP_PRIVATE_KEY` pair keeps working for
-consumers that have not moved, and a caller with neither behaves as before. Both
-jobs declare `environment: ci-bot`, so the key can be held as an environment
-secret limited to the default branch. A half-configured pair is an error,
-except on `pull_request` runs where secrets are withheld. Both mints are
-narrowed with `permission-*` inputs.
+select the bot app; the legacy `CI_APP_ID` / `CI_APP_PRIVATE_KEY` pair keeps
+working, and a caller with neither behaves as before. The legacy secrets and
+`JF_CI_GH_PAT` are now declared as optional `workflow_call` secrets, which
+declaring any secret requires.
 
-#### `reusable-release.yml` `build-go` — the app token is now actually used for the tag push
+#### `reusable-release.yml` — the bot app key is opt-in through a caller environment
 
-The token was minted but never used: checkout persisted `GITHUB_TOKEN` as
-`http.extraheader`, and git sends that header in preference to the token
-embedded in the push URL. Checkout now takes the app token, so the persisted
-credential and the tag push agree.
+New input `bot-environment` (default empty). The `collect-changelog` job runs in
+the environment it names, so only a caller that holds the key as that
+environment's secret can use the bot app; every other consumer runs outside any
+environment and is unchanged. Outside an environment a client id without a key
+is treated as "no app" with a warning, not an error. `build-go` is deliberately
+untouched: it keeps the default `GITHUB_TOKEN` checkout.
 
-#### `reusable-release.yml` `collect-changelog` — direct push tries the app first
+#### `reusable-release.yml` `collect-changelog` — scriv runs without credentials
 
-The direct push to the default branch now prefers the app token, then the PAT,
-then `GITHUB_TOKEN`. Previously the app was used only for the fallback pull
-request, so a ruleset bypass naming the app never helped and every collect fell
-through to the pull request. The commit carries the app's bot identity, resolved
-at runtime.
+The job is split so the step that installs and runs scriv (pinned to `1.8.0`)
+has no token in its environment. The app token, PAT and `GITHUB_TOKEN` reach
+only a separate step that re-verifies the single changelog commit (only
+`CHANGELOG.md` and `changelog.d/` touched) and then pushes or opens the pull
+request.
