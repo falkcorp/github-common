@@ -1,7 +1,7 @@
 # file: .github/workflows/reusable-ci.yml
-# version: 1.21.0
+# version: 1.22.0
 # guid: reusable-ci-2025-09-24-core-workflow
-# last-edited: 2026-11-07
+# last-edited: 2026-11-17
 
 name: Reusable CI Workflow
 
@@ -69,6 +69,17 @@ on:
         required: false
         type: boolean
         default: true
+      fetch-base-branch-tip:
+        description: >-
+          Before the Go tests run, fetch the tip of the repository's default
+          branch at depth 1 so `origin/<default branch>` resolves in the
+          otherwise shallow, single-ref checkout. Set true when a Go test diffs
+          a file against the default branch (for example a test that only lets
+          a list shrink) and fails without that ref. Only the Go CI job is
+          affected. Default false leaves the checkout unchanged.
+        required: false
+        type: boolean
+        default: false
       skip-linting:
         description: 'Skip linting'
         required: false
@@ -633,6 +644,20 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
+
+      # Opt-in (fetch-base-branch-tip). The checkout above is depth 1 with no
+      # base ref, so a test that diffs a file against the default branch has
+      # nothing to diff against. Fetch the default branch's tip alone, not its
+      # history. The branch name goes through env, never into the script text.
+      - name: Fetch default branch tip
+        if: inputs.fetch-base-branch-tip
+        shell: bash
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "${DEFAULT_BRANCH}"
+          git rev-parse --verify "origin/${DEFAULT_BRANCH}"
 
       - name: Get ghcommon workflow ref
         id: ghcommon-ref
